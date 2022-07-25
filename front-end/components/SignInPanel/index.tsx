@@ -25,18 +25,18 @@ function SignInPanel() {
   const schema = yup.object().shape({
     username: yup
       .string()
+      .required('Username must not be empty')
       .min(8, 'Username must have 8-32 character')
       .max(32, 'Username must have 8-32 character')
-      .required('Username must not be empty')
       .matches(
         _CONF.REGEX_USENAME_PASSWORD,
         'Username must not contain special character like @#$^...'
       ),
     password: yup
       .string()
+      .required('Password must not be empty')
       .min(8, 'Password must have 8-16 character')
       .max(16, 'Password must have 8-16 character')
-      .required('Password must not be empty')
       .matches(
         _CONF.REGEX_USENAME_PASSWORD,
         'Password must not contain special character like @#$^...'
@@ -93,9 +93,6 @@ function SignInPanel() {
         />
         {errors.password && <p className="error">{errors.password.message}</p>}
         <br />
-        {errorMessage.trigger && (
-          <p className="error">{errorMessage.message}</p>
-        )}
         <div>
           <Link href="/forgot-password">
             <a>Forgot password?</a>
@@ -104,6 +101,9 @@ function SignInPanel() {
         <button type="submit" className="button__signin">
           Continue
         </button>
+        {errorMessage.trigger && (
+          <p className="error">{errorMessage.message}</p>
+        )}
         <div className="linkToSignup">
           <p>Don&apos;t have an account?</p>
           <Link href="/sign-up">

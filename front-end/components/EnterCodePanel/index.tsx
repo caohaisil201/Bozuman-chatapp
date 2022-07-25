@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { FaSignInAlt } from 'react-icons/fa';
+import AuthPanel from 'components/AuthPanel';
 
 interface EnterCodeForm {
   code: string;
@@ -12,6 +13,7 @@ interface EnterCodeForm {
 
 function EnterCodePanel() {
   const router = useRouter();
+
   const { email } = router.query;
 
   const [errorMessage, setErrorMessage] = useState({
@@ -19,7 +21,7 @@ function EnterCodePanel() {
     message: '',
   });
 
-  const [showResendBtn, setShowResendBtn] = useState(true);
+  const [showResendBtn, setShowResendBtn] = useState(false);
   const [count, setCount] = useState(0);
 
   const schema = yup.object().shape({
@@ -34,6 +36,7 @@ function EnterCodePanel() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<EnterCodeForm>({
     reValidateMode: 'onSubmit',
@@ -61,6 +64,7 @@ function EnterCodePanel() {
     } catch (error) {
       //TODO: Server error
     }
+    reset({ code: '' });
   };
 
   const onSubmit: SubmitHandler<EnterCodeForm> = async (data) => {
@@ -96,10 +100,13 @@ function EnterCodePanel() {
   };
 
   useLayoutEffect(() => {
-    if (sessionStorage.count) {
-      setCount(Number(sessionStorage.count));
-    } else {
+    if (!email) {
+      router.push('/sign-in');
+    }
+    if (!sessionStorage.count) {
       setCount(60);
+    } else if (Number(sessionStorage.count) !== 0) {
+      setCount(Number(sessionStorage.count));
     }
   }, []);
 
@@ -113,6 +120,8 @@ function EnterCodePanel() {
 
     if (count === 0) {
       setShowResendBtn(true);
+    } else {
+      setShowResendBtn(false);
     }
 
     return () => {
@@ -121,30 +130,33 @@ function EnterCodePanel() {
   }, [count, showResendBtn]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <AuthPanel>
       <div className="header d-flex justify-content-between align-item-center">
         <h2>Enter code</h2>
         <button className="goSignIn" onClick={onBackSignIn}>
           <FaSignInAlt />
         </button>
       </div>
-      <div className="inputCode d-flex">
-        <input {...register('code')} className="code" type="text" required />
-        <div className="countDown">{count}</div>
-      </div>
-      <div className="errorMessage">
-        {(errors.code && <p>{errors.code.message}</p>) ||
-          (errorMessage.trigger && <p>{errorMessage.message}</p>)}
-      </div>
-      {showResendBtn && (
-        <p className="resendCode" onClick={onCreateCodeAgain}>
-          Didn&apos;t receive any code? Click here to resent your code
-        </p>
-      )}
-      <button type="submit" className="button__search">
-        Submit
-      </button>
-    </form>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="inputCode d-flex">
+          <input {...register('code')} className="code" type="text" required />
+          <div className="countDown">{count}</div>
+        </div>
+        <div className="errorMessage">
+          {(errors.code && <p>{errors.code.message}</p>) ||
+            (errorMessage.trigger && <p>{errorMessage.message}</p>)}
+          {showResendBtn && (
+            <p className="resendCode" onClick={onCreateCodeAgain}>
+              Didn&apos;t receive any code? Click here to resent
+            </p>
+          )}
+        </div>
+
+        <button type="submit" className="button__search">
+          Submit
+        </button>
+      </form>
+    </AuthPanel>
   );
 }
 

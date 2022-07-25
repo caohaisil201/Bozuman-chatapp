@@ -11,21 +11,26 @@ class Hash {
     hash.update(salt);
 
     // `hash.digest()` returns a Buffer by default when no encoding is given
+    //TODO: change it to subArray but it did not work
     this.key = hash.digest().slice(0, 16);
   }
 
   public encode = (data: string) => {
-    const mykey = crypto.createCipheriv('aes-128-cbc', this.key, this.iv);
-    let mystr = mykey.update(data, 'utf8', 'hex');
-    mystr += mykey.final('hex');
-    return mystr;
+    const myKey = crypto.createCipheriv('aes-128-cbc', this.key, this.iv);
+    let myStr = myKey.update(data, 'utf8', 'hex');
+    myStr += myKey.final('hex');
+    return myStr;
   };
 
   public decode = (data: string) => {
-    const mykey = crypto.createDecipheriv('aes-128-cbc', this.key, this.iv);
-    let mystr = mykey.update(data, 'hex', 'utf8');
-    mystr += mykey.final('utf8');
-    return mystr;
+    try {
+      const myKey = crypto.createDecipheriv('aes-128-cbc', this.key, this.iv);
+      let myStr = myKey.update(data, 'hex', 'utf8');
+      myStr += myKey.final('utf8');
+      return myStr;
+    } catch (err) {
+      return '@Wrong user token';
+    }
   };
 }
 

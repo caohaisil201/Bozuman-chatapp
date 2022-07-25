@@ -6,8 +6,8 @@ const axiosClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_DOMAIN,
   withCredentials: true,
 });
-// Đính kèm token cho mọi tương tác api (API chưa được gửi)
-// interceptors.request: Xử lý request trước khi gửi lên server
+
+
 axiosClient.interceptors.request.use(
   async (config: any) => {
     const token = getCookie("access_token");
@@ -51,6 +51,7 @@ const newToken = async () => {
     });
     return res;
   }
+  // TO DO
   // return res.status(401)
   // remove cookie -> log out
 };

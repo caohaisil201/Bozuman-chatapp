@@ -1,4 +1,3 @@
-/* eslint-disable */
 
 import { Database } from './src/configs/db.config';
 import { expiredAccessTokenHandler } from './src/middlewares/expiredAccessTokenHandler';
@@ -8,6 +7,7 @@ import auth from './src/routes/authentication.route';
 import cors from 'cors';
 
 const db = new Database();
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 db.dbConnect();
 const app: Application = express();
 
@@ -33,7 +33,7 @@ app.use(checkAccessToken);
 app.use('/', (req, res) => {
   res.json({ success: 'ok' });
 });
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 app.listen(port, (): void => {
   /* eslint-disable no-debugger, no-console */
   console.log(`Connected successfully on port ${port}`);

@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
-dotenv.config();
 import mongoose from 'mongoose';
+dotenv.config();
 
 export class Database {
   protected username: string | undefined = process.env.DB_USERNAME;
@@ -14,7 +14,7 @@ export class Database {
         `mongodb+srv://${this.username || ''}:${this.password || ''}@${this.cluster || ''}.mongodb.net/${this.dbname || ''}?retryWrites=true&w=majority`
       )
       .then(() => {
-        //TO DO
+        //TODO
       });
     const conn: mongoose.Connection = mongoose.connection;
     // eslint-disable-next-line no-console
