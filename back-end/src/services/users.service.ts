@@ -54,7 +54,7 @@ export class UsersService {
         { username: userName },
         { active: true }
       ).exec();
-      return {success: true, message: 'Activate account success'};
+      return { success: true, message: 'Activate account success' };
     } catch (error) {
       // TODO: handle error
       // eslint-disable-next-line no-console
@@ -107,8 +107,8 @@ export class UsersService {
     } else {
       throw {
         code: 'FORGOT_PASSWORD_014',
-        message: 'Your account does not exist'
-      }
+        message: 'Your account does not exist',
+      };
     }
   };
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -123,7 +123,7 @@ export class UsersService {
     return new RefreshToken({
       username: username,
       token: jwt.sign(
-        { randomString: this.randomTokenString() },
+        { username: username, randomString: this.randomTokenString() },
         _CONF.SECRET_REFRESH,
         {
           expiresIn: _CONF.refreshTokenLife,
