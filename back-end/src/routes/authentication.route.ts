@@ -17,11 +17,7 @@ router.post(
 );
 router.get('/activate_account/:name', authentication.activateAccount);
 router.post('/sign-in',validator.body(signInSchema), authentication.signIn);
-
 router.post('/forgot-password', authentication.forgotPassword);
-router.post('/create-code', authentication.createCodeExpire);
-router.post('/check-code', authentication.checkForgotPasswordCode);
 router.post('/reset-password', authentication.resetPassword);
-
 
 export default router;
