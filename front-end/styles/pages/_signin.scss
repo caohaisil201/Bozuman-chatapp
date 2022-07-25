@@ -1,0 +1,19 @@
+.signin {
+  .linkToSignup {
+    padding-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    p {
+      display: inline;
+      margin-bottom: 0;
+    }
+  }
+  button.button__signin {
+    @include button_customization(40px, 300px, 16px);
+    margin-top: 16px;
+  }
+  button.button__signup {
+    @include button_customization(30px, 100px, 12px);
+  }
+}

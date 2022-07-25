@@ -1,12 +1,17 @@
+// @import './base/reset';
 @import 'bootstrap/dist/css/bootstrap.css';
 @import './base/variable';
 @import './base/normalized.scss';
 
 @import './common/button.scss';
-@import './common/textfiled.scss';
+@import './common/textfield.scss';
 @import './common/link.scss';
 @import './common/label.scss';
 
-@import './component/signin.scss';
+@import './component/panel';
 
-@import './pages/homepage.scss'
+@import './pages/forgotpassword';
+@import './pages/signin';
+@import './pages/signup';
+@import './pages/signuppopup';
+

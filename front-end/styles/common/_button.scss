@@ -1,0 +1,28 @@
+@import '../base/variable';
+
+@mixin button_customization($heigh, $width, $font-size) {
+  min-height: $heigh;
+  min-width: $width;
+  font-size: $font-size;
+}
+.AuthPanel {
+  button {
+    background-color: $color4;
+    color: white;
+
+    font-weight: 600;
+
+    border: unset;
+    border-radius: 20px;
+
+    position: relative;
+    cursor: pointer;
+    background-color: rgba(109, 104, 117, 1);
+
+    transition: background-color 0.5s;
+
+    &:hover {
+      background-color: rgba(229, 152, 155, 1);
+    }
+  }
+}

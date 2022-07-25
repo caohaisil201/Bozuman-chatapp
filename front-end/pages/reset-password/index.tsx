@@ -1,6 +1,8 @@
-import SignInPanel from 'components/SignInPanel'
+import ResetPasswordPanel from 'components/ResetPasswordPanel'
 import Image from 'next/image'
-function SignIn() {
+import React from 'react'
+
+function EnterCode() {
   return (
     <div className="container">
       <div className="row mt-5">
@@ -12,12 +14,12 @@ function SignIn() {
             height={640}
           />
         </div>
-        <div className="signin col-12 col-lg-6 d-flex justify-content-center align-self-center">
-          <SignInPanel />
+        <div className="forgotpassword col-12 col-lg-6 d-flex justify-content-center align-self-center">
+          <ResetPasswordPanel />
         </div>
       </div>
     </div>
   )
 }
 
-export default SignIn
+export default EnterCode;

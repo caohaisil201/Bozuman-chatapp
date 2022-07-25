@@ -1,6 +1,7 @@
-import SignInPanel from 'components/SignInPanel'
-import Image from 'next/image'
-function SignIn() {
+import SignUpPopUp from 'components/SignUpPopUp';
+import Image from 'next/image';
+
+function SignUpSuccess() {
   return (
     <div className="container">
       <div className="row mt-5">
@@ -12,12 +13,14 @@ function SignIn() {
             height={640}
           />
         </div>
-        <div className="signin col-12 col-lg-6 d-flex justify-content-center align-self-center">
-          <SignInPanel />
+        <div className="col-12 col-lg-6 d-flex justify-content-center align-self-center">
+          <div className="signuppopup">
+            <SignUpPopUp />
+          </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default SignIn
+export default SignUpSuccess;

@@ -1,9 +1,8 @@
-/* eslint-disable */
+/* eslint-disable camelcase */
 import mongoose from 'mongoose';
-import { Schema } from 'mongoose';
 import Joi from 'joi';
 
-const UsersSchema = new Schema({
+const UsersSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -27,7 +26,7 @@ const UsersSchema = new Schema({
   active: {
     type: Boolean,
     required: false,
-    default: false
+    default: false,
   },
 
   birth_day: {
@@ -55,13 +54,18 @@ const UsersSchema = new Schema({
     required: false,
   },
 
+  code: {
+    type: String,
+    required: false,
+  },
+
   room_list: {
     type: Array,
     required: false,
   },
 });
 
-const registerSchema = Joi.object({
+export const registerSchema = Joi.object({
   username: Joi.string()
     .min(8)
     .max(32)
@@ -72,30 +76,29 @@ const registerSchema = Joi.object({
     .max(16)
     .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
     .required(),
-  fullName: Joi.string()
+  full_name: Joi.string()
     .min(8)
     .max(50)
-    .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
+    .pattern(new RegExp('^[a-zA-Z0-9_ ]*$'))
     .required(),
   email: Joi.string().email({
     minDomainSegments: 2,
-    tlds: { allow: ['com', 'net'] },
+    tlds: { allow: false },
   }),
 });
-const signInSchema = Joi.object({
+
+export const signInSchema = Joi.object({
   username: Joi.string()
-  .min(8)
-  .max(32)
-  .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
-  .required(),
-password: Joi.string()
-  .min(8)
-  .max(16)
-  .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
-  .required(),
-})
+    .min(8)
+    .max(32)
+    .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
+    .required(),
+  password: Joi.string()
+    .min(8)
+    .max(16)
+    .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
+    .required(),
+});
 
-
-module.exports = {Users: mongoose.model('user', UsersSchema), registerSchema, signInSchema};
-
+export const Users = mongoose.model('user', UsersSchema);
 

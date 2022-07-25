@@ -14,7 +14,12 @@
         padding-left: 10px;
         text-align: left;
     }
-
+    p.error{
+        font-size: 12px;
+        text-align: left;
+        padding-left: 12px;
+        font-style: italic;
+    }
     div{
         margin-top: 12px;
         display: flex;

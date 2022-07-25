@@ -1,48 +1,38 @@
-/* eslint-disable */
-
-const jwt = require('jsonwebtoken');
-const _CONF = require('../configs/auth.config');
-const UsersService = require('../services/users.service');
+/* eslint-disable @typescript-eslint/no-unsafe-assignment*/
+import * as jwt from 'jsonwebtoken';
+import _CONF from '../configs/auth.config';
+import { UsersService } from '../services/users.service';
 import express from 'express';
 
-export interface requestWithToken extends express.Request {
-  decoded: any;
-}
-
-module.exports = (
-  req: requestWithToken,
-  res: express.Response,
-  next: express.NextFunction
+const expiredAccessTokenHandler = (
+  req: express.Request,
+  res: express.Response
 ) => {
   const refreshToken = req.headers['x-refresh-token'];
-  // decode token
+  // TODO: fix this typescript error
   if (refreshToken) {
     jwt.verify(
-      refreshToken,
+      refreshToken.toString(),
       _CONF.SECRET_REFRESH,
       function (err: any, decoded: any) {
         if (err) {
-          console.error(err.toString());
-          return res 
+          return res
             .status(401)
-            .json({ error: true, message: 'Unauthorized access.', err });
+            .json({ error: true, message: 'Refresh token expire', err });
         }
-        const {id} = decoded;
-        const user = {
-          _id: id
-        };
-        const accessToken = UsersService.generateAccessToken(user);
+        const { username } = decoded;
+        const accessToken = UsersService.generateAccessToken(username);
         res.status(200).json({
           success: true,
           accessToken,
-          refreshToken: refreshToken,
         });
       }
     );
   } else {
     return res.status(403).send({
       error: true,
-      message: 'No token provided.',
+      message: 'No token provided',
     });
   }
 };
+export default expiredAccessTokenHandler;

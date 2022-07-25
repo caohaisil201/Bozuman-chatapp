@@ -1,34 +1,35 @@
-/* eslint-disable */
-const jwt = require('jsonwebtoken');
-const _CONF = require('../configs/auth.config');
-// import jwt from "jsonwebtoken"
-import express from 'express';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment*/
+import * as jwt from 'jsonwebtoken';
+import _CONF from '../configs/auth.config';
+import * as express from 'express';
 
-export interface requestWithToken extends express.Request {
-  decoded: any;
-}
-
-module.exports = (
-  req: requestWithToken,
+const checkAccessToken = (
+  req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) => {
   const token = req.headers['x-access-token'];
-  // decode token
+  // TODO: fix this typescript error
   if (token) {
-    jwt.verify(token, _CONF.SECRET, function (err: any, decoded: any) {
-      if (err) {
-        return res
-          .status(401)
-          .json({ error: true, message: 'Unauthorized access.', err });
+    jwt.verify(
+      token.toString(),
+      _CONF.SECRET,
+      function (err: any, decoded: any) {
+        if (err) {
+          return res
+            .status(401)
+            .json({ error: true, message: 'Unauthorized access', err });
+        }
+        req.context = { ...req.context, DecodePayload: decoded };
+        
+        next();
       }
-      req.decoded = decoded;
-      next();
-    });
+    );
   } else {
     return res.status(403).send({
       error: true,
-      message: 'No token provided.',
+      message: 'No token provided',
     });
   }
 };
+export default checkAccessToken;
