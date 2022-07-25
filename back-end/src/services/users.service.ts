@@ -87,46 +87,6 @@ export class UsersService {
     };
   };
 
-  static addCode = async (data: { email: string }, code: number) => {
-    const userEmail = data.email;
-    const doc = await Users.findOneAndUpdate(
-      { email: userEmail },
-      { code: code },
-      { new: true }
-    );
-    if (!doc) {
-      throw 'Internal server error';
-    }
-    return doc;
-  };
-
-  static deleteCode = async (data: { email: string }) => {
-    const userEmail = data.email;
-    const user = await Users.findOne({ email: userEmail });
-    if (user) {
-      user.code = undefined;
-      return user.save();
-    }
-    throw 'Internal server error';
-  };
-
-  static checkCode = async (data: { email: string; code: string }) => {
-    const email = data.email;
-    const code = data.code;
-    const user = await Users.findOne({
-      email: email,
-      code: code,
-    });
-
-    if (!user) {
-      throw {
-        code: 'FORGOT_PASSWORD_005',
-        message: 'Your code is incorrect',
-      };
-    }
-    return user;
-  };
-
   static resetPassword = async (data: User) => {
     const email = data.email;
     const password = data.password;
