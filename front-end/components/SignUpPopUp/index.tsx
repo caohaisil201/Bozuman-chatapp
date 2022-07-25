@@ -1,4 +1,3 @@
-/* eslint-disable */
 import AuthPanel from 'components/AuthPanel';
 import Link from 'next/link';
 export default function SignUpPopUp() {

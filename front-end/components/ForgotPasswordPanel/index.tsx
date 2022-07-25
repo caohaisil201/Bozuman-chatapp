@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { FaSignInAlt } from 'react-icons/fa';
 import AuthPanel from 'components/AuthPanel';
+import Swal from 'sweetalert2';
 
 interface ForgotPasswordForm {
   email: string;
@@ -35,8 +36,8 @@ function ForgotPasswordPanel() {
     resolver: yupResolver(schema),
   });
 
-  const onBackSignIn = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const onBackSignIn = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     router.push('/sign-in');
   };
 
@@ -46,26 +47,17 @@ function ForgotPasswordPanel() {
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/forgot-password`,
         data
       );
-      if (res.status === 200) {
+      
+      if (res.data.success) {
         setErrorMessage({
           trigger: false,
           message: '',
         });
-
-        const email: string = res.data.email;
-        await axios.post(
-          `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/create-code`,
-          {
-            email,
-          }
-        );
-
-        router.push({
-          pathname: '/enter-forgot-password-code',
-          query: {
-            email: res.data.email,
-          },
-        });
+        Swal.fire({
+          icon: 'success',
+          title: 'Please check your email to reset password',
+          showConfirmButton: false,
+        })
       }
     } catch (error: any) {
       setErrorMessage({
@@ -92,8 +84,8 @@ function ForgotPasswordPanel() {
           required
         />
         <div className="errorMessage">
-          {(errors.email && <p>{errors.email.message}</p>) ||
-            (errorMessage.trigger && <p>{errorMessage.message}</p>)}
+          {(errors.email && <p className="error">{errors.email.message}</p>) ||
+            (errorMessage.trigger && <p className="error">{errorMessage.message}</p>)}
         </div>
 
         <button type="submit" className="button__search">

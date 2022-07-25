@@ -1,7 +1,7 @@
 
 import { Database } from './src/configs/db.config';
-import { expiredAccessTokenHandler } from './src/middlewares/expiredAccessTokenHandler';
-import {checkAccessToken} from './src/middlewares/checkAccessToken';
+import expiredAccessTokenHandler from './src/middlewares/expiredAccessTokenHandler';
+import checkAccessToken from './src/middlewares/checkAccessToken';
 import express, { Application } from 'express';
 import auth from './src/routes/authentication.route';
 import cors from 'cors';
@@ -12,8 +12,8 @@ db.dbConnect();
 const app: Application = express();
 
 // Body parsing Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(
   cors({
     origin: [
@@ -25,14 +25,15 @@ app.use(
     credentials: true,
   })
 );
+// secure route goes here
 
 app.use('/api/auth', auth);
 app.use('/api/token', expiredAccessTokenHandler);
 app.use(checkAccessToken);
-// secure route goes here
 app.use('/', (req, res) => {
-  res.json({ success: 'ok' });
+  res.json({ success: 'ok', decoded: req.context?.DecodePayload});
 });
+
 const port = process.env.PORT || 3000;
 app.listen(port, (): void => {
   /* eslint-disable no-debugger, no-console */

@@ -83,7 +83,7 @@ export const registerSchema = Joi.object({
     .required(),
   email: Joi.string().email({
     minDomainSegments: 2,
-    tlds: { allow: ['com', 'net'] },
+    tlds: { allow: false },
   }),
 });
 

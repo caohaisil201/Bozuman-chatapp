@@ -1,8 +1,11 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 /* eslint-disable */
 >>>>>>> 00bdb2765c7a27aa6db9e7d26d8a55d8d5e9fe22
+=======
+>>>>>>> 13a63433f165c2d9ca31f9d66d9de5f1f016fb03
 import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import * as yup from 'yup';
@@ -14,11 +17,12 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 interface SignUpForm {
+  // eslint-disable-next-line camelcase
   full_name: string;
   email: string;
   username: string;
   password: string;
-  passwordConfirmation: string;
+  passwordConfirmation?: string;
 }
 
 function SignUpPanel() {
@@ -26,6 +30,7 @@ function SignUpPanel() {
   const [err, setErr] = useState({ error: false, message: '' });
 
   const schema = yup.object().shape({
+    // eslint-disable-next-line camelcase
     full_name: yup
       .string()
       .required('Full name must not be empty')
@@ -67,10 +72,10 @@ function SignUpPanel() {
   });
 
   const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
-    let { passwordConfirmation, ...postData } = data;
+    delete data.passwordConfirmation;
     try {
-      const res = await axios
-        .post(process.env.NEXT_PUBLIC_DOMAIN + '/api/auth/register', postData)
+      await axios
+        .post(`${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/register`, data)
         .then((res) => {
           if (!res.data.success) {
             setErr({ error: true, message: res.data.error.message });
@@ -79,8 +84,9 @@ function SignUpPanel() {
             setErr({ error: false, message: 'Create account success' });
           }
         });
-    } catch (error) {
+    } catch (err: any) {
       // handle error
+      setErr({ error: true, message: err.response.data.error.message });
     }
   };
   return (

@@ -54,7 +54,7 @@ export class UsersService {
         { username: userName },
         { active: true }
       ).exec();
-      return {success: true, message: 'Activate account success'};
+      return { success: true, message: 'Activate account success' };
     } catch (error) {
       // TODO: handle error
       // eslint-disable-next-line no-console
@@ -87,46 +87,6 @@ export class UsersService {
     };
   };
 
-  static addCode = async (data: { email: string }, code: number) => {
-    const userEmail = data.email;
-    const doc = await Users.findOneAndUpdate(
-      { email: userEmail },
-      { code: code },
-      { new: true }
-    );
-    if (!doc) {
-      throw 'Internal server error';
-    }
-    return doc;
-  };
-
-  static deleteCode = async (data: { email: string }) => {
-    const userEmail = data.email;
-    const user = await Users.findOne({ email: userEmail });
-    if (user) {
-      user.code = undefined;
-      return user.save();
-    }
-    throw 'Internal server error';
-  };
-
-  static checkCode = async (data: { email: string; code: string }) => {
-    const email = data.email;
-    const code = data.code;
-    const user = await Users.findOne({
-      email: email,
-      code: code,
-    });
-
-    if(!user) {
-      throw {
-        code: 'FORGOT_PASSWORD_005',
-        message: 'Your code is incorrect'
-      };
-    }
-    return user;
-  };
-
   static resetPassword = async (data: User) => {
     const email = data.email;
     const password = data.password;
@@ -147,8 +107,8 @@ export class UsersService {
     } else {
       throw {
         code: 'FORGOT_PASSWORD_014',
-        message: 'Your account does not exist'
-      }
+        message: 'Your account does not exist',
+      };
     }
   };
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -163,7 +123,7 @@ export class UsersService {
     return new RefreshToken({
       username: username,
       token: jwt.sign(
-        { randomString: this.randomTokenString() },
+        { username: username, randomString: this.randomTokenString() },
         _CONF.SECRET_REFRESH,
         {
           expiresIn: _CONF.refreshTokenLife,

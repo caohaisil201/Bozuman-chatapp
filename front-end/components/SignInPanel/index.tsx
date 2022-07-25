@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import * as yup from 'yup';
@@ -54,7 +52,7 @@ function SignInPanel() {
   const onSubmit: SubmitHandler<SignInForm> = async (data) => {
     try {
       const res = await axios.post(
-        process.env.NEXT_PUBLIC_DOMAIN + '/api/auth/sign-in',
+        `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/sign-in`,
         data
       );
       setErrorMessage({
