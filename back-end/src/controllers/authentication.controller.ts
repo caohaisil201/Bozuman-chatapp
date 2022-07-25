@@ -191,7 +191,8 @@ export class Auth {
           password: req.body.password,
         };
 
-        async () => await UsersService.resetPassword(newPasswordOfUser);
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        (async () => await UsersService.resetPassword(newPasswordOfUser))();
         res.status(200).json({
           success: true,
         });
