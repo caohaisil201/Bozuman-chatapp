@@ -105,7 +105,7 @@ function ResetPasswordPanel() {
           required
         />
         <div className="errorMessage">
-          {errors.password && <p>{errors.password.message}</p>}
+          {errors.password && <p className="error">{errors.password.message}</p>}
         </div>
 
         <input
