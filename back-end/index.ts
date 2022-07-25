@@ -1,7 +1,7 @@
 
 import { Database } from './src/configs/db.config';
-import { expiredAccessTokenHandler } from './src/middlewares/expiredAccessTokenHandler';
-import {checkAccessToken} from './src/middlewares/checkAccessToken';
+import expiredAccessTokenHandler from './src/middlewares/expiredAccessTokenHandler';
+import checkAccessToken from './src/middlewares/checkAccessToken';
 import express, { Application } from 'express';
 import auth from './src/routes/authentication.route';
 import cors from 'cors';
@@ -31,7 +31,7 @@ app.use('/api/auth', auth);
 app.use('/api/token', expiredAccessTokenHandler);
 app.use(checkAccessToken);
 app.use('/', (req, res) => {
-  res.json({ success: 'ok' });
+  res.json({ success: 'ok', decoded: req.context?.DecodePayload});
 });
 
 const port = process.env.PORT || 3000;
