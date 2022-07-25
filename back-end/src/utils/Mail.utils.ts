@@ -31,7 +31,9 @@ export class Email {
 
       case FORGOT_PASSWORD:
         mailOptions.subject = 'Reset password';
-        mailOptions.html = `<h2>Your code is <strong>${token}</strong></h2>`;
+        mailOptions.html = `<p>Click <a href="${
+          process.env.PROJECT_DOMAIN || ''
+        }/reset-password?user=${token}">here</a> to reset your password, it will expire after 60 seconds</p>`;
         break;
 
       default:

@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
+import _CONF from '../configs/auth.config';
 import {
   FORGOT_PASSWORD,
   ACTIVATE_ACCOUNT,
-  generateSixDigitCode,
-  sendCodeToMail,
   responseError,
 } from '../utils/Helper.utils';
 import { HashClass } from '../utils/Hash.util';
 import { UsersService, User } from '../services/users.service';
 import { Email } from '../utils/Mail.utils';
+import jwt from 'jsonwebtoken';
 import md5 from 'md5';
 
 export interface TypedRequestBody<T> extends Request {
@@ -84,7 +84,9 @@ export class Auth {
     try {
       const username = HashClass.decode(req.params.name);
       if (username == '@Wrong user token') {
-        res.status(400).json({success: false, message: 'Wrong activate link'});
+        res
+          .status(400)
+          .json({ success: false, message: 'Wrong activate link' });
       }
       const activateResult = await UsersService.activateAccount(username);
       res.status(200).json(activateResult);
@@ -133,18 +135,17 @@ export class Auth {
             'FORGOT_PASSWORD_004',
             'Your account is not verified'
           );
-        } else if (user.code) {
-          responseError(
-            res,
-            400,
-            'FORGOT_PASSWORD_011',
-            'Your code has exists, please check your email'
-          );
         }
+
+        const token = jwt.sign({ email: user.email }, _CONF.SECRET, {
+          expiresIn: '1m',
+        });
+
+        const emailAgent = new Email();
+        emailAgent.sendEmail(user.email, token, FORGOT_PASSWORD);
 
         res.status(200).json({
           success: true,
-          email: HashClass.encode(user.email || ''),
         });
       }
     } catch (error: any) {
@@ -152,79 +153,57 @@ export class Auth {
     }
   };
 
-  public createCodeExpire = async (
-    req: TypedRequestBody<{ email: string }>,
+  public resetPassword = (
+    req: TypedRequestBody<{ token: string; password: string }>,
     res: Response
   ) => {
-    try {
-      const userEmail = {
-        email: HashClass.decode(req.body.email),
-      };
-      const code = generateSixDigitCode();
-      await UsersService.addCode(userEmail, Number(code));
+    const token = req.body.token;
+    let email: string | undefined;
+    
+    jwt.verify(token, _CONF.SECRET, function (err: any, decoded: any) {
+      if (err) {
+      //TODO: fix deocoded type
+        /* eslint-disable @typescript-eslint/no-unsafe-assignment*/
+        /* eslint-disable @typescript-eslint/no-unsafe-member-access*/
+        if (err.message === 'jwt malformed') {
+          return res.status(400).json({
+            success: false,
+            error: {
+              code: 'FORGOT_PASSWORD_005',
+              message: 'This link does not exists',
+            },
+          });
+        } else if (err.message === 'jwt expired') {
+          return res.status(400).json({
+            success: false,
+            error: {
+              code: 'FORGOT_PASSWORD_006',
+              message: 'Your link is expired',
+            },
+          });
+        }
+      }
+      email = decoded.email;
+      try {
+        const newPasswordOfUser: User = {
+          username: '',
+          email,
+          password: req.body.password,
+        };
 
-      sendCodeToMail(userEmail.email, code, FORGOT_PASSWORD);
-
-      setTimeout(() => {
-        UsersService.deleteCode(userEmail).catch((error) => {
-          throw error;
+        async () => await UsersService.resetPassword(newPasswordOfUser);
+        res.status(200).json({
+          success: true,
         });
-      }, 60 * 1000);
-
-      res.status(200).json({
-        success: true,
-      });
-    } catch (error) {
-      res.status(500).json({
-        error,
-      });
-    }
-  };
-
-  public checkForgotPasswordCode = async (
-    req: TypedRequestBody<{ email: string; code: string }>,
-    res: Response
-  ) => {
-    const codeOfUser = {
-      email: HashClass.decode(req.body.email),
-      code: req.body.code,
-    };
-
-    try {
-      const response = await UsersService.checkCode(codeOfUser);
-      res.status(200).json({
-        success: true,
-        email: HashClass.encode(response.email),
-      });
-    } catch (error) {
-      const err = error as ErrorObj;
-      responseError(res, 400, err.code, err.message);
-    }
-  };
-
-  public resetPassword = async (
-    req: TypedRequestBody<{ email: string; password: string }>,
-    res: Response
-  ) => {
-    const newPasswordOfUser: User = {
-      username: '',
-      email: HashClass.decode(req.body.email),
-      password: req.body.password,
-    };
-
-    try {
-      await UsersService.resetPassword(newPasswordOfUser);
-      res.status(200).json({
-        success: true,
-      });
-    } catch (error) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'FORGOT_PASSWORD_010',
-          message: error,
-        },
-      });
-    }
+      } catch (error) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'FORGOT_PASSWORD_010',
+            message: error,
+          },
+        });
+      }
+    });
   };
 }

@@ -1,11 +1,10 @@
-import React, { MouseEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import _CONF from 'config/config';
 import { useRouter } from 'next/router';
-import { FaSignInAlt } from 'react-icons/fa';
 import AuthPanel from 'components/AuthPanel';
 import Swal from 'sweetalert2';
 
@@ -17,7 +16,7 @@ interface ResetPasswordForm {
 function ResetPasswordPanel() {
   const router = useRouter();
   
-  const { email } = router.query;
+  const { user } = router.query;
 
   const [errorMessage, setErrorMessage] = useState({
     trigger: false,
@@ -55,18 +54,13 @@ function ResetPasswordPanel() {
     resolver: yupResolver(schema),
   });
 
-  const onBackSignIn = (event: MouseEvent) => {
-    event.preventDefault();
-    router.push('/sign-in');
-  };
-
   const onSubmit: SubmitHandler<ResetPasswordForm> = async (data) => {
     try {
       const { password } = data;
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/reset-password`,
         {
-          email,
+          token: user,
           password,
         }
       );
@@ -102,9 +96,6 @@ function ResetPasswordPanel() {
     <AuthPanel>
       <div className="header d-flex justify-content-between align-item-center">
         <h2>Reset password</h2>
-        <button className="goSignIn" onClick={onBackSignIn}>
-          <FaSignInAlt />
-        </button>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <input
@@ -125,9 +116,9 @@ function ResetPasswordPanel() {
         />
         <div className="errorMessage">
           {(errors.confirmPassword && (
-            <p>{errors.confirmPassword.message}</p>
+            <p className="error">{errors.confirmPassword.message}</p>
           )) ||
-            (errorMessage.trigger && <p>{errorMessage.message}</p>)}
+            (errorMessage.trigger && <p className="error">{errorMessage.message}</p>)}
         </div>
         <button type="submit" className="button__search">
           Submit

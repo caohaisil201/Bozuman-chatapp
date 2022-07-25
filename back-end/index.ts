@@ -26,12 +26,13 @@ app.use(
   })
 );
 // secure route goes here
-app.use('/', (req, res) => {
-  res.json({ success: 'ok' });
-});
+
 app.use('/api/auth', auth);
 app.use('/api/token', expiredAccessTokenHandler);
 app.use(checkAccessToken);
+app.use('/', (req, res) => {
+  res.json({ success: 'ok' });
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, (): void => {
