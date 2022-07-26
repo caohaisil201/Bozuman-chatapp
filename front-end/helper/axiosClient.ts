@@ -25,6 +25,7 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
   (response) => response,
   async (error: any) => {
+
     const config = error?.config;
     if (error.response.status === 401 && !config?.sent && error.response.data.message === 'Unauthorized access') {
       config.sent = true;
@@ -36,6 +37,9 @@ axiosClient.interceptors.response.use(
         };
       }
       return config;
+    }
+    if (error.response.status === 401 && error.response.data.message === 'Refresh token expire') {
+      setCookie('logged', false)
     }
     return Promise.reject(error);
   },
