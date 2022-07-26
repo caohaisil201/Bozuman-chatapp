@@ -37,18 +37,24 @@ axiosClient.interceptors.response.use(
       }
       return config;
     }
+
     return Promise.reject(error);
   },
 );
 const newToken = async () => {
   const token = getCookie('refresh_token');
   if (token) {
-    const res = axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/token`, {
-      headers: {
-        'x-refresh-token': token,
-      },
-    });
-    return res;
+    try {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/token`, {
+        headers: {
+          'x-refresh-token': token,
+        },
+      });
+      return res;
+    } catch (error) {
+      setCookie('logged', false)
+    }
+
   }
   // TO DO
   // return res.status(401)

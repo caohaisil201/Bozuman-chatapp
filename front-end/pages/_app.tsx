@@ -2,16 +2,44 @@ import 'styles/index.scss';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { getCookie } from 'cookies-next';
 
-function MyApp ({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  useEffect(() => {
-    if (router.pathname === '/_error') {
-      //router.push('/404');
-      router.push('/sign-in');
+  function checkAuth() {
+    const isLogged = getCookie('logged');
+    const publicPaths = [
+      '/sign-in',
+      '/sign-up',
+      '/forgot-password',
+      '/sign-up-success',
+      '/reset-password',
+      '/activate-account',
+    ];
+    if (isLogged) {
+      const path = router.asPath.split('?')[0];
+      if (publicPaths.includes(path)) {
+        router.push({
+          pathname: '/',
+        });
+      }
+    } else {
+      const path = router.asPath.split('?')[0];
+      if (!publicPaths.includes(path)) {
+        router.push({
+          pathname: '/sign-in',
+        });
+      }
     }
-  }, [router]);
-  return <Component {...pageProps} />;
+  }
+  useEffect(() => {
+    checkAuth();
+  });
+  return (
+    <>
+      <Component {...pageProps} />
+    </>
+  );
 }
 
 export default MyApp;
