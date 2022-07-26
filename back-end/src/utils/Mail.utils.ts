@@ -45,7 +45,7 @@ export class Email {
       function (error: Error | null, info: SMTPTransport.SentMessageInfo) {
         if (error) {
           // eslint-disable-next-line no-console
-          console.log(error);
+          throw error;
         } else {
           // eslint-disable-next-line no-console
           console.log(`Email sent:  ${info.response}`);
