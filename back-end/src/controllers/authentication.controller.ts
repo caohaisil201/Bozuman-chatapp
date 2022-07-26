@@ -8,7 +8,6 @@ import { HashClass } from '../utils/Hash.util';
 import { UsersService, User } from '../services/users.service';
 import { Email } from '../utils/Mail.utils';
 import jwt from 'jsonwebtoken';
-import md5 from 'md5';
 
 export interface TypedRequestBody<T> extends Request {
   body: T;
@@ -21,7 +20,7 @@ export interface ErrorObj {
 
 export class Auth {
   public validateSignup = async (data: User) => {
-    const user = await UsersService.find(data);
+    const user = await UsersService.checkUserExist(data);
     if (!user) {
       return { success: true };
     }
@@ -51,7 +50,7 @@ export class Auth {
     }>,
     res: Response
   ) => {
-    const inputData = { ...req.body, password: md5(req.body.password) } as User;
+    const inputData = { ...req.body, password: req.body.password } as User;
     try {
       const validateResult = await this.validateSignup(inputData);
       if (!validateResult.success) {
@@ -117,7 +116,7 @@ export class Auth {
         email: req.body.email,
       };
 
-      const user = await UsersService.find(userEmail);
+      const user = await UsersService.checkUserExist(userEmail);
 
       if (!user) {
         res.status(400).json({
