@@ -1,4 +1,5 @@
-
+import { createServer } from "http";
+import { Server } from "socket.io";
 import { Database } from './src/configs/db.config';
 import expiredAccessTokenHandler from './src/middlewares/expiredAccessTokenHandler';
 import checkAccessToken from './src/middlewares/checkAccessToken';
@@ -10,6 +11,9 @@ const db = new Database();
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 db.dbConnect();
 const app: Application = express();
+const server = createServer(app);
+
+
 
 // Body parsing Middleware
 app.use(express.json())
@@ -33,9 +37,24 @@ app.use(checkAccessToken);
 app.use('/token', (req, res) => {
   res.json({ success: 'ok', decoded: req.context?.DecodePayload});
 });
+const io = new Server(server, {
+  cors: ({
+    origin: [
+      'http://127.0.0.1:3001',
+      'http://localhost:3001',
+      'https://bozuman-chatapp-staging.vercel.app',
+      'https://bozuman-chatapp.vercel.app',
+    ],
+    credentials: false
+  })
+});
+
+io.on('connection', socket => {
+  console.log('New member join');
+});
 
 const port = process.env.PORT || 3000;
-app.listen(port, (): void => {
+server.listen(port, (): void => {
   /* eslint-disable no-debugger, no-console */
   console.log(`Connected successfully on port ${port}`);
 });
