@@ -1,3 +1,4 @@
+import MessageGroup from 'components/MessageGroup'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 
@@ -9,12 +10,7 @@ const Home: NextPage = () => {
         <title>Bozuman chat app</title>
         <meta name="description" content="Chat app develop by bozuman team" />
       </Head>
-      <div className="container">
-        <h1>Bozuman chat app home pageeeeeeeeeeeeeeeeeeeeeeeee</h1>
-        <input type="user" name="user" />
-
-        <input type="submit" name="submit" value="Continue" />
-      </div>
+        <MessageGroup/>
     </div>
   )
 }
