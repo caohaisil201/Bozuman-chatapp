@@ -30,7 +30,7 @@ app.use(
 app.use('/api/auth', auth);
 app.use('/api/token', expiredAccessTokenHandler);
 app.use(checkAccessToken);
-app.use('/', (req, res) => {
+app.use('/token', (req, res) => {
   res.json({ success: 'ok', decoded: req.context?.DecodePayload});
 });
 

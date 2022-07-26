@@ -28,20 +28,18 @@ export class UsersService {
     try {
       const user = {
         username: data.username,
-        password: data.password,
+        password: md5(data.password),
         full_name: data.full_name,
         email: data.email,
       };
       const response = await new Users(user).save();
       return response;
     } catch (error) {
-      // TODO: handle error
-      // eslint-disable-next-line no-console
-      console.log(error);
+      throw error;
     }
   };
 
-  static find = async (data: { username?: string; email?: string }) => {
+  static checkUserExist = async (data: { username?: string; email?: string }) => {
     const user = await Users.findOne({
       $or: [{ username: data.username }, { email: data.email }],
     }).exec();
@@ -56,9 +54,7 @@ export class UsersService {
       ).exec();
       return { success: true, message: 'Activate account success' };
     } catch (error) {
-      // TODO: handle error
-      // eslint-disable-next-line no-console
-      console.log(error);
+      throw error;
     }
   };
 

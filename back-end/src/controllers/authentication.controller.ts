@@ -3,13 +3,11 @@ import _CONF from '../configs/auth.config';
 import {
   FORGOT_PASSWORD,
   ACTIVATE_ACCOUNT,
-  responseError,
 } from '../utils/Helper.utils';
 import { HashClass } from '../utils/Hash.util';
 import { UsersService, User } from '../services/users.service';
 import { Email } from '../utils/Mail.utils';
 import jwt from 'jsonwebtoken';
-import md5 from 'md5';
 
 export interface TypedRequestBody<T> extends Request {
   body: T;
@@ -22,7 +20,7 @@ export interface ErrorObj {
 
 export class Auth {
   public validateSignup = async (data: User) => {
-    const user = await UsersService.find(data);
+    const user = await UsersService.checkUserExist(data);
     if (!user) {
       return { success: true };
     }
@@ -52,7 +50,7 @@ export class Auth {
     }>,
     res: Response
   ) => {
-    const inputData = { ...req.body, password: md5(req.body.password) } as User;
+    const inputData = { ...req.body, password: req.body.password } as User;
     try {
       const validateResult = await this.validateSignup(inputData);
       if (!validateResult.success) {
@@ -118,23 +116,25 @@ export class Auth {
         email: req.body.email,
       };
 
-      const user = await UsersService.find(userEmail);
+      const user = await UsersService.checkUserExist(userEmail);
 
       if (!user) {
-        responseError(
-          res,
-          400,
-          'FORGOT_PASSWORD_003',
-          'Your account is not exists'
-        );
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'FORGOT_PASSWORD_003',
+            message: 'Your account is not exists',
+          },
+        });
       } else {
         if (!user.active) {
-          responseError(
-            res,
-            400,
-            'FORGOT_PASSWORD_004',
-            'Your account is not verified'
-          );
+          res.status(400).json({
+            success: false,
+            error: {
+              code: 'FORGOT_PASSWORD_004',
+              message: 'Your account is not verified',
+            },
+          });
         }
 
         const token = jwt.sign({ email: user.email }, _CONF.SECRET, {
@@ -149,7 +149,13 @@ export class Auth {
         });
       }
     } catch (error: any) {
-      responseError(res, 500, '500', 'Internal server error');
+      res.status(500).json({
+        success: false,
+        error: {
+          code: '500',
+          message: 'Internal server error',
+        },
+      });
     }
   };
 
@@ -159,13 +165,13 @@ export class Auth {
   ) => {
     const token = req.body.token;
     let email: string | undefined;
-    
+
     jwt.verify(token, _CONF.SECRET, function (err: any, decoded: any) {
       if (err) {
-      //TODO: fix deocoded type
+        //TODO: fix deocoded type
         /* eslint-disable @typescript-eslint/no-unsafe-assignment*/
         /* eslint-disable @typescript-eslint/no-unsafe-member-access*/
-        if (err.message === 'jwt malformed') {
+        if (err.message === 'jwt malformed' || decoded === undefined) {
           return res.status(400).json({
             success: false,
             error: {
@@ -183,14 +189,13 @@ export class Auth {
           });
         }
       }
-      email = decoded.email;
       try {
+        email = decoded.email;
         const newPasswordOfUser: User = {
           username: '',
           email,
           password: req.body.password,
         };
-
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         (async () => await UsersService.resetPassword(newPasswordOfUser))();
         res.status(200).json({
