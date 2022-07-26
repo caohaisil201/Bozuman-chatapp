@@ -1,18 +1,17 @@
-import MessageGroup from 'components/MessageGroup'
-import type { NextPage } from 'next'
-import Head from 'next/head'
+import MessageGroup from 'components/MessageGroup';
+import type { NextPage } from 'next';
+import Head from 'next/head';
 
 const Home: NextPage = () => {
-  
   return (
     <div>
       <Head>
         <title>Bozuman chat app</title>
         <meta name="description" content="Chat app develop by bozuman team" />
       </Head>
-        <MessageGroup/>
+      <MessageGroup isMe={false} messages={[]}/>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
