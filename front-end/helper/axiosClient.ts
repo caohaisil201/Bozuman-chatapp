@@ -25,7 +25,6 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
   (response) => response,
   async (error: any) => {
-
     const config = error?.config;
     if (error.response.status === 401 && !config?.sent && error.response.data.message === 'Unauthorized access') {
       config.sent = true;
@@ -38,21 +37,24 @@ axiosClient.interceptors.response.use(
       }
       return config;
     }
-    if (error.response.status === 401 && error.response.data.message === 'Refresh token expire') {
-      setCookie('logged', false)
-    }
+
     return Promise.reject(error);
   },
 );
 const newToken = async () => {
   const token = getCookie('refresh_token');
   if (token) {
-    const res = axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/token`, {
-      headers: {
-        'x-refresh-token': token,
-      },
-    });
-    return res;
+    try {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/token`, {
+        headers: {
+          'x-refresh-token': token,
+        },
+      });
+      return res;
+    } catch (error) {
+      setCookie('logged', false)
+    }
+
   }
   // TO DO
   // return res.status(401)
