@@ -10,7 +10,7 @@ const Home: NextPage = () => {
         <meta name="description" content="Chat app develop by bozuman team" />
       </Head>
       <div className="container">
-        <h1>Bozuman chat app home pageeeeeeeeeeeeeeeeeeeeeeeee</h1>
+        <h1>Bozuman chat app home page</h1>
         <input type="user" name="user" />
 
         <input type="submit" name="submit" value="Continue" />
