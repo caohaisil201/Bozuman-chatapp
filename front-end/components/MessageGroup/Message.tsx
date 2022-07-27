@@ -6,8 +6,8 @@ type Props = {
 
 function Message({ content }: Props) {
   return (
-    <div className="messageGroup__message">
-      <p className="messageGroup__message--content">{content}</p>
+    <div className="messageGroup__messageContainer--message">
+      <p className="messageGroup__messageContainer--message--content">{content}</p>
     </div>
   );
 }

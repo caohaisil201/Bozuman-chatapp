@@ -1,3 +1,4 @@
+import ChatBox from 'components/ChatBox';
 import MessageGroup from 'components/MessageGroup';
 import type { NextPage } from 'next';
 import Head from 'next/head';
@@ -9,7 +10,7 @@ const Home: NextPage = () => {
         <title>Bozuman chat app</title>
         <meta name="description" content="Chat app develop by bozuman team" />
       </Head>
-      <MessageGroup isMe={false} messages={[]}/>
+      <ChatBox/>
     </div>
   );
 };

@@ -1,23 +1,36 @@
 .messageGroup{
-  &__message {
-    width: fit-content;
-    height: fit-content;
-    background-color: rgba(109, 104, 117, 0.23);
-    border-radius: 15px;
-    padding: 0.7rem 1.5rem;
-    margin-bottom: 0.3rem;
-    &--content {
-      font-size: $fs-1;
-      color: #4B4B4B;
-      margin-bottom: 0%;
+  display: flex;
+  &__avatar {
+    margin: 0px 10px;
+  }
+  &__messageContainer {
+    &--message {
+      width: fit-content;
+      height: fit-content;
+      background-color: $color-message-background;
+      border-radius: 15px;
+      padding: 0.7rem 1.5rem;
+      margin-bottom: 0.3rem;
+      &--content {
+        font-size: $fs-1;
+        color: $color-message-text;
+        margin-bottom: 0%;
+      }
     }
   }
-}
+  }
+
 
 .senderIsUser {
-  border-top-right-radius: 5px;
+  .messageGroup__messageContainer--message {
+    border-top-right-radius: 5px;
+  }
+  
 }
 
 .senderIsNotUser {
-  border-top-left-radius: 5px;
+  .messageGroup__messageContainer--message {
+    border-top-left-radius: 5px;
+  }
+  
 }

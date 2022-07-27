@@ -1,0 +1,35 @@
+.chatBox {
+  padding: 20px 30px;
+  &__infoBar{
+    padding: 0px 10px;
+    &--bar {
+        background-color: rgba(109, 104, 117, 1);
+        height: 2px;
+        margin: 10px auto;
+        width: 100%;
+    }
+    &--content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .infoIcon {
+        font-size: 32px;
+        color: $color-info-button;
+        cursor: pointer;
+      }
+      .userInfo {
+        display: flex;
+        align-items: center;
+        p {
+          margin-bottom: 0;
+          color: $color-title-boxchat;
+          font-size: $fs-2;
+          font-weight: bold;
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+
+}
