@@ -52,12 +52,7 @@ const UsersSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-
-  code: {
-    type: String,
-    required: false,
-  },
-
+  
   room_list: {
     type: Array,
     required: false,

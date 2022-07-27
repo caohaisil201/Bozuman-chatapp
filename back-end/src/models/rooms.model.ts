@@ -26,18 +26,6 @@ const RoomsSchema = new mongoose.Schema({
 
   message_list: {
     type: Array<{
-      messageId: {
-        type: Number,
-        required: false
-      },
-      count: {
-        type: Number,
-        required: true
-      },
-      room_id: {
-        type: String,
-        required: true
-      },
       type: {
         type: String,
         required: false
@@ -50,6 +38,11 @@ const RoomsSchema = new mongoose.Schema({
         type: String,
         required: true,
         default: ''
+      },
+      time: {
+        type: Date,
+        required: true,
+        default: Date.now
       }
     }>,
     required: true,

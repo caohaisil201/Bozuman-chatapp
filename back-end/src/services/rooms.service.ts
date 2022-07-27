@@ -19,4 +19,25 @@ export class RoomsService {
       throw err;
     }
   };
+
+  static insertChatMessageIntoRoom = async (room_id: number, sender: string, content: string) => {
+    try {
+      const resultRoomStatus = await Rooms.findOneAndUpdate(
+        {
+          room_id: room_id,
+          count: { $lt: 10 },
+        },
+        {
+          $push: {
+            message_list: {
+              sender: sender,
+              content: content,
+            },
+          },
+        }
+      );
+    } catch (err) {
+      throw err;
+    }
+  };
 }
