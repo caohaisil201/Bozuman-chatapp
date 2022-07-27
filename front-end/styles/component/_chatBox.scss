@@ -6,13 +6,12 @@
   &__messagePanel {
     height: 85vh;
     overflow-y: auto;
-
+    
   }
 
   &__infoBar{
     padding: 0px 10px;
-    // position: fixed;
-    width: 97%;
+
     &--bar {
         background-color: rgba(109, 104, 117, 1);
         height: 2px;

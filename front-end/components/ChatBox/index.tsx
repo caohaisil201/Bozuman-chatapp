@@ -3,14 +3,14 @@ import React from 'react';
 import Image from 'next/image';
 import { FaInfoCircle, FaTelegramPlane } from 'react-icons/fa';
 
-type Props = {
+type ChatBoxProps = {
   isChanel: boolean;
   name: string;
   listAvt: Array<string>;
 };
 
-function ChatBox({ isChanel, listAvt, name }: Props) {
-  // TODO: 
+function ChatBox({ isChanel, listAvt, name }: ChatBoxProps) {
+  const AVATAR_SIZE = 42
   return (
     <div className="chatBox">
       <div className="chatBox__infoBar">
@@ -22,10 +22,10 @@ function ChatBox({ isChanel, listAvt, name }: Props) {
                 <Image
                   // loader={item}
                   key={index}
-                  src={'/avatar3.png'}
+                  src={'/avatarPlaceHolder.png'}
                   alt="user avatar"
-                  width={42}
-                  height={42}
+                  width={AVATAR_SIZE}
+                  height={AVATAR_SIZE}
                 />;
               })}
             </>
@@ -41,8 +41,8 @@ function ChatBox({ isChanel, listAvt, name }: Props) {
         {/* TODO: Load array of message from backend, distinguish sender and render in difference messageGroup. If isChanel===false then senderName is null by default*/}
         <MessageGroup
           isMe={true}
-          messages={[]}
-          senderName={null}
+          messages={['Message']}
+          senderName={'null'}
         />
       </div>
       <div className="chatBox__holdPlace">
