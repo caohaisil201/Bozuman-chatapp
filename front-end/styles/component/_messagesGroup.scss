@@ -1,7 +1,12 @@
-.messageGroup{
+.messageGroup {
   display: flex;
   &__avatar {
     margin: 0px 10px;
+  }
+  &__senderName {
+    color: $color-title-boxchat;
+    font-weight: bold;
+    margin-bottom: 0;
   }
   &__messageContainer {
     &--message {
@@ -18,19 +23,22 @@
       }
     }
   }
-  }
-
+}
 
 .senderIsUser {
   .messageGroup__messageContainer--message {
     border-top-right-radius: 5px;
   }
-  
+  .messageGroup__senderName {
+    text-align: right;
+  }
 }
 
 .senderIsNotUser {
   .messageGroup__messageContainer--message {
     border-top-left-radius: 5px;
   }
-  
+  .messageGroup__senderName {
+    text-align: left;
+  }
 }

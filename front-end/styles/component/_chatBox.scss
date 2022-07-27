@@ -1,5 +1,7 @@
 .chatBox {
+  background-color: $color-chatbox-bachground;
   padding: 20px 30px;
+  height: 100vh;
   &__infoBar{
     padding: 0px 10px;
     &--bar {
@@ -31,5 +33,27 @@
       }
     }
   }
-
+  &__input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0px;
+    position: relative;
+    input {
+      width: 100%;
+      padding-right: 50px;
+    }
+    .buttonIcon {
+      font-size: 2rem;
+      z-index: 100;
+      position: absolute;
+      right: 20px;
+      cursor: pointer;
+    }
+  }
+  &__holdPlace{
+    position: fixed;
+    bottom: 0;
+    width: 97%;
+  }
 }

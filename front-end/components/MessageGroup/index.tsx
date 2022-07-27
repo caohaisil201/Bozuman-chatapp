@@ -4,9 +4,11 @@ import Image from 'next/image';
 type Props = {
   isMe: boolean;
   messages: Array<string>;
+  isGroup: boolean;
+  senderName: string;
 };
 
-function MessageGroup({ isMe, messages }: Props) {
+function MessageGroup({ isMe, messages, isGroup, senderName }: Props) {
   return (
     <div
       className={
@@ -18,7 +20,12 @@ function MessageGroup({ isMe, messages }: Props) {
       ) : (
         <div className="messageGroup__avatar senderIsNotUser">
           {/* TODO: use loader to load img from backend */}
-          <Image src={'/avatar3.png'} alt="user avatar" width={42} height={42} />
+          <Image
+            src={'/avatar3.png'}
+            alt="user avatar"
+            width={42}
+            height={42}
+          />
         </div>
       )}
 
@@ -29,6 +36,19 @@ function MessageGroup({ isMe, messages }: Props) {
             : 'messageGroup__messageContainer senderIsNotUser'
         }
       >
+        {isGroup ? (
+          isMe ? (
+            <p className="messageGroup__senderName senderIsUser">
+              {senderName}
+            </p>
+          ) : (
+            <p className="messageGroup__senderName senderIsNotUser">
+              {senderName}
+            </p>
+          )
+        ) : (
+          <></>
+        )}
         {messages.map((item, index) => (
           <Message key={index} content={item} />
         ))}
