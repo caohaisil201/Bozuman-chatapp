@@ -63,10 +63,6 @@ export class UsersService {
     const { username, password } = data;
     const user = await Users.findOne({ username: username }).exec();
     if (!user || md5(password) != user.password) {
-      // throw {
-      //   code: 'SIGN_IN_007',
-      //   message: 'Username or password is incorrect',
-      // };
       throw _Error.SIGN_IN_007
     }
     if (!user.active) {

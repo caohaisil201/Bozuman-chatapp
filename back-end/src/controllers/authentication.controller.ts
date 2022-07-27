@@ -160,7 +160,6 @@ export class Auth {
 
     jwt.verify(token, process.env.SECRET, function (err: any, decoded: any) {
       if (err) {
-        console.log(decoded);
         if (err.message === 'jwt expired') {
           return res.status(400).json({
             success: false,
