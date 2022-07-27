@@ -3,9 +3,10 @@ import {
   FORGOT_PASSWORD,
   ACTIVATE_ACCOUNT,
 } from '../utils/Helper.utils';
-import { HashClass } from '../utils/Hash.util';
+import { HashClass } from '../utils/Hash.utils';
 import { UsersService, User } from '../services/users.service';
 import { Email } from '../utils/Mail.utils';
+import _Error from '../utils/Error.utils';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 
@@ -27,14 +28,14 @@ export class Auth {
     if (user.username === data.username) {
       return {
         success: false,
-        error: 'Username already exist',
-        errorCode: 'SIGN_UP_009',
+        message: 'Username already exist',
+        code: 'SIGN_UP_009',
       };
     } else if (user.email === data.email) {
       return {
         success: false,
-        error: 'Email already exist',
-        errorCode: 'SIGN_UP_010',
+        message: 'Email already exist',
+        code: 'SIGN_UP_010',
       };
     }
 
@@ -57,8 +58,8 @@ export class Auth {
         res.status(400).json({
           success: false,
           error: {
-            code: validateResult.errorCode,
-            message: validateResult.error,
+            code: validateResult.code,
+            message: validateResult.message,
           },
         });
       } else {
@@ -121,19 +122,13 @@ export class Auth {
       if (!user) {
         res.status(400).json({
           success: false,
-          error: {
-            code: 'FORGOT_PASSWORD_003',
-            message: 'Your account is not exists',
-          },
+          error: _Error.FORGOT_PASSWORD_003,
         });
       } else {
         if (!user.active) {
           res.status(400).json({
             success: false,
-            error: {
-              code: 'FORGOT_PASSWORD_004',
-              message: 'Your account is not verified',
-            },
+            error: _Error.FORGOT_PASSWORD_004,
           });
         }
   
@@ -151,10 +146,7 @@ export class Auth {
     } catch (error: any) {
       res.status(500).json({
         success: false,
-        error: {
-          code: '500',
-          message: 'Internal server error',
-        },
+        error: _Error.SERVER_ERROR,
       });
     }
   };
@@ -172,18 +164,12 @@ export class Auth {
         if (err.message === 'jwt expired') {
           return res.status(400).json({
             success: false,
-            error: {
-              code: 'FORGOT_PASSWORD_005',
-              message: 'This link does not exists',
-            },
+            error: _Error.FORGOT_PASSWORD_006,
           });
         } else if (err.message === 'jwt malformed' || decoded === undefined) {
           return res.status(400).json({
             success: false,
-            error: {
-              code: 'FORGOT_PASSWORD_006',
-              message: 'Your link is expired',
-            },
+            error: _Error.FORGOT_PASSWORD_005,
           });
         }
       }
@@ -202,10 +188,7 @@ export class Auth {
       } catch (error) {
         res.status(400).json({
           success: false,
-          error: {
-            code: 'FORGOT_PASSWORD_010',
-            message: error,
-          },
+          error: _Error.FORGOT_PASSWORD_010,
         });
       }
     });
