@@ -4,63 +4,36 @@ import Image from 'next/image';
 type Props = {
   isMe: boolean;
   messages: Array<string>;
-  isGroup: boolean;
-  senderName: string;
+  senderName: string | null;
 };
 
-function MessageGroup({ isMe, messages, isGroup, senderName }: Props) {
+function MessageGroup({ isMe, messages, senderName }: Props) {
   return (
     <div
-      className={
-        isMe ? 'messageGroup senderIsUser' : 'messageGroup senderIsNotUser'
-      }
+      className={'messageGroup ' + (isMe ? 'senderIsUser' : 'senderIsNotUser')}
     >
-      {isMe ? (
-        <></>
-      ) : (
-        <div className="messageGroup__avatar senderIsNotUser">
-          {/* TODO: use loader to load img from backend */}
-          <Image
-            src={'/avatar3.png'}
-            alt="user avatar"
-            width={42}
-            height={42}
-          />
-        </div>
-      )}
-
+      <div className="messageGroup__avatar senderIsNotUser">
+        {/* TODO: use loader to load img from backend */}
+        <Image src={'/avatar3.png'} alt="user avatar" width={42} height={42} />
+      </div>
       <div
         className={
-          isMe
-            ? 'messageGroup__messageContainer senderIsUser'
-            : 'messageGroup__messageContainer senderIsNotUser'
+          'messageGroup__messageContainer ' +
+          (isMe ? 'senderIsUser' : 'senderIsNotUser')
         }
       >
-        {isGroup ? (
-          isMe ? (
-            <p className="messageGroup__senderName senderIsUser">
-              {senderName}
-            </p>
-          ) : (
-            <p className="messageGroup__senderName senderIsNotUser">
-              {senderName}
-            </p>
-          )
+        {/* If this is a 1-1 chat room, then senderName is null. following mockup design */}
+        {isMe ? (
+          <p className="messageGroup__senderName senderIsUser">{senderName}</p>
         ) : (
-          <></>
+          <p className="messageGroup__senderName senderIsNotUser">
+            {senderName}
+          </p>
         )}
         {messages.map((item, index) => (
           <Message key={index} content={item} />
         ))}
       </div>
-      {isMe ? (
-        <div className="messageGroup__avatar senderIsUser">
-          {/* TODO: use loader to load img from backend */}
-          <Image src={'/avatar.png'} alt="user avatar" width={42} height={42} />
-        </div>
-      ) : (
-        <></>
-      )}
     </div>
   );
 }

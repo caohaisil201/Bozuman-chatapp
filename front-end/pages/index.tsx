@@ -10,7 +10,7 @@ const Home: NextPage = () => {
         <title>Bozuman chat app</title>
         <meta name="description" content="Chat app develop by bozuman team" />
       </Head>
-      <ChatBox isGroup={true} name='Bozuman' listAvt={['1', '2']}/>
+      <ChatBox isChanel={true} name='Bozuman' listAvt={['1', '2']}/>
     </div>
   );
 };

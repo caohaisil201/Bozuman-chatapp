@@ -2,14 +2,24 @@
   background-color: $color-chatbox-bachground;
   padding: 20px 30px;
   height: 100vh;
+
+  &__messagePanel {
+    height: 85vh;
+    overflow-y: auto;
+
+  }
+
   &__infoBar{
     padding: 0px 10px;
+    // position: fixed;
+    width: 97%;
     &--bar {
         background-color: rgba(109, 104, 117, 1);
         height: 2px;
         margin: 10px auto;
         width: 100%;
     }
+
     &--content {
       display: flex;
       justify-content: space-between;
@@ -20,9 +30,11 @@
         color: $color-info-button;
         cursor: pointer;
       }
+
       .userInfo {
         display: flex;
         align-items: center;
+
         p {
           margin-bottom: 0;
           color: $color-title-boxchat;
@@ -39,10 +51,12 @@
     align-items: center;
     margin: 20px 0px;
     position: relative;
+    
     input {
       width: 100%;
       padding-right: 50px;
     }
+
     .buttonIcon {
       font-size: 2rem;
       z-index: 100;
@@ -51,6 +65,7 @@
       cursor: pointer;
     }
   }
+
   &__holdPlace{
     position: fixed;
     bottom: 0;

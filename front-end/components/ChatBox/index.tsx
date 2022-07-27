@@ -4,17 +4,18 @@ import Image from 'next/image';
 import { FaInfoCircle, FaTelegramPlane } from 'react-icons/fa';
 
 type Props = {
-  isGroup: boolean;
+  isChanel: boolean;
   name: string;
   listAvt: Array<string>;
 };
 
-function ChatBox({ isGroup, listAvt, name }: Props) {
+function ChatBox({ isChanel, listAvt, name }: Props) {
+  // TODO: 
   return (
     <div className="chatBox">
       <div className="chatBox__infoBar">
         <div className="chatBox__infoBar--content">
-          <div className={isGroup ? 'userInfo' : 'userInfo'}>
+          <div className={isChanel ? 'userInfo' : 'userInfo'}>
             {/* TODO: use loader to load img from backend  */}
             <>
               {listAvt.map((item, index) => {
@@ -37,19 +38,18 @@ function ChatBox({ isGroup, listAvt, name }: Props) {
         <div className="chatBox__infoBar--bar"></div>
       </div>
       <div className="chatBox__messagePanel">
+        {/* TODO: Load array of message from backend, distinguish sender and render in difference messageGroup. If isChanel===false then senderName is null by default*/}
         <MessageGroup
-          isMe={false}
-          messages={['112312312312312312312321', '2', '3']}
-          isGroup={isGroup}
-          senderName="Hung"
+          isMe={true}
+          messages={[]}
+          senderName={null}
         />
       </div>
       <div className="chatBox__holdPlace">
         <div className="chatBox__input">
-        <input placeholder='Type your message' />
-        <FaTelegramPlane className="buttonIcon"/>
+          <input placeholder="Type your message" />
+          <FaTelegramPlane className="buttonIcon" />
         </div>
-
       </div>
     </div>
   );
