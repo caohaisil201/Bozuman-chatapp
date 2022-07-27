@@ -168,9 +168,6 @@ export class Auth {
 
     jwt.verify(token, _CONF.SECRET, function (err: any, decoded: any) {
       if (err) {
-        //TODO: fix deocoded type
-        /* eslint-disable @typescript-eslint/no-unsafe-assignment*/
-        /* eslint-disable @typescript-eslint/no-unsafe-member-access*/
         if (err.message === 'jwt malformed' || decoded === undefined) {
           return res.status(400).json({
             success: false,
@@ -196,7 +193,7 @@ export class Auth {
           email,
           password: req.body.password,
         };
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        
         (async () => await UsersService.resetPassword(newPasswordOfUser))();
         res.status(200).json({
           success: true,
