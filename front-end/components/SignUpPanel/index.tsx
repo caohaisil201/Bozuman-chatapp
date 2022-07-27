@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
-/* eslint-disable */
->>>>>>> 00bdb2765c7a27aa6db9e7d26d8a55d8d5e9fe22
-=======
->>>>>>> 13a63433f165c2d9ca31f9d66d9de5f1f016fb03
 import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import * as yup from 'yup';

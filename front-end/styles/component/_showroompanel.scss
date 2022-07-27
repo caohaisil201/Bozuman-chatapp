@@ -1,0 +1,17 @@
+@mixin size($height) {
+   height: $height;
+}
+
+.showroompanel{
+   background-color: $while;
+   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+   border-radius: 20px;
+   .personal{
+      min-height: 40vh;
+      margin-top: 8px;
+   }
+   .group{
+      min-height: 30vh;
+      margin-top: 8px;
+   }
+}
