@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment*/
 import * as jwt from 'jsonwebtoken';
 import _CONF from '../configs/auth.config';
 import { UsersService } from '../services/users.service';

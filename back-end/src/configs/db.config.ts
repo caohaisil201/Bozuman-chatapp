@@ -17,10 +17,8 @@ export class Database {
         //TODO
       });
     const conn: mongoose.Connection = mongoose.connection;
-    // eslint-disable-next-line no-console
     conn.on('error', console.error.bind(console, 'connection error: '));
     conn.once('open', function () {
-      // eslint-disable-next-line no-console
       console.log('Connected successfully');
     });
   }
