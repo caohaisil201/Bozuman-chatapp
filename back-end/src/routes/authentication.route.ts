@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises*/
 import express from 'express';
 import {createValidator} from 'express-joi-validation'
 import { Auth } from '../controllers/authentication.controller'

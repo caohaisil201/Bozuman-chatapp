@@ -8,8 +8,8 @@ import auth from './src/routes/authentication.route';
 import cors from 'cors';
 
 const db = new Database();
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
 db.dbConnect();
+
 const app: Application = express();
 const server = createServer(app);
 
@@ -29,7 +29,6 @@ app.use(
     credentials: true,
   })
 );
-// secure route goes here
 
 app.use('/api/auth', auth);
 app.use('/api/token', expiredAccessTokenHandler);

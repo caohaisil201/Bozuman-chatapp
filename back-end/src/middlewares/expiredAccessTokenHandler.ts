@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment*/
 import * as jwt from 'jsonwebtoken';
 import _CONF from '../configs/auth.config';
 import { UsersService } from '../services/users.service';
@@ -9,7 +8,6 @@ const expiredAccessTokenHandler = (
   res: express.Response
 ) => {
   const refreshToken = req.headers['x-refresh-token'];
-  // TODO: fix this typescript error
   if (refreshToken) {
     jwt.verify(
       refreshToken.toString(),

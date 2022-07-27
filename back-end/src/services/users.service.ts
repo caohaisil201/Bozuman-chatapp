@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { Users } from '../models/users.model';
 import * as jwt from 'jsonwebtoken';
 import _CONF from '../configs/auth.config';
@@ -107,9 +106,8 @@ export class UsersService {
       };
     }
   };
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
   static generateAccessToken = (username: any) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     return jwt.sign({ username: username }, _CONF.SECRET, {
       expiresIn: _CONF.tokenLife,
     });
@@ -127,6 +125,7 @@ export class UsersService {
       ),
     });
   };
+  
   static randomTokenString = () => {
     return crypto.randomBytes(40).toString('hex');
   };

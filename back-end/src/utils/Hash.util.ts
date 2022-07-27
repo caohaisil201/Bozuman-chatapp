@@ -11,7 +11,6 @@ class Hash {
     hash.update(salt);
 
     // `hash.digest()` returns a Buffer by default when no encoding is given
-    //TODO: change it to subArray but it did not work
     this.key = hash.digest().slice(0, 16);
   }
 
