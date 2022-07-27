@@ -10,7 +10,7 @@ type ChatBoxProps = {
 };
 
 function ChatBox({ isChanel, listAvt, name }: ChatBoxProps) {
-  const AVATAR_SIZE = 42
+  const AVATAR_SIZE = 42;
   return (
     <div className="chatBox">
       <div className="chatBox__infoBar">
@@ -32,7 +32,8 @@ function ChatBox({ isChanel, listAvt, name }: ChatBoxProps) {
             <p>{name}</p>
           </div>
           <div className="infoButton">
-            <FaInfoCircle className="infoIcon" />
+            {/* TODO: open information component, complete it in next sprint */}
+            {/* <FaInfoCircle className="infoIcon" /> */}
           </div>
         </div>
         <div className="chatBox__infoBar--bar"></div>
@@ -40,11 +41,17 @@ function ChatBox({ isChanel, listAvt, name }: ChatBoxProps) {
       <div className="chatBox__messagePanel">
         {/* TODO: Load array of message from backend, distinguish sender and render in difference messageGroup. If isChanel===false then senderName is null by default*/}
         <MessageGroup
+          isMe={false}
+          messages={['Message', 'Tri']}
+          senderName={'Hung'}
+        />
+        <MessageGroup
           isMe={true}
-          messages={['Message']}
-          senderName={'null'}
+          messages={['Message', 'Hung']}
+          senderName={'Trí'}
         />
       </div>
+
       <div className="chatBox__holdPlace">
         <div className="chatBox__input">
           <input placeholder="Type your message" />
