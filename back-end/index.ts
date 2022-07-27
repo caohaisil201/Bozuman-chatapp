@@ -4,6 +4,7 @@ import checkAccessToken from './src/middlewares/checkAccessToken';
 import express, { Application } from 'express';
 import auth from './src/routes/authentication.route';
 import cors from 'cors';
+import 'dotenv/config';
 
 const db = new Database();
 db.dbConnect();

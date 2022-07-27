@@ -4,6 +4,7 @@ import _CONF from '../configs/auth.config';
 import { RefreshToken } from '../models/refreshToken.model';
 import crypto from 'crypto';
 import md5 from 'md5';
+import 'dotenv/config';
 
 export interface User {
   username: string;
@@ -108,7 +109,7 @@ export class UsersService {
   };
 
   static generateAccessToken = (username: any) => {
-    return jwt.sign({ username: username }, _CONF.SECRET, {
+    return jwt.sign({ username: username }, process.env.SECRET, {
       expiresIn: _CONF.tokenLife,
     });
   };
@@ -118,7 +119,7 @@ export class UsersService {
       username: username,
       token: jwt.sign(
         { username: username, randomString: this.randomTokenString() },
-        _CONF.SECRET_REFRESH,
+        process.env.SECRET_REFRESH,
         {
           expiresIn: _CONF.refreshTokenLife,
         }

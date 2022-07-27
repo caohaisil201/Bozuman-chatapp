@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import _CONF from '../configs/auth.config';
 import {
   FORGOT_PASSWORD,
   ACTIVATE_ACCOUNT,
@@ -8,6 +7,7 @@ import { HashClass } from '../utils/Hash.util';
 import { UsersService, User } from '../services/users.service';
 import { Email } from '../utils/Mail.utils';
 import jwt from 'jsonwebtoken';
+import 'dotenv/config';
 
 export interface TypedRequestBody<T> extends Request {
   body: T;
@@ -136,8 +136,8 @@ export class Auth {
             },
           });
         }
-
-        const token = jwt.sign({ email: user.email }, _CONF.SECRET, {
+  
+        const token = jwt.sign({ email: user.email }, process.env.SECRET, {
           expiresIn: '1m',
         });
 
@@ -166,9 +166,10 @@ export class Auth {
     const token = req.body.token;
     let email: string | undefined;
 
-    jwt.verify(token, _CONF.SECRET, function (err: any, decoded: any) {
+    jwt.verify(token, process.env.SECRET, function (err: any, decoded: any) {
       if (err) {
-        if (err.message === 'jwt malformed' || decoded === undefined) {
+        console.log(decoded);
+        if (err.message === 'jwt expired') {
           return res.status(400).json({
             success: false,
             error: {
@@ -176,7 +177,7 @@ export class Auth {
               message: 'This link does not exists',
             },
           });
-        } else if (err.message === 'jwt expired') {
+        } else if (err.message === 'jwt malformed' || decoded === undefined) {
           return res.status(400).json({
             success: false,
             error: {
