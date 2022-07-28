@@ -1,9 +1,8 @@
-import next from "next";
 import { useState, useEffect } from "react";
 import Image from 'next/image';
 import { FaUserPlus,FaChevronDown,FaChevronUp } from "react-icons/fa";
-import { default as PersonalRoom, GroupRoom} from "components/RoomPanel";
-
+import PersonalRoom from 'components/PersonalRoom';
+import GroupRoom from 'components/GroupRoom';
 
 function SideBar(){
    const [name, setName] = useState("Vu Le Anh")
@@ -19,7 +18,7 @@ function SideBar(){
    } 
    return(
       <div className="sidebar">
-         <div className="personalInfo">
+         <div className="personalinfo">
             <Image
                src='/avatar.png'
                alt='avatar'
@@ -31,17 +30,17 @@ function SideBar(){
                My account
             </div>
          </div>
-         <div className='search-add mt-2'>
+         <div className='search-add mt-1'>
             <input className='search' type="text" placeholder="Search"></input>
             <FaUserPlus className="icon-add"/>
          </div>
-         <div className="typemessage mt-3">
+         <div className="typemessage mt-2">
             <div>
                Personal message
                {showPersonalMessage?
                   <>
                      <FaChevronUp className="icon-scrolltypemessage" onClick={handleShowPersonalMessage} />
-                     <PersonalRoom />
+                     <PersonalRoom/>
                   </>
                   :
                   <FaChevronDown className="icon-scrolltypemessage" onClick={handleShowPersonalMessage}/>             
@@ -51,12 +50,16 @@ function SideBar(){
             <div>
                Group message
                {showGroupMessage?
+               <>
                   <FaChevronUp className="icon-scrolltypemessage" onClick={handleShowGroupMessage}/>
+                  <GroupRoom/>
+               </>
                   :
                   <FaChevronDown className="icon-scrolltypemessage" onClick={handleShowGroupMessage}/>                 
                }
             </div>
          </div>
+         <p className="copyright">Copyright 2022 All Rights Reserved Bozuman </p>
       </div>
    )
 }

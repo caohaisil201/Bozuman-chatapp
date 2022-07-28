@@ -7,54 +7,40 @@ type RoomMiniShow = {
    unread: boolean;
    name:string;
 }
-const roomListPersonalMessage: RoomMiniShow[] =[
+const roomListGroupMessage: RoomMiniShow[] =[
    {  
       "room_id":"1",
       "last_mess":"Lorem Ipsum is simply dummy",
       "last_time":2222,
       "unread":false,
-      "name":"Cao Hai Sil"
+      "name":"Bozuman"
    },
    {  
       "room_id":"1",
       "last_mess":"Lorem Ipsum is simply dummy",
       "last_time":2222,
       "unread":false,
-      "name":"Cao Hai Sil"
+      "name":"Bozuman"
    },
    {  
       "room_id":"1",
       "last_mess":"Lorem Ipsum is simply dummy",
       "last_time":2222,
       "unread":false,
-      "name":"Cao Hai Sil"
+      "name":"Bozuman"
    },
    {  
       "room_id":"1",
       "last_mess":"Lorem Ipsum is simply dummy",
       "last_time":2222,
       "unread":false,
-      "name":"Cao Hai Sil"
+      "name":"Bozuman"
 
-   },
-   {  
-      "room_id":"1",
-      "last_mess":"Lorem Ipsum is simply dummy",
-      "last_time":2222,
-      "unread":false,
-      "name":"Cao Hai Sil"
-   },
-   {  
-      "room_id":"1",
-      "last_mess":"Lorem Ipsum is simply dummy",
-      "last_time":2222,
-      "unread":false,
-      "name":"Cao Hai Sil"
    }
 ]
 
-function PersonalRoom(){
-   const list = roomListPersonalMessage.map(room => 
+function GroupRoom(){
+   const list = roomListGroupMessage.map(room => 
       <div className="room" key={room.room_id}>
          <Image
             src='/avatar.png'
@@ -70,7 +56,7 @@ function PersonalRoom(){
    )
    return(
       <div className="showroompanel">
-         <div className="personal">
+         <div className="group">
             {list}
          </div>
       </div>
@@ -79,4 +65,4 @@ function PersonalRoom(){
 
 
 
-export default PersonalRoom;
+export default GroupRoom;
