@@ -1,6 +1,8 @@
 import SignInPanel from 'components/SignInPanel'
 import Image from 'next/image'
+
 function SignIn() {
+  
   return (
     <div className="container">
       <div className="row mt-5">

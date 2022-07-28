@@ -14,7 +14,7 @@ router.post(
   validator.body(registerSchema),
   authentication.register
 );
-router.get('/activate_account/:name', authentication.activateAccount);
+router.get('/activate-account/:name', authentication.activateAccount);
 router.post('/sign-in',validator.body(signInSchema), authentication.signIn);
 router.post('/forgot-password', authentication.forgotPassword);
 router.post('/reset-password', authentication.resetPassword);
