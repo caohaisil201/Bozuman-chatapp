@@ -29,4 +29,3 @@ const useGetUserInfo = () : DataUser => {
 
 export default useGetUserInfo
 
-// const { data, isLoading, isError } = useGetOldMessage()

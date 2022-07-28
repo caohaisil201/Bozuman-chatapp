@@ -14,8 +14,7 @@ function ChatBox({ isChanel, listAvt, name }: ChatBoxProps) {
   const  handleScroll = (event: any) => {
     let element = event.target;
     if (element.scrollTop===0) {
-      console.log('old');
-      // TODO: 
+      // TODO: call api get message
     }
  }
 

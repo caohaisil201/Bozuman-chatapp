@@ -25,7 +25,6 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
   (response) => response,
   async (error: any) => {
-    console.log(error)
     const config = error?.config;
     if (error.response.status === 401 && !config?.sent && error.response.data.message === 'Unauthorized access') {
       config.sent = true;

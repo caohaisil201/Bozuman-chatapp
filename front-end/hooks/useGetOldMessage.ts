@@ -11,14 +11,8 @@ const fetcher = async (url:string) => await axiosClient.get(url).then((res) => r
 
 const useGetOldMessage = (room_id: string, page: number) : any => {
   const res = useSWR(`${process.env.NEXT_PUBLIC_DOMAIN}/api/chat/get-message-in-room?room_id=${room_id}&page=${page}`, fetcher)
-  // return {
-  //   data,
-  //   isLoading: !error && !data,
-  //   isError: error,
-  // }
 }
 
 export default useGetOldMessage
 
-// const { data, isLoading, isError } = useGetOldMessage()
 

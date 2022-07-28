@@ -41,7 +41,6 @@ export function outputMessageInGroup (message: MessageInput) {
         senderName: message.username
       })
     }
-    return 
   }
     // TODO: identify message not rely on username, use it to query nickname or full name to show on page
   
