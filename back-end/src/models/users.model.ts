@@ -88,9 +88,7 @@ export const registerSchema = Joi.object({
     .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
     .required(),
   password: Joi.string()
-    .min(8)
-    .max(16)
-    .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
+    .max(50)
     .required(),
   full_name: Joi.string()
     .min(8)
@@ -110,9 +108,7 @@ export const signInSchema = Joi.object({
     .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
     .required(),
   password: Joi.string()
-    .min(8)
-    .max(16)
-    .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
+    .max(50)
     .required(),
 });
 
