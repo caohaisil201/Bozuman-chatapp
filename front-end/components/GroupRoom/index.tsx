@@ -1,5 +1,7 @@
 import Image from 'next/image';
 
+const SIZE_OF_AVATAR_PROFILE: number = 52;
+
 type RoomMiniShow = {
    room_id: string;
    last_mess: string;
@@ -45,8 +47,8 @@ function GroupRoom(){
          <Image
             src='/avatar.png'
             alt='avatar'
-            width={52}
-            height={52}
+            width={SIZE_OF_AVATAR_PROFILE}
+            height={SIZE_OF_AVATAR_PROFILE}
          />      
          <div>
             <p className="sender">{room.name}</p>
@@ -55,7 +57,7 @@ function GroupRoom(){
       </div>   
    )
    return(
-      <div className="showroompanel">
+      <div className="showRoomPanel">
          <div className="group">
             {list}
          </div>

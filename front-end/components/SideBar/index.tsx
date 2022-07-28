@@ -18,7 +18,7 @@ function SideBar(){
    } 
    return(
       <div className="sidebar">
-         <div className="personalinfo">
+         <div className="personalInfo">
             <Image
                src='/avatar.png'
                alt='avatar'
