@@ -1,3 +1,8 @@
+export interface ErrorObj {
+  code: string;
+  message: string;
+}
+
 export default class Error {
   static SERVER_ERROR = {
     code: '500',

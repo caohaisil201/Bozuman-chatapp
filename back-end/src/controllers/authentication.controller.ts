@@ -6,18 +6,10 @@ import {
 import { HashClass } from '../utils/Hash.utils';
 import { UsersService, User } from '../services/users.service';
 import { Email } from '../utils/Mail.utils';
-import _Error from '../utils/Error.utils';
+import { TypedRequestBody } from '../utils/TypeRequestBody.utils';
+import _Error, { ErrorObj } from '../utils/Error.utils';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
-
-export interface TypedRequestBody<T> extends Request {
-  body: T;
-}
-
-export interface ErrorObj {
-  code: string;
-  message: string;
-}
 
 export class Auth {
   public validateSignup = async (data: User) => {
@@ -160,7 +152,6 @@ export class Auth {
 
     jwt.verify(token, process.env.SECRET, function (err: any, decoded: any) {
       if (err) {
-        console.log(decoded);
         if (err.message === 'jwt expired') {
           return res.status(400).json({
             success: false,

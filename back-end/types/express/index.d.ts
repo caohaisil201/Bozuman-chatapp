@@ -1,7 +1,7 @@
 import { Express } from 'express-serve-static-core';
 
 interface DecodePayload {
-  userId: string;
+  username: string;
   iat: string;
   exp: string;
 }

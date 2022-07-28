@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { RoomsService } from '../services/rooms.service';
-import { TypedRequestBody } from './authentication.controller';
+import { UsersService } from '../services/users.service';
+import { TypedRequestBody } from '../utils/TypeRequestBody.utils';
+import _Error from '../utils/Error.utils';
 
 export class Chat {
   public addNewRoom = async (
