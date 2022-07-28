@@ -2,7 +2,6 @@
   background-color: $color-chatbox-bachground;
   padding: 20px 30px;
   height: 100vh;
-
   &__messagePanel {
     display: flex;
     height: 85vh;
@@ -51,6 +50,7 @@
     justify-content: space-between;
     align-items: center;
     margin: 20px 0px;
+    width: 100%;
     position: relative;
     
     input {
@@ -70,7 +70,7 @@
   &__holdPlace{
     position: fixed;
     bottom: 0;
-    width: 97vw;
+    width: 72vw;
   }
 }
 

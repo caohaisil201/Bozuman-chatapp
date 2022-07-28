@@ -1,5 +1,3 @@
-import { detectContentType } from "next/dist/server/image-optimizer";
-import { string } from "yup";
 
 interface MessageInput {
   content: string;
@@ -19,8 +17,8 @@ export const newestMessage : Array<MessageGroupProps> = [{
   isMe: false,
   messages: ['Bozuman', 'Bozuman','Bozuman','lorem',],
   senderName: 'Sil'
-}, {  isMe: true,
-  messages: ['Bozuman', 'Bozuman','Bozuman','lorem',],
+}, {  isMe: false,
+  messages: ['Bozuman', 'Bozuman','Bozuman','lorem', 'Bozuman', 'Bozuman','Bozuman','lorem','Bozuman', 'Bozuman','Bozuman','lorem','Bozuman', 'Bozuman','Bozuman','lorem','Bozuman', 'Bozuman','Bozuman','lorem',],
   senderName: 'Hung'}]
 
 

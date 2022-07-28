@@ -2,6 +2,7 @@
 @import 'bootstrap/dist/css/bootstrap.css';
 @import './base/variable';
 @import './base/normalized.scss';
+@import './base/reset'; 
 
 @import './common/scrollBar';
 @import './common/button.scss';

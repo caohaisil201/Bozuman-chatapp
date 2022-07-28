@@ -9,7 +9,7 @@ interface DataObj {
 
 const fetcher = async (url:string) => await axiosClient.get(url).then((res) => res.data);
 
-const useUserInfo = () : DataObj => {
+const useGetOldMessage = () : DataObj => {
   const res = useSWR(`${process.env.NEXT_PUBLIC_DOMAIN}/users/info`, fetcher)
   return {
     // data,
@@ -21,9 +21,9 @@ const useUserInfo = () : DataObj => {
   }
 }
 
-export default useUserInfo
+export default useGetOldMessage
 
 // use this hook in some component:
-const { data, isLoading, isError } = useUserInfo()
+const { data, isLoading, isError } = useGetOldMessage()
 // data in here is global. only 1 request sent to server althought we use this hook in many component
 
