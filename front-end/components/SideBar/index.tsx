@@ -53,11 +53,11 @@ function SideBar(){
                Group message
                {showGroupMessage?
                <>
-                  <FaChevronUp className="icon-scrolltypemessage" onClick={handleShowGroupMessage}/>
+                  <FaChevronUp className="iconScrollTypeMessage" onClick={handleShowGroupMessage}/>
                   <GroupRoom/>
                </>
                   :
-                  <FaChevronDown className="icon-scrolltypemessage" onClick={handleShowGroupMessage}/>                 
+                  <FaChevronDown className="iconScrollTypeMessage" onClick={handleShowGroupMessage}/>                 
                }
             </div>
          </div>

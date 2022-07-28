@@ -72,7 +72,7 @@ function PersonalRoom(){
    )
    return(
       <div className="showRoomPanel">
-         <div className="group">
+         <div className="personal">
             {list}
          </div>
       </div>

@@ -51,7 +51,7 @@ function GroupRoom(){
             height={SIZE_OF_AVATAR_PROFILE}
          />      
          <div>
-            <p className="sender">{room.name}</p>
+            <p className="roomName">{room.name}</p>
             <p className="lastMessage">{room.last_message}</p>
          </div>
       </div>   
