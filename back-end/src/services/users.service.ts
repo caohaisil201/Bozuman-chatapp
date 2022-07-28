@@ -4,7 +4,6 @@ import _CONF from '../configs/auth.config';
 import { RefreshToken } from '../models/refreshToken.model';
 import _Error from '../utils/Error.utils';
 import crypto from 'crypto';
-import md5 from 'md5';
 import 'dotenv/config';
 
 export interface User {
@@ -29,7 +28,7 @@ export class UsersService {
     try {
       const user = {
         username: data.username,
-        password: md5(data.password),
+        password: data.password,
         full_name: data.full_name,
         email: data.email,
       };
@@ -62,7 +61,7 @@ export class UsersService {
   static authenticate = async (data: User) => {
     const { username, password } = data;
     const user = await Users.findOne({ username: username }).exec();
-    if (!user || md5(password) != user.password) {
+    if (!user || password != user.password) {
       throw _Error.SIGN_IN_007
     }
     if (!user.active) {
@@ -93,7 +92,7 @@ export class UsersService {
       email,
     });
     if (user) {
-      user.password = md5(password);
+      user.password = password;
       return await user.save();
     } else {
       throw _Error.FORGOT_PASSWORD_014
