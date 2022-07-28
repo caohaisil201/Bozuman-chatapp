@@ -65,14 +65,14 @@ function PersonalRoom(){
             height={SIZE_OF_AVATAR_PROFILE}
          />      
          <div>
-            <p className="sender">{room.name}</p>
-            <p className="lastmessage">{room.last_mess}</p>
+            <p className="rommName">{room.name}</p>
+            <p className="lastMessage">{room.last_mess}</p>
          </div>
       </div>   
    )
    return(
-      <div className="showroompanel">
-         <div className="personal">
+      <div className="showRoomPanel">
+         <div className="group">
             {list}
          </div>
       </div>
