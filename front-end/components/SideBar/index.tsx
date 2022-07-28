@@ -4,6 +4,8 @@ import { FaUserPlus,FaChevronDown,FaChevronUp } from "react-icons/fa";
 import PersonalRoom from 'components/PersonalRoom';
 import GroupRoom from 'components/GroupRoom';
 
+const SIZE_OF_AVATAR_PROFILE: number = 50;
+
 function SideBar(){
    const [name, setName] = useState("Vu Le Anh")
    const [showPersonalMessage, setShowPersonalMessage] = useState(false);
@@ -22,15 +24,15 @@ function SideBar(){
             <Image
                src='/avatar.png'
                alt='avatar'
-               width={50}
-               height={50}
+               width={SIZE_OF_AVATAR_PROFILE}
+               height={SIZE_OF_AVATAR_PROFILE}
             />
             <div className="info">
                <p className='name'>{name}</p>
                My account
             </div>
          </div>
-         <div className='search-add mt-1'>
+         <div className='searchAndAdd mt-1'>
             <input className='search' type="text" placeholder="Search"></input>
             <FaUserPlus className="icon-add"/>
          </div>

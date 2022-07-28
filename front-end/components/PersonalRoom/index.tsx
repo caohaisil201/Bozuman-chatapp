@@ -4,7 +4,7 @@ const SIZE_OF_AVATAR_PROFILE: number = 52;
 
 type RoomMiniShow = {
    room_id: string;
-   last_mess: string;
+   last_message: string;
    last_time: number;
    unread: boolean;
    name:string;
@@ -12,28 +12,28 @@ type RoomMiniShow = {
 const roomListPersonalMessage: RoomMiniShow[] =[
    {  
       "room_id":"1",
-      "last_mess":"Lorem Ipsum is simply dummy",
+      "last_message":"Lorem Ipsum is simply dummy",
       "last_time":2222,
       "unread":false,
       "name":"Cao Hai Sil"
    },
    {  
       "room_id":"1",
-      "last_mess":"Lorem Ipsum is simply dummy",
+      "last_message":"Lorem Ipsum is simply dummy",
       "last_time":2222,
       "unread":false,
       "name":"Cao Hai Sil"
    },
    {  
       "room_id":"1",
-      "last_mess":"Lorem Ipsum is simply dummy",
+      "last_message":"Lorem Ipsum is simply dummy",
       "last_time":2222,
       "unread":false,
       "name":"Cao Hai Sil"
    },
    {  
       "room_id":"1",
-      "last_mess":"Lorem Ipsum is simply dummy",
+      "last_message":"Lorem Ipsum is simply dummy",
       "last_time":2222,
       "unread":false,
       "name":"Cao Hai Sil"
@@ -41,14 +41,14 @@ const roomListPersonalMessage: RoomMiniShow[] =[
    },
    {  
       "room_id":"1",
-      "last_mess":"Lorem Ipsum is simply dummy",
+      "last_message":"Lorem Ipsum is simply dummy",
       "last_time":2222,
       "unread":false,
       "name":"Cao Hai Sil"
    },
    {  
       "room_id":"1",
-      "last_mess":"Lorem Ipsum is simply dummy",
+      "last_message":"Lorem Ipsum is simply dummy",
       "last_time":2222,
       "unread":false,
       "name":"Cao Hai Sil"
@@ -66,7 +66,7 @@ function PersonalRoom(){
          />      
          <div>
             <p className="rommName">{room.name}</p>
-            <p className="lastMessage">{room.last_mess}</p>
+            <p className="lastMessage">{room.last_message}</p>
          </div>
       </div>   
    )
@@ -78,7 +78,5 @@ function PersonalRoom(){
       </div>
    )
 }
-
-
 
 export default PersonalRoom;
