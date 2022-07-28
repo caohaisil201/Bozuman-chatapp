@@ -19,10 +19,10 @@ export interface User {
   avatar?: string;
   description?: string;
   code?: string;
-  // TODO: Change room_list types
   room_list?: Array<{
     room_id: number;
     name: string;
+    type: string;
     last_mess: string;
     last_time: Date;
     unread: boolean;
