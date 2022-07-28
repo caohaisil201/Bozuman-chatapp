@@ -34,18 +34,18 @@ function SideBar(){
          </div>
          <div className='searchAndAdd mt-1'>
             <input className='search' type="text" placeholder="Search"></input>
-            <FaUserPlus className="icon-add"/>
+            <FaUserPlus className="iconAdd"/>
          </div>
-         <div className="typemessage mt-2">
+         <div className="typeMessage mt-2">
             <div>
                Personal message
                {showPersonalMessage?
                   <>
-                     <FaChevronUp className="icon-scrolltypemessage" onClick={handleShowPersonalMessage} />
+                     <FaChevronUp className="iconScrollTypeMessage" onClick={handleShowPersonalMessage} />
                      <PersonalRoom/>
                   </>
                   :
-                  <FaChevronDown className="icon-scrolltypemessage" onClick={handleShowPersonalMessage}/>             
+                  <FaChevronDown className="iconScrollTypeMessage" onClick={handleShowPersonalMessage}/>             
                }
             </div>
 
@@ -61,7 +61,7 @@ function SideBar(){
                }
             </div>
          </div>
-         <p className="copyright">Copyright 2022 All Rights Reserved Bozuman </p>
+         <p className="copyRight">Copyright 2022 All Rights Reserved Bozuman </p>
       </div>
    )
 }
