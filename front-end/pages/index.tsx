@@ -1,9 +1,10 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import SideBar from 'components/SideBar'
+import ChatBox from 'components/ChatBox';
+import MessageGroup from 'components/MessageGroup';
 
 const Home: NextPage = () => {
-  
   return (
     <div>
       <Head>
@@ -17,8 +18,9 @@ const Home: NextPage = () => {
           </div>
         </div>  
       </div>
+      <ChatBox isChanel={true} name='Bozuman' listAvt={['1', '2']}/>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

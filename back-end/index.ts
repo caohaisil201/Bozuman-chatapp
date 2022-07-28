@@ -1,14 +1,14 @@
-
 import { Database } from './src/configs/db.config';
 import expiredAccessTokenHandler from './src/middlewares/expiredAccessTokenHandler';
 import checkAccessToken from './src/middlewares/checkAccessToken';
 import express, { Application } from 'express';
 import auth from './src/routes/authentication.route';
 import cors from 'cors';
+import 'dotenv/config';
 
 const db = new Database();
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
 db.dbConnect();
+
 const app: Application = express();
 
 // Body parsing Middleware
@@ -25,7 +25,6 @@ app.use(
     credentials: true,
   })
 );
-// secure route goes here
 
 app.use('/api/auth', auth);
 app.use('/api/token', expiredAccessTokenHandler);
@@ -36,6 +35,5 @@ app.use('/token', (req, res) => {
 
 const port = process.env.PORT || 3000;
 app.listen(port, (): void => {
-  /* eslint-disable no-debugger, no-console */
   console.log(`Connected successfully on port ${port}`);
 });

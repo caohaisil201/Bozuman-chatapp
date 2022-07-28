@@ -4,6 +4,7 @@
   background-color: rgba(236, 236, 236, 0.932);
   border-radius: 20px;
   padding: 2rem;
+  
   h2 {
     font-size: 2rem;
     font-weight: 600;
@@ -16,10 +17,12 @@
     padding-left: 10px;
     text-align: left;
   }
+
   a {
     display: block;
     text-align: center;
   }
+
   .error {
     color: red;
     font-size: 0.8rem;

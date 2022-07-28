@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment*/
 import * as jwt from 'jsonwebtoken';
-import _CONF from '../configs/auth.config';
 import * as express from 'express';
+import 'dotenv/config';
 
 const checkAccessToken = (
   req: express.Request,
@@ -9,11 +8,10 @@ const checkAccessToken = (
   next: express.NextFunction
 ) => {
   const token = req.headers['x-access-token'];
-  // TODO: fix this typescript error
   if (token) {
     jwt.verify(
       token.toString(),
-      _CONF.SECRET,
+      process.env.SECRET,
       function (err: any, decoded: any) {
         if (err) {
           return res

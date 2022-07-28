@@ -1,10 +1,11 @@
-/* eslint-disable camelcase */
 import { Users } from '../models/users.model';
 import * as jwt from 'jsonwebtoken';
 import _CONF from '../configs/auth.config';
 import { RefreshToken } from '../models/refreshToken.model';
+import _Error from '../utils/Error.utils';
 import crypto from 'crypto';
 import md5 from 'md5';
+import 'dotenv/config';
 
 export interface User {
   username: string;
@@ -62,16 +63,10 @@ export class UsersService {
     const { username, password } = data;
     const user = await Users.findOne({ username: username }).exec();
     if (!user || md5(password) != user.password) {
-      throw {
-        code: 'SIGN_IN_007',
-        message: 'Username or password is incorrect',
-      };
+      throw _Error.SIGN_IN_007
     }
     if (!user.active) {
-      throw {
-        code: 'SIGN_IN_008',
-        message: 'Your account is inactive',
-      };
+      throw _Error.SIGN_IN_008
     }
     const accessToken = this.generateAccessToken(user.username);
     const refreshToken = this.generateRefreshToken(user.username);
@@ -91,7 +86,7 @@ export class UsersService {
       password,
     });
     if (user) {
-      throw 'New password must not be the same as the old password';
+      throw _Error.FORGOT_PASSWORD_010
     }
 
     user = await Users.findOne({
@@ -101,16 +96,12 @@ export class UsersService {
       user.password = md5(password);
       return await user.save();
     } else {
-      throw {
-        code: 'FORGOT_PASSWORD_014',
-        message: 'Your account does not exist',
-      };
+      throw _Error.FORGOT_PASSWORD_014
     }
   };
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
   static generateAccessToken = (username: any) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    return jwt.sign({ username: username }, _CONF.SECRET, {
+    return jwt.sign({ username: username }, process.env.SECRET, {
       expiresIn: _CONF.tokenLife,
     });
   };
@@ -120,13 +111,14 @@ export class UsersService {
       username: username,
       token: jwt.sign(
         { username: username, randomString: this.randomTokenString() },
-        _CONF.SECRET_REFRESH,
+        process.env.SECRET_REFRESH,
         {
           expiresIn: _CONF.refreshTokenLife,
         }
       ),
     });
   };
+  
   static randomTokenString = () => {
     return crypto.randomBytes(40).toString('hex');
   };

@@ -9,7 +9,6 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 interface SignUpForm {
-  // eslint-disable-next-line camelcase
   full_name: string;
   email: string;
   username: string;
@@ -22,7 +21,6 @@ function SignUpPanel() {
   const [err, setErr] = useState({ error: false, message: '' });
 
   const schema = yup.object().shape({
-    // eslint-disable-next-line camelcase
     full_name: yup
       .string()
       .required('Full name must not be empty')
@@ -77,7 +75,6 @@ function SignUpPanel() {
           }
         });
     } catch (err: any) {
-      // handle error
       setErr({ error: true, message: err.response.data.error.message });
     }
   };
