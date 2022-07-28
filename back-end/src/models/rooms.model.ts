@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 const RoomsSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
+    default: 'Empty Bucket'
   },
 
   user_list: {
@@ -21,23 +22,11 @@ const RoomsSchema = new mongoose.Schema({
   admin: {
     type: String,
     required: true,
-    default: ''
+    default: 'Empty Bucket'
   },
 
   message_list: {
     type: Array<{
-      messageId: {
-        type: Number,
-        required: false
-      },
-      count: {
-        type: Number,
-        required: true
-      },
-      room_id: {
-        type: String,
-        required: true
-      },
       type: {
         type: String,
         required: false
@@ -50,6 +39,11 @@ const RoomsSchema = new mongoose.Schema({
         type: String,
         required: true,
         default: ''
+      },
+      time: {
+        type: Date,
+        required: true,
+        default: Date.now
       }
     }>,
     required: true,
@@ -57,11 +51,13 @@ const RoomsSchema = new mongoose.Schema({
   },
 
   room_id: {
-    type: Number,
+    type: String,
     required: true
   },
   count: {
-
+    type: Number,
+    required: true,
+    default: 0
   }
 })
 

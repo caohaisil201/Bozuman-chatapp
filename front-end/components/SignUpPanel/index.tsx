@@ -7,6 +7,7 @@ import _CONF from 'config/config';
 import AuthPanel from 'components/AuthPanel';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import md5 from 'md5';
 
 interface SignUpForm {
   full_name: string;
@@ -63,9 +64,16 @@ function SignUpPanel() {
 
   const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
     delete data.passwordConfirmation;
+    let {username,email,password,full_name} = data;
+    password = md5(password);
     try {
       await axios
-        .post(`${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/register`, data)
+        .post(`${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/register`, {
+          username,
+          password,
+          email,
+          full_name,
+        })
         .then((res) => {
           if (!res.data.success) {
             setErr({ error: true, message: res.data.error.message });

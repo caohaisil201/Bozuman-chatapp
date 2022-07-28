@@ -52,13 +52,6 @@ const io = new Server(server, {
   },
 });
 
-io.on('connection', (socket) => {
-  console.log('New member join', socket.id);
-  socket.on('message', (message) => {
-    console.log('Some one send: ', message);
-  });
-});
-
 const port = process.env.PORT || 3000;
 server.listen(port, (): void => {
   /* eslint-disable no-debugger, no-console */
