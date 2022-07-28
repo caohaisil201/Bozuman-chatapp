@@ -27,6 +27,7 @@
          min-width: 80%;  
       }
       .iconAdd{
+         cursor: pointer;
          @include icon_customization(2rem,2rem);
       }
    }
@@ -35,6 +36,7 @@
       font-size:1rem;
       padding-left: 4px;
       .iconScrollTypeMessage{
+         cursor: pointer;
          @include icon_customization(1rem,1rem);
          margin-left: 10px;
       }

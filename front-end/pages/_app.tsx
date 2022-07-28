@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { getCookie } from 'cookies-next';
-
+import { SWRConfig } from 'swr';
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   function checkAuth() {
@@ -37,7 +37,13 @@ function MyApp({ Component, pageProps }: AppProps) {
   });
   return (
     <>
-      <Component {...pageProps} />
+      <SWRConfig
+        value={{
+          refreshInterval: 1000,
+        }}
+      >
+        <Component {...pageProps} />
+      </SWRConfig>
     </>
   );
 }

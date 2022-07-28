@@ -130,7 +130,7 @@ export class UsersService {
 
   static getUserInfo = async (username: string | undefined) => {
     if(username){
-      return await Users.findOne({username: username}).select(['-password','-_id']).exec();
+      return await Users.findOne({username: username}).select(['-password','-_id', '-active']).exec();
     }
     throw _Error.SERVER_ERROR;
   }

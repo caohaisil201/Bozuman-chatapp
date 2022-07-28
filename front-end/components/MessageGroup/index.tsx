@@ -26,7 +26,7 @@ function MessageGroup({ isMe, messages, senderName }: MessageGroupProps) {
         {/* If this is a 1-1 chat room, then senderName is null. following mockup design */}
         <p className="messageGroup__senderName">{senderName}</p>
         {messages.map((item, index) => (
-          <Message key={index} content={item} />
+          <Message key={`MESSAGE_KEY ${index}`} content={item} />
         ))}
       </div>
     </div>
