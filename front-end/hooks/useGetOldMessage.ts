@@ -9,8 +9,8 @@ interface DataObj {
 
 const fetcher = async (url:string) => await axiosClient.get(url).then((res) => res.data);
 
-const useGetOldMessage = () : DataObj => {
-  const res = useSWR(`${process.env.NEXT_PUBLIC_DOMAIN}/users/info`, fetcher)
+const useGetOldMessage = (room_id: string, page: number) : DataObj => {
+  const res = useSWR(`${process.env.NEXT_PUBLIC_DOMAIN}/api/chat/get-message-in-room?room_id=${room_id}&page=${page}`, fetcher)
   return {
     // data,
     // isLoading: !error && !data,
@@ -23,7 +23,5 @@ const useGetOldMessage = () : DataObj => {
 
 export default useGetOldMessage
 
-// use this hook in some component:
 const { data, isLoading, isError } = useGetOldMessage()
-// data in here is global. only 1 request sent to server althought we use this hook in many component
 

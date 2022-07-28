@@ -11,6 +11,14 @@ type ChatBoxProps = {
 
 function ChatBox({ isChanel, listAvt, name }: ChatBoxProps) {
   const AVATAR_SIZE = 42;
+  const  handleScroll = (event: any) => {
+    let element = event.target;
+    if (element.scrollTop===0) {
+      console.log('old');
+      // TODO: 
+    }
+ }
+
   return (
     <div className="chatBox">
       <div className="chatBox__infoBar">
@@ -38,19 +46,21 @@ function ChatBox({ isChanel, listAvt, name }: ChatBoxProps) {
         </div>
         <div className="chatBox__infoBar--bar"></div>
       </div>
-      <div className="chatBox__messagePanel">
-        <div className="scrollEvent"></div>
+      <div className="chatBox__messagePanel" onScroll={ handleScroll}>
+        <div id="scrollEvent"></div>
         {/* TODO: Load array of message from backend, distinguish sender and render in difference messageGroup. If isChanel===false then senderName is null by default*/}
         <>
-          {/* TODO: Fix this dummy props */}
+        {/* TODO: Fix this dummy props */}
           {newestMessage.map((item, index) => (
             <MessageGroup
-              key={index}
+              key={`MESSAGEGROUP_KEY ${index}`}
               isMe={item.isMe}
               messages={item.messages}
               senderName={item.senderName}
             />
           ))}
+          
+
         </>
 
         {/* <MessageGroup

@@ -26,7 +26,7 @@ export class RoomsService {
       const resultRoomStatus = await Rooms.findOneAndUpdate(
         {
           room_id: newRoomId,
-          count: { $lt: 10 },
+          count: { $lt: 20 },
         },
         {
           $push: {
@@ -53,8 +53,8 @@ export class RoomsService {
   };
 
   static getMessageInRoomByPage = async (data: any) => {
-    const { room_id, page, pageSize } = data;
-    const roomId = new RegExp(`^${data.room_id}_`);
+    const { room_id, page, pageSize = 20 } = data;
+    const roomId = new RegExp(`^${room_id}_`);
     return await Rooms.find({
       room_id: roomId,
     })

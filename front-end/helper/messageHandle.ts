@@ -18,7 +18,7 @@ export const newestMessage : Array<MessageGroupProps> = [{
   messages: ['Bozuman', 'Bozuman','Bozuman','lorem',],
   senderName: 'Sil'
 }, {  isMe: false,
-  messages: ['Bozuman', 'Bozuman','Bozuman','lorem', 'Bozuman', 'Bozuman','Bozuman','lorem','Bozuman', 'Bozuman','Bozuman','lorem','Bozuman', 'Bozuman','Bozuman','lorem','Bozuman', 'Bozuman','Bozuman','lorem',],
+  messages: ['Bozuman', 'Bozuman','Bozuman','lorem','Bozuman', 'Bozuman','Bozuman','lorem',],
   senderName: 'Hung'}]
 
 
@@ -41,7 +41,7 @@ export function outputMessageInGroup (message: MessageInput) {
         senderName: message.username
       })
     }
-
+    return 
   }
     // TODO: identify message not rely on username, use it to query nickname or full name to show on page
   

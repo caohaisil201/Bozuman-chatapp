@@ -31,9 +31,9 @@ app.use(
 );
 
 app.use('/api/auth', auth);
-app.use('/api/chat', chat);
 app.use('/api/token', expiredAccessTokenHandler);
 app.use(checkAccessToken);
+app.use('/api/chat', chat);
 app.use('/token', (req, res) => {
   res.json({ success: 'ok', decoded: req.context?.DecodePayload });
 });
