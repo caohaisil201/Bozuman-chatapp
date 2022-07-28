@@ -59,8 +59,30 @@ const UsersSchema = new mongoose.Schema({
   },
 
   room_list: {
-    type: Array,
+    type: Array<{
+      room_id: {
+        type: Number,
+        required: true,
+      },
+
+      last_message: {
+        type: String,
+        required: true,
+      },
+
+      last_time: {
+        type: String,
+        required: true,
+      },
+
+      unread: {
+        type: Boolean,
+        required: true,
+        default: false,
+      }
+    }>,
     required: false,
+    default: [],
   },
 });
 
