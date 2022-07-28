@@ -129,7 +129,7 @@ export class UsersService {
     }
   };
 
-  static getRoomList = async (username: string | undefined) => {
+  static getUserInfo = async (username: string | undefined) => {
     if(username){
       return await Users.findOne({username: username}).select(['-password','-_id']).exec();
     }

@@ -1,6 +1,5 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { RoomsService } from '../services/rooms.service';
-import { UsersService } from '../services/users.service';
 import { TypedRequestBody } from '../utils/TypeRequestBody.utils';
 import _Error from '../utils/Error.utils';
 
@@ -25,7 +24,6 @@ export class Chat {
       console.log(createRoomResponse);
       res.status(200).json(createRoomResponse);
     } catch (err) {
-      console.log(err);
       throw err;
     }
   };
