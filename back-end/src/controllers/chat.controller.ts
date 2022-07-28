@@ -20,10 +20,8 @@ export class Chat {
     };
     try {
       const createRoomResponse = await RoomsService.addNewRoom(room);
-      console.log(createRoomResponse);
       res.status(200).json(createRoomResponse);
     } catch (err) {
-      console.log(err);
       throw err;
     }
   };
