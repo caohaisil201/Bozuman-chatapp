@@ -2,9 +2,10 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import SideBar from 'components/SideBar';
 import ChatBox from 'components/ChatBox';
-import MessageGroup from 'components/MessageGroup';
-
+import useGetUserInfo from 'hooks/useGetUserInfo'
 const Home: NextPage = () => {
+  const data = useGetUserInfo();
+  console.log(data);
   return (
     <div>
       <Head>

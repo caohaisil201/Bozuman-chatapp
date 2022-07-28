@@ -9,19 +9,16 @@ interface DataObj {
 
 const fetcher = async (url:string) => await axiosClient.get(url).then((res) => res.data);
 
-const useGetOldMessage = (room_id: string, page: number) : DataObj => {
+const useGetOldMessage = (room_id: string, page: number) : any => {
   const res = useSWR(`${process.env.NEXT_PUBLIC_DOMAIN}/api/chat/get-message-in-room?room_id=${room_id}&page=${page}`, fetcher)
-  return {
-    // data,
-    // isLoading: !error && !data,
-    // isError: error,
-    data: res,
-    isLoading: false,
-    isError: false,
-  }
+  // return {
+  //   data,
+  //   isLoading: !error && !data,
+  //   isError: error,
+  // }
 }
 
 export default useGetOldMessage
 
-const { data, isLoading, isError } = useGetOldMessage()
+// const { data, isLoading, isError } = useGetOldMessage()
 

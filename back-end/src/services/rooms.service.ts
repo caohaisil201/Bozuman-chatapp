@@ -62,4 +62,14 @@ export class RoomsService {
       .skip((page - 1) * pageSize)
       .limit(pageSize);
   };
+
+  static getRoomMaxIndex = async (room_id: string) => {
+    const roomId = new RegExp(`^${room_id}_`);
+    try {
+      const roomList = await Rooms.find({room_id: roomId});
+      return roomList;
+    } catch (err) {
+      throw err;
+    }
+  }
 }

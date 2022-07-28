@@ -21,10 +21,39 @@ export interface User {
   description?: string;
   code?: string;
   // TODO: Change room_list types
-  room_list?: Array<string>;
+  room_list?: Array<{
+    room_id: number;
+    name: string;
+    last_mess: string;
+    last_time: Date;
+    unread: boolean;
+  }>;
 }
 
 export class UsersService {
+  static generateAccessToken = (username: any) => {
+    return jwt.sign({ username: username }, process.env.SECRET, {
+      expiresIn: _CONF.TOKEN_LIFE,
+    });
+  };
+
+  static generateRefreshToken = (username: string) => {
+    return new RefreshToken({
+      username: username,
+      token: jwt.sign(
+        { username: username, randomString: this.randomTokenString() },
+        process.env.SECRET_REFRESH,
+        {
+          expiresIn: _CONF.REFRESH_TOKEN_LIFE,
+        }
+      ),
+    });
+  };
+  
+  static randomTokenString = () => {
+    return crypto.randomBytes(40).toString('hex');
+  };
+
   static create = async (data: User) => {
     try {
       const user = {
@@ -100,26 +129,10 @@ export class UsersService {
     }
   };
 
-  static generateAccessToken = (username: any) => {
-    return jwt.sign({ username: username }, process.env.SECRET, {
-      expiresIn: _CONF.tokenLife,
-    });
-  };
-
-  static generateRefreshToken = (username: string) => {
-    return new RefreshToken({
-      username: username,
-      token: jwt.sign(
-        { username: username, randomString: this.randomTokenString() },
-        process.env.SECRET_REFRESH,
-        {
-          expiresIn: _CONF.refreshTokenLife,
-        }
-      ),
-    });
-  };
-  
-  static randomTokenString = () => {
-    return crypto.randomBytes(40).toString('hex');
-  };
+  static getUserInfo = async (username: string | undefined) => {
+    if(username){
+      return await Users.findOne({username: username}).select(['-password','-_id', '-active']).exec();
+    }
+    throw _Error.SERVER_ERROR;
+  }
 }
