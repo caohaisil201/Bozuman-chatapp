@@ -1,6 +1,5 @@
-import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-dotenv.config();
+import 'dotenv/config';
 
 export class Database {
   protected username: string | undefined = process.env.DB_USERNAME;

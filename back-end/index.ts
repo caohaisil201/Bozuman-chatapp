@@ -7,6 +7,7 @@ import express, { Application } from 'express';
 import auth from './src/routes/authentication.route';
 import chat from './src/routes/chat.route';
 import cors from 'cors';
+import 'dotenv/config';
 
 const db = new Database();
 db.dbConnect();

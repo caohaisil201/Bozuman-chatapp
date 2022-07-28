@@ -1,22 +1,15 @@
 import { Request, Response } from 'express';
-import _CONF from '../configs/auth.config';
 import {
   FORGOT_PASSWORD,
   ACTIVATE_ACCOUNT,
 } from '../utils/Helper.utils';
-import { HashClass } from '../utils/Hash.util';
+import { HashClass } from '../utils/Hash.utils';
 import { UsersService, User } from '../services/users.service';
 import { Email } from '../utils/Mail.utils';
+import { TypedRequestBody } from '../utils/TypeRequestBody.utils';
+import _Error, { ErrorObj } from '../utils/Error.utils';
 import jwt from 'jsonwebtoken';
-
-export interface TypedRequestBody<T> extends Request {
-  body: T;
-}
-
-export interface ErrorObj {
-  code: string;
-  message: string;
-}
+import 'dotenv/config';
 
 export class Auth {
   public validateSignup = async (data: User) => {
@@ -27,14 +20,14 @@ export class Auth {
     if (user.username === data.username) {
       return {
         success: false,
-        error: 'Username already exist',
-        errorCode: 'SIGN_UP_009',
+        message: 'Username already exist',
+        code: 'SIGN_UP_009',
       };
     } else if (user.email === data.email) {
       return {
         success: false,
-        error: 'Email already exist',
-        errorCode: 'SIGN_UP_010',
+        message: 'Email already exist',
+        code: 'SIGN_UP_010',
       };
     }
 
@@ -57,8 +50,8 @@ export class Auth {
         res.status(400).json({
           success: false,
           error: {
-            code: validateResult.errorCode,
-            message: validateResult.error,
+            code: validateResult.code,
+            message: validateResult.message,
           },
         });
       } else {
@@ -121,23 +114,17 @@ export class Auth {
       if (!user) {
         res.status(400).json({
           success: false,
-          error: {
-            code: 'FORGOT_PASSWORD_003',
-            message: 'Your account is not exists',
-          },
+          error: _Error.FORGOT_PASSWORD_003,
         });
       } else {
         if (!user.active) {
           res.status(400).json({
             success: false,
-            error: {
-              code: 'FORGOT_PASSWORD_004',
-              message: 'Your account is not verified',
-            },
+            error: _Error.FORGOT_PASSWORD_004,
           });
         }
-
-        const token = jwt.sign({ email: user.email }, _CONF.SECRET, {
+  
+        const token = jwt.sign({ email: user.email }, process.env.SECRET, {
           expiresIn: '1m',
         });
 
@@ -151,10 +138,7 @@ export class Auth {
     } catch (error: any) {
       res.status(500).json({
         success: false,
-        error: {
-          code: '500',
-          message: 'Internal server error',
-        },
+        error: _Error.SERVER_ERROR,
       });
     }
   };
@@ -166,23 +150,17 @@ export class Auth {
     const token = req.body.token;
     let email: string | undefined;
 
-    jwt.verify(token, _CONF.SECRET, function (err: any, decoded: any) {
+    jwt.verify(token, process.env.SECRET, function (err: any, decoded: any) {
       if (err) {
-        if (err.message === 'jwt malformed' || decoded === undefined) {
+        if (err.message === 'jwt expired') {
           return res.status(400).json({
             success: false,
-            error: {
-              code: 'FORGOT_PASSWORD_005',
-              message: 'This link does not exists',
-            },
+            error: _Error.FORGOT_PASSWORD_006,
           });
-        } else if (err.message === 'jwt expired') {
+        } else if (err.message === 'jwt malformed' || decoded === undefined) {
           return res.status(400).json({
             success: false,
-            error: {
-              code: 'FORGOT_PASSWORD_006',
-              message: 'Your link is expired',
-            },
+            error: _Error.FORGOT_PASSWORD_005,
           });
         }
       }
@@ -201,10 +179,7 @@ export class Auth {
       } catch (error) {
         res.status(400).json({
           success: false,
-          error: {
-            code: 'FORGOT_PASSWORD_010',
-            message: error,
-          },
+          error: _Error.FORGOT_PASSWORD_010,
         });
       }
     });
