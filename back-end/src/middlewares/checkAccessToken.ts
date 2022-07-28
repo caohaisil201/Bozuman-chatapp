@@ -30,4 +30,5 @@ const checkAccessToken = (
     });
   }
 };
+
 export default checkAccessToken;
