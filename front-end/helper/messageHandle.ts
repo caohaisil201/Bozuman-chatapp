@@ -1,4 +1,3 @@
-
 interface MessageInput {
   content: string;
   username: string;
@@ -20,8 +19,6 @@ export const newestMessage : Array<MessageGroupProps> = [{
 }, {  isMe: false,
   messages: ['Bozuman', 'Bozuman','Bozuman','lorem','Bozuman', 'Bozuman','Bozuman','lorem',],
   senderName: 'Hung'}]
-
-
 
 export function outputMessageInGroup (message: MessageInput) {
   // Get array of message by API, this function will update it on cliend whenever socket emit a event)
