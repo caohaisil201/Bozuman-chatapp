@@ -14,5 +14,3 @@ const useGetOldMessage = (room_id: string, page: number) : any => {
 }
 
 export default useGetOldMessage
-
-
