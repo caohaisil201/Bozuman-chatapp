@@ -2,12 +2,18 @@ import 'styles/index.scss';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { getCookie } from 'cookies-next';
 import { SWRConfig } from 'swr';
+import axiosClient from 'helper/axiosClient';
+
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  function checkAuth() {
-    const isLogged = getCookie('logged');
+
+  async function checkLogin() {
+    const res = await axiosClient.get(`${process.env.NEXT_PUBLIC_DOMAIN}/`).then(res => res);
+    return res;
+  }
+  
+  async function checkAuth() {
     const publicPaths = [
       '/sign-in',
       '/sign-up',
@@ -16,25 +22,34 @@ function MyApp({ Component, pageProps }: AppProps) {
       '/reset-password',
       '/activate-account',
     ];
-    if (isLogged) {
-      const path = router.asPath.split('?')[0];
-      if (publicPaths.includes(path)) {
-        router.push({
-          pathname: '/',
-        });
-      }
-    } else {
-      const path = router.asPath.split('?')[0];
-      if (!publicPaths.includes(path)) {
+
+    const path = router.asPath.split('?')[0];
+    const checkIsLogin : any = await checkLogin();
+    let isLogin : boolean = true;
+
+    if (checkIsLogin.response) {
+      isLogin = false;
+    }
+
+    if(!publicPaths.includes(path)) {
+      if(!isLogin){
         router.push({
           pathname: '/sign-in',
-        });
+        })
+      }
+    }else{
+      if(isLogin){
+        router.push({
+          pathname: '/',
+        })
       }
     }
   }
+
   useEffect(() => {
     checkAuth();
   });
+
   return (
     <>
       <SWRConfig

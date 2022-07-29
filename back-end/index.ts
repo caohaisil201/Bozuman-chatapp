@@ -33,9 +33,13 @@ app.use(
 app.use('/api/chat', chat);
 app.use('/api/auth', auth);
 app.use('/api/token', expiredAccessTokenHandler);
-app.use(checkAccessToken);
-
-app.use('/api/user', user);
+app.use('/api/chat', checkAccessToken, chat);
+app.use('/api/user', checkAccessToken, user);
+app.use('/', checkAccessToken, (req,res) => {
+  res.status(200).json({
+    error: false,
+  })
+})
 
 const io = new Server(server, {
   cors: {

@@ -4,7 +4,6 @@ import SideBar from 'components/SideBar';
 import ChatBox from 'components/ChatBox';
 import useGetUserInfo from 'hooks/useGetUserInfo'
 
-
 const Home: NextPage = () => {
   const data = useGetUserInfo();
   return (
