@@ -6,9 +6,9 @@ type MessageGroupProps = {
   messages: Array<string>;
   sender: string | null;
 };
-
+const AVATAR_SIZE = 42;
 function MessageGroup({ isMe, messages, sender }: MessageGroupProps) {
-  const AVATAR_SIZE = 42;
+  
   return (
     <div
       className={'messageGroup ' + (isMe ? 'senderIsUser' : 'senderIsNotUser')}

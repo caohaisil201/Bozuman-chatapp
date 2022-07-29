@@ -12,7 +12,6 @@ export interface MessageGroupProps {
   sender: string;
 }
 
-
 // const userData = useGetUserInfo()
 const USERNAME = 'Hung';
 // Call this function when scroll up to get old messgage
@@ -21,14 +20,13 @@ export function pushOldMessage(
   saveMessage: Array<MessageGroupProps>
 ) {
   if (checkIsFirstMessage(saveMessage)) {
-    pushMessageToTop(message, saveMessage);
-  } else {
-    if (checkSender(message, saveMessage, false)) {
-      saveMessage[saveMessage.length - 1].messages.unshift(message.content);
-    } else {
-      pushMessageToTop(message, saveMessage);
-    }
+    return pushMessageToTop(message, saveMessage);
   }
+  if (checkIsSameSender(message, saveMessage, false)) {
+    const LAST_ELEMENT = saveMessage.length - 1;
+    return saveMessage[LAST_ELEMENT].messages.unshift(message.content);
+  }
+  return pushMessageToTop(message, saveMessage);
 }
 // Call this function when recive a new message
 export function pushNewMessage(
@@ -36,15 +34,12 @@ export function pushNewMessage(
   saveMessage: Array<MessageGroupProps>
 ) {
   if (checkIsFirstMessage(saveMessage)) {
-    pushMessageToBottom(message, saveMessage);
-  } else {
-    if (checkSender(message, saveMessage, true)) {
-      saveMessage[0].messages.push(message.content);
-    } else {
-      pushMessageToBottom(message, saveMessage);
-    }
+    return pushMessageToBottom(message, saveMessage);
   }
-  // TODO: identify message not rely on username, use it to query nickname or full name to show on page
+  if (checkIsSameSender(message, saveMessage, true)) {
+    return saveMessage[0].messages.push(message.content);
+  }
+  return pushMessageToBottom(message, saveMessage);
 }
 
 const checkIsFirstMessage = (saveMessage: Array<MessageGroupProps>) => {
@@ -54,23 +49,21 @@ const checkIsFirstMessage = (saveMessage: Array<MessageGroupProps>) => {
   return false;
 };
 
-const checkSender = (
+const checkIsSameSender = (
   message: MessageInput,
   saveMessage: Array<MessageGroupProps>,
-  isNew: boolean,
+  isNew: boolean
 ) => {
   if (isNew) {
     if (saveMessage[0].sender === message.sender) {
       return true;
     }
-    return false;
   } else {
     if (saveMessage[saveMessage.length - 1].sender === message.sender) {
       return true;
     }
-    return false;
   }
-
+  return false;
 };
 
 const checkIsMe = (message: MessageInput) => {

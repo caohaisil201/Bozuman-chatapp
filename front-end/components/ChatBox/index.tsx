@@ -12,6 +12,9 @@ import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import usePrevious from 'hooks/usePrevious'
 
+const TWO_NEWSET_BUCKET = 2
+const FIRST_NEWEST_BUCKET = 1
+
 type ChatBoxProps = {
   room_id: number;
   isChanel: boolean;
@@ -25,25 +28,21 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
   const [messages, setMessages] = useState<Array<MessageGroupProps>>([]);
   const [bucketIndex, setBucketIndex] = useState<number>(0);
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
-  const prevChatId = usePrevious(room_id);
-  if (prevChatId !== room_id) {
-    return null;
-  }
   const getInitMessage = async () => {
     const { data } = await axiosClient.get(
       `${process.env.NEXT_PUBLIC_DOMAIN}/api/chat/get-newest-message-bucket?room_id=${room_id}`
     );
-    setBucketIndex(data.newestIndex - 2);
-    const res1 = await axiosClient.get(
+    setBucketIndex(data.newestIndex - TWO_NEWSET_BUCKET);
+    const firstBucket = await axiosClient.get(
       `${process.env.NEXT_PUBLIC_DOMAIN}/api/chat/get-message-in-room?room_id=${room_id}&page=${data.newestIndex}`
     );
-    res1.data[0].message_list.reverse().forEach((element: MessageInput) => {
+    firstBucket.data[0].message_list.reverse().forEach((element: MessageInput) => {
       pushOldMessage(element, savedMessages);
     });
-    const res2 = await axiosClient.get(
-      `${process.env.NEXT_PUBLIC_DOMAIN}/api/chat/get-message-in-room?room_id=${room_id}&page=${data.newestIndex - 1}`
+    const secondBucket = await axiosClient.get(
+      `${process.env.NEXT_PUBLIC_DOMAIN}/api/chat/get-message-in-room?room_id=${room_id}&page=${data.newestIndex - FIRST_NEWEST_BUCKET}`
     );
-    res2.data[0].message_list.reverse().forEach((element: MessageInput) => {
+    secondBucket.data[0].message_list.reverse().forEach((element: MessageInput) => {
       pushOldMessage(element, savedMessages);
     });
     setMessages(savedMessages);
@@ -66,6 +65,10 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
       setOutOfMessages(true);
     }
   };
+  const prevChatId = usePrevious(room_id);
+  if (prevChatId !== room_id) {
+    return null;
+  }
   return (
     <div className="chatBox">
       <div className="chatBox__infoBar">
