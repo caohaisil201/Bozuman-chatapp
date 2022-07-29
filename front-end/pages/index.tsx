@@ -7,7 +7,6 @@ import useGetUserInfo from 'hooks/useGetUserInfo'
 
 const Home: NextPage = () => {
   const data = useGetUserInfo();
-  // console.log(data)
   return (
     <div>
       <Head>
