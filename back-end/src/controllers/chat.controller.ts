@@ -1,6 +1,7 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { RoomsService } from '../services/rooms.service';
 import { TypedRequestBody } from '../utils/TypeRequestBody.utils';
+import _Error from '../utils/Error.utils';
 
 export class Chat {
   public addNewRoom = async (
@@ -57,7 +58,7 @@ export class Chat {
     }>,
     res: Response
   ) => {
-    const data = {room_id: req.body.room_id, page: req.body.page, pageSize: req.body.pageSize};
+    const data = {room_id: req.query.room_id, page: req.query.page, pageSize: req.query.pageSize};
     try {
       const messageList = await RoomsService.getMessageInRoomByPage(data);
       res.status(200).json(messageList);

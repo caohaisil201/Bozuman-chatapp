@@ -6,6 +6,7 @@ import checkAccessToken from './src/middlewares/checkAccessToken';
 import express, { Application } from 'express';
 import auth from './src/routes/authentication.route';
 import chat from './src/routes/chat.route';
+import user from './src/routes/user.route';
 import cors from 'cors';
 import 'dotenv/config';
 
@@ -32,12 +33,11 @@ app.use(
 );
 
 app.use('/api/auth', auth);
-app.use('/api/chat', chat);
 app.use('/api/token', expiredAccessTokenHandler);
 app.use(checkAccessToken);
-app.use('/token', (req, res) => {
-  res.json({ success: 'ok', decoded: req.context?.DecodePayload });
-});
+app.use('/api/chat', chat);
+app.use('/api/user', user);
+
 const io = new Server(server, {
   cors: {
     origin: [

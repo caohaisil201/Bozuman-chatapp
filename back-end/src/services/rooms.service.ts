@@ -1,7 +1,10 @@
+const BUCKET_SIZE = 20;
+const PAGESIZE_DEFAULT = 1;
 import { Rooms } from '../models/rooms.model';
 import { Increment } from 'mongoose-auto-increment-ts';
 
 export class RoomsService {
+
   static addNewRoom = async (data: any) => {
     const id = await Increment('room');
     try {
@@ -26,7 +29,7 @@ export class RoomsService {
       const resultRoomStatus = await Rooms.findOneAndUpdate(
         {
           room_id: newRoomId,
-          count: { $lt: 10 },
+          count: { $lt: BUCKET_SIZE },
         },
         {
           $push: {
@@ -53,8 +56,8 @@ export class RoomsService {
   };
 
   static getMessageInRoomByPage = async (data: any) => {
-    const { room_id, page, pageSize } = data;
-    const roomId = new RegExp(`^${data.room_id}_`);
+    const { room_id, page, pageSize = PAGESIZE_DEFAULT } = data;
+    const roomId = new RegExp(`^${room_id}_`);
     return await Rooms.find({
       room_id: roomId,
     })
@@ -62,4 +65,13 @@ export class RoomsService {
       .skip((page - 1) * pageSize)
       .limit(pageSize);
   };
+
+  static getRoomMaxIndex = async (room_id: string) => {
+    const roomId = new RegExp(`^${room_id}_`);
+    try {
+      return await Rooms.find({room_id: roomId});
+    } catch (err) {
+      throw err;
+    }
+  }
 }

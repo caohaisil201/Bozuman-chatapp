@@ -56,8 +56,8 @@ const roomListPersonalMessage: RoomMiniShow[] =[
 ]
 
 function PersonalRoom(){
-   const list = roomListPersonalMessage.map(room => 
-      <div className="room" key={room.room_id}>
+   const list = roomListPersonalMessage.map((room, index) => 
+      <div className="room" key={`ROOM_KEY ${index}`}>
          <Image
             src='/avatar.png'
             alt='avatar'

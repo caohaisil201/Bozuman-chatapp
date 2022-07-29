@@ -4,7 +4,6 @@ import _CONF from '../configs/auth.config';
 import { RefreshToken } from '../models/refreshToken.model';
 import _Error from '../utils/Error.utils';
 import crypto from 'crypto';
-import md5 from 'md5';
 import 'dotenv/config';
 
 export interface User {
@@ -20,16 +19,45 @@ export interface User {
   avatar?: string;
   description?: string;
   code?: string;
-  // TODO: Change room_list types
-  room_list?: Array<string>;
+  room_list?: Array<{
+    room_id: number;
+    name: string;
+    type: string;
+    last_mess: string;
+    last_time: Date;
+    unread: boolean;
+  }>;
 }
 
 export class UsersService {
+  static generateAccessToken = (username: any) => {
+    return jwt.sign({ username: username }, process.env.SECRET, {
+      expiresIn: _CONF.TOKEN_LIFE,
+    });
+  };
+
+  static generateRefreshToken = (username: string) => {
+    return new RefreshToken({
+      username: username,
+      token: jwt.sign(
+        { username: username, randomString: this.randomTokenString() },
+        process.env.SECRET_REFRESH,
+        {
+          expiresIn: _CONF.REFRESH_TOKEN_LIFE,
+        }
+      ),
+    });
+  };
+  
+  static randomTokenString = () => {
+    return crypto.randomBytes(40).toString('hex');
+  };
+
   static create = async (data: User) => {
     try {
       const user = {
         username: data.username,
-        password: md5(data.password),
+        password: data.password,
         full_name: data.full_name,
         email: data.email,
       };
@@ -62,7 +90,7 @@ export class UsersService {
   static authenticate = async (data: User) => {
     const { username, password } = data;
     const user = await Users.findOne({ username: username }).exec();
-    if (!user || md5(password) != user.password) {
+    if (!user || password != user.password) {
       throw _Error.SIGN_IN_007
     }
     if (!user.active) {
@@ -93,33 +121,17 @@ export class UsersService {
       email,
     });
     if (user) {
-      user.password = md5(password);
+      user.password = password;
       return await user.save();
     } else {
       throw _Error.FORGOT_PASSWORD_014
     }
   };
 
-  static generateAccessToken = (username: any) => {
-    return jwt.sign({ username: username }, process.env.SECRET, {
-      expiresIn: _CONF.tokenLife,
-    });
-  };
-
-  static generateRefreshToken = (username: string) => {
-    return new RefreshToken({
-      username: username,
-      token: jwt.sign(
-        { username: username, randomString: this.randomTokenString() },
-        process.env.SECRET_REFRESH,
-        {
-          expiresIn: _CONF.refreshTokenLife,
-        }
-      ),
-    });
-  };
-  
-  static randomTokenString = () => {
-    return crypto.randomBytes(40).toString('hex');
-  };
+  static getUserInfo = async (username: string | undefined) => {
+    if(username){
+      return await Users.findOne({username: username}).select(['-password','-_id', '-active']).exec();
+    }
+    throw _Error.SERVER_ERROR;
+  }
 }
