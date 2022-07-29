@@ -1,61 +1,119 @@
+import useGetUserInfo from 'hooks/useGetUserInfo';
 
-interface MessageInput {
+export interface MessageInput {
   content: string;
-  username: string;
+  sender: string;
   time: any;
 }
 
-interface MessageGroupProps {
+export interface MessageGroupProps {
   isMe: boolean;
   messages: Array<string>;
-  senderName: string | null;
+  sender: string;
 }
 
-// TODO: write API get userInfo(secure later), write API get 10 newest message
-const USERNAME = 'bozuman1'
-export const newestMessage : Array<MessageGroupProps> = [{
-  isMe: false,
-  messages: ['Bozuman', 'Bozuman','Bozuman','lorem',],
-  senderName: 'Sil'
-}, {  isMe: false,
-  messages: ['Bozuman', 'Bozuman','Bozuman','lorem','Bozuman', 'Bozuman','Bozuman','lorem',],
-  senderName: 'Hung'}]
 
-
-
-export function outputMessageInGroup (message: MessageInput) {
-  // Get array of message by API, this function will update it on cliend whenever socket emit a event)
-  if (checkSender(message)) {
-    newestMessage[0].messages.push(message.content)
+// const userData = useGetUserInfo()
+const USERNAME = 'Hung';
+// Call this function when scroll up to get old messgage
+export function pushOldMessage(
+  message: MessageInput,
+  saveMessage: Array<MessageGroupProps>
+) {
+  if (checkIsFirstMessage(saveMessage)) {
+    pushMessageToTop(message, saveMessage);
   } else {
-    if (checkIsMe(message)) {
-      newestMessage.unshift({
-        isMe: true,
-        messages: [message.content],
-        senderName: USERNAME
-      })
+    if (checkSender(message, saveMessage, false)) {
+      saveMessage[saveMessage.length - 1].messages.unshift(message.content);
     } else {
-      newestMessage.unshift({
-        isMe: false,
-        messages: [message.content],
-        senderName: message.username
-      })
+      pushMessageToTop(message, saveMessage);
     }
   }
-    // TODO: identify message not rely on username, use it to query nickname or full name to show on page
-  
+}
+// Call this function when recive a new message
+export function pushNewMessage(
+  message: MessageInput,
+  saveMessage: Array<MessageGroupProps>
+) {
+  if (checkIsFirstMessage(saveMessage)) {
+    pushMessageToBottom(message, saveMessage);
+  } else {
+    if (checkSender(message, saveMessage, true)) {
+      saveMessage[0].messages.push(message.content);
+    } else {
+      pushMessageToBottom(message, saveMessage);
+    }
+  }
+  // TODO: identify message not rely on username, use it to query nickname or full name to show on page
 }
 
-const checkSender = (message: MessageInput) => {
-  if (newestMessage[0].senderName === message.username){
+const checkIsFirstMessage = (saveMessage: Array<MessageGroupProps>) => {
+  if (!saveMessage[0]) {
     return true;
   }
-  return false
-}
+  return false;
+};
+
+const checkSender = (
+  message: MessageInput,
+  saveMessage: Array<MessageGroupProps>,
+  isNew: boolean,
+) => {
+  if (isNew) {
+    if (saveMessage[0].sender === message.sender) {
+      return true;
+    }
+    return false;
+  } else {
+    if (saveMessage[saveMessage.length - 1].sender === message.sender) {
+      return true;
+    }
+    return false;
+  }
+
+};
 
 const checkIsMe = (message: MessageInput) => {
-  if (message.username === USERNAME){
+  if (message.sender === USERNAME) {
     return true;
   }
-  return false
-}
+  return false;
+};
+
+const pushMessageToBottom = (
+  message: MessageInput,
+  saveMessage: Array<MessageGroupProps>
+) => {
+  if (checkIsMe(message)) {
+    saveMessage.unshift({
+      isMe: true,
+      messages: [message.content],
+      sender: USERNAME,
+    });
+  } else {
+    saveMessage.unshift({
+      isMe: false,
+      messages: [message.content],
+      sender: message.sender,
+    });
+  }
+};
+
+const pushMessageToTop = (
+  message: MessageInput,
+  saveMessage: Array<MessageGroupProps>
+) => {
+  if (checkIsMe(message)) {
+    saveMessage.push({
+      isMe: true,
+      messages: [message.content],
+      sender: USERNAME,
+    });
+  } else {
+    saveMessage.push({
+      isMe: false,
+      messages: [message.content],
+      sender: message.sender,
+    });
+  }
+};

@@ -52,9 +52,6 @@ export class Chat {
 
   public getMessageInRoomByPage = async (
     req: TypedRequestBody<{
-      room_id: string;
-      page: number;
-      pageSize: number;
     }>,
     res: Response
   ) => {
@@ -66,4 +63,19 @@ export class Chat {
       throw err;
     }
   };
+
+  public getNewestMessageBucket = async (
+    req: TypedRequestBody<{
+    }>,
+    res: Response
+  ) => {
+    const room_id = req.query.room_id
+    try {
+      const newestIndex = await RoomsService.getNewestMessageBucket(room_id);
+      res.status(200).json({newestIndex : newestIndex});
+    } catch (err) {
+      throw err;
+    }
+  };
+
 }

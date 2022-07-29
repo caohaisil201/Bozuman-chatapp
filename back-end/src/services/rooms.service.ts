@@ -66,10 +66,10 @@ export class RoomsService {
       .limit(pageSize);
   };
 
-  static getRoomMaxIndex = async (room_id: string) => {
+  static getNewestMessageBucket = async (room_id: any) => {
     const roomId = new RegExp(`^${room_id}_`);
     try {
-      return await Rooms.find({room_id: roomId});
+      return await Rooms.countDocuments({room_id: roomId});
     } catch (err) {
       throw err;
     }

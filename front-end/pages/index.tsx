@@ -3,8 +3,11 @@ import Head from 'next/head';
 import SideBar from 'components/SideBar';
 import ChatBox from 'components/ChatBox';
 import useGetUserInfo from 'hooks/useGetUserInfo'
+
+
 const Home: NextPage = () => {
   const data = useGetUserInfo();
+  // console.log(data)
   return (
     <div>
       <Head>
@@ -17,7 +20,7 @@ const Home: NextPage = () => {
             <SideBar />
           </div>
           <div className="col-9">
-            <ChatBox isChanel={true} name="Bozuman" listAvt={['1', '2']} />
+            <ChatBox room_id={2} isChanel={true} name="Bozuman" listAvt={['1', '2']} />
           </div>
         </div>
       </div>

@@ -29,3 +29,4 @@ const useGetUserInfo = () : DataUser => {
 
 export default useGetUserInfo
 
+

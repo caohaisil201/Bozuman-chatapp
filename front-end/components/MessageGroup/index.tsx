@@ -4,10 +4,10 @@ import Image from 'next/image';
 type MessageGroupProps = {
   isMe: boolean;
   messages: Array<string>;
-  senderName: string | null;
+  sender: string | null;
 };
 
-function MessageGroup({ isMe, messages, senderName }: MessageGroupProps) {
+function MessageGroup({ isMe, messages, sender }: MessageGroupProps) {
   const AVATAR_SIZE = 42;
   return (
     <div
@@ -24,7 +24,7 @@ function MessageGroup({ isMe, messages, senderName }: MessageGroupProps) {
       </div>
       <div className="messageGroup__messageContainer">
         {/* If this is a 1-1 chat room, then senderName is null. following mockup design */}
-        <p className="messageGroup__senderName">{senderName}</p>
+        <p className="messageGroup__senderName">{sender}</p>
         {messages.map((item, index) => (
           <Message key={`MESSAGE_KEY ${index}`} content={item} />
         ))}

@@ -30,11 +30,11 @@ app.use(
     credentials: true,
   })
 );
-
+app.use('/api/chat', chat);
 app.use('/api/auth', auth);
 app.use('/api/token', expiredAccessTokenHandler);
 app.use(checkAccessToken);
-app.use('/api/chat', chat);
+
 app.use('/api/user', user);
 
 const io = new Server(server, {
