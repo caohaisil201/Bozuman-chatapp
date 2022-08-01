@@ -37,6 +37,6 @@
     "@types/react-dom": "18.0.6",
     "sass": "^1.53.0",
     "typescript": "4.7.4",
-    "vercel": "^19.1.2"
+    "vercel": "^27.3.3"
   }
 }

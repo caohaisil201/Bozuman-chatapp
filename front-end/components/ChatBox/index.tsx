@@ -88,6 +88,7 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
 
   useEffect(() => {
     const username = getCookie('username');
+    
     if (username) {
       socket.emit('joinRoom', {
         sender: username,
@@ -100,8 +101,6 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
       setMessages([...savedMessages]);
     })
   }, [])
-
-
 
   const getOldMessage = async () => {
     if (bucketIndex !== 0) {

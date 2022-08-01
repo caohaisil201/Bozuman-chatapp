@@ -9,6 +9,7 @@ import chat from './src/routes/chat.route';
 import user from './src/routes/user.route';
 import cors from 'cors';
 import 'dotenv/config';
+import { RoomsService } from './src/services/rooms.service';
 
 const db = new Database();
 db.dbConnect();
@@ -35,11 +36,11 @@ app.use('/api/auth', auth);
 app.use('/api/token', expiredAccessTokenHandler);
 app.use('/api/chat', checkAccessToken, chat);
 app.use('/api/user', checkAccessToken, user);
-app.use('/', checkAccessToken, (req,res) => {
+app.use('/', checkAccessToken, (req, res) => {
   res.status(200).json({
     error: false,
-  })
-})
+  });
+});
 
 const io = new Server(server, {
   cors: {
@@ -54,23 +55,22 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-  socket.on('joinRoom', message => {
-    console.log('Some one join: ', message);
+  socket.on('joinRoom', (message) => {
     socket.join(message.room);
   });
-  socket.on('chatMessage', message => {
-    io.to(message.room).emit('message', {
+  socket.on('chatMessage', (message) => {
+    let receivedMessage = {
       content: message.content,
       time: message.time,
       sender: message.sender,
-      room_id: message.room
-    });
-    
-});
+      room_id: message.room,
+    };
+    io.to(message.room).emit('message', receivedMessage);
+    RoomsService.insertChatMessageIntoRoom(receivedMessage);
+  });
 });
 
 const port = process.env.PORT || 3000;
 server.listen(port, (): void => {
-  /* eslint-disable no-debugger, no-console */
   console.log(`Connected successfully on port ${port}`);
 });
