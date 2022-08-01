@@ -4,7 +4,7 @@ import Image from 'next/image';
 type MessageGroupProps = {
   isMe: boolean;
   messages: Array<string>;
-  sender: string | null;
+  sender: string | undefined | null;
 };
 const AVATAR_SIZE = 42;
 function MessageGroup({ isMe, messages, sender }: MessageGroupProps) {

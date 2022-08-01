@@ -1,7 +1,7 @@
 import MessageGroup from 'components/MessageGroup';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { FaInfoCircle, FaTelegramPlane } from 'react-icons/fa';
+import { FaInfoCircle } from 'react-icons/fa';
 import {
   pushOldMessage,
   pushNewMessage,
@@ -11,7 +11,7 @@ import {
 import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import usePrevious from 'hooks/usePrevious'
-import useGetUserInfo from 'hooks/useGetUserInfo';
+import InputMessage from './inputMessage';
 import { io } from 'socket.io-client';
 import { getCookie } from 'cookies-next';
 
@@ -30,23 +30,17 @@ const AVATAR_SIZE = 42;
 const savedMessages: Array<MessageGroupProps> = [];
 
 function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
-  const userInfo = useGetUserInfo();
+  const [temp, setTemp] = useState(0)
 
-  const [textFieldContent, setTextFieldContent] = useState('');
-
-  const sendMessage = () => {
+  const sendMessage = (inputValue: string) => {
     socket.emit('chatMessage', {
-      content: textFieldContent,
+      content: inputValue,
       time: Date(),
-      username: userInfo.username,
+      sender: getCookie('username'),
       room: room_id
     });
-    setTextFieldContent('');
   }
 
-  const handleChange = (event: any) => {
-    setTextFieldContent(event.target.value)
-  }
   const [messages, setMessages] = useState<Array<MessageGroupProps>>([]);
   const [bucketIndex, setBucketIndex] = useState<number>(0);
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
@@ -58,16 +52,21 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
     const firstBucket = await axiosClient.get(
       `/api/chat/get-message-in-room?room_id=${room_id}&page=${data.newestIndex}`
     );
+    if (firstBucket.data[0]) {
+      firstBucket.data[0].message_list.reverse().forEach((element: MessageInput) => {
+        pushOldMessage(element, savedMessages);
+      });
+    }
 
-    firstBucket.data[0].message_list.reverse().forEach((element: MessageInput) => {
-      pushOldMessage(element, savedMessages);
-    });
     const secondBucket = await axiosClient.get(
       `/api/chat/get-message-in-room?room_id=${room_id}&page=${data.newestIndex - FIRST_NEWEST_BUCKET}`
     );
-    secondBucket.data[0].message_list.reverse().forEach((element: MessageInput) => {
-      pushOldMessage(element, savedMessages);
-    });
+    if (secondBucket.data[0]) {
+      secondBucket.data[0].message_list.reverse().forEach((element: MessageInput) => {
+        pushOldMessage(element, savedMessages);
+      });
+    }
+
     setMessages(savedMessages);
   };
 
@@ -79,7 +78,7 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
     const username = getCookie('username');
     if (username) {
       socket.emit('joinRoom', {
-        username: username,
+        sender: username,
         room: room_id
       });
     }
@@ -87,8 +86,10 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
     socket.on('message', message => {
       pushNewMessage(message, savedMessages);
       setMessages(savedMessages);
+      setTemp(prev => prev + 1)
     })
   }, [])
+
 
 
   const getOldMessage = async () => {
@@ -106,7 +107,9 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
     }
   }
 
-
+  const clickHandle = (inputValue: string) => {
+    sendMessage(inputValue);
+  };
 
   const prevChatId = usePrevious(room_id);
   if (prevChatId !== room_id) {
@@ -158,11 +161,11 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
             />
           ))}
         </InfiniteScroll>
+        
       </div>
       <div className="chatBox__holdPlace">
         <div className="chatBox__input">
-          <input placeholder="Type your message" value={textFieldContent} onChange={handleChange} />
-          <FaTelegramPlane className="buttonIcon" onClick={sendMessage} />
+        <InputMessage clickHandle={clickHandle} />
         </div>
       </div>
     </div>

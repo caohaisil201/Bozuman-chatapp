@@ -1,20 +1,19 @@
-import useGetUserInfo from 'hooks/useGetUserInfo';
-
+import { getCookie } from 'cookies-next';
 export interface MessageInput {
   content: string;
   sender: string;
   time: any;
+  room_id: number;
 }
 
 export interface MessageGroupProps {
   isMe: boolean;
   messages: Array<string>;
-  sender: string;
+  sender: string | undefined;
 }
 
-// const userData = useGetUserInfo()
-const USERNAME = 'Hung';
-// Call this function when scroll up to get old messgage
+const USERNAME = getCookie('username')?.toString();
+
 export function pushOldMessage(
   message: MessageInput,
   saveMessage: Array<MessageGroupProps>
@@ -28,7 +27,7 @@ export function pushOldMessage(
   }
   return pushMessageToTop(message, saveMessage);
 }
-// Call this function when recive a new message
+
 export function pushNewMessage(
   message: MessageInput,
   saveMessage: Array<MessageGroupProps>
@@ -77,36 +76,20 @@ const pushMessageToBottom = (
   message: MessageInput,
   saveMessage: Array<MessageGroupProps>
 ) => {
-  if (checkIsMe(message)) {
-    saveMessage.unshift({
-      isMe: true,
-      messages: [message.content],
-      sender: USERNAME,
-    });
-  } else {
-    saveMessage.unshift({
-      isMe: false,
-      messages: [message.content],
-      sender: message.sender,
-    });
-  }
+  saveMessage.unshift({
+    isMe: checkIsMe(message),
+    messages: [message.content],
+    sender: checkIsMe(message) ? USERNAME : message.sender,
+  });
 };
 
 const pushMessageToTop = (
   message: MessageInput,
   saveMessage: Array<MessageGroupProps>
 ) => {
-  if (checkIsMe(message)) {
-    saveMessage.push({
-      isMe: true,
-      messages: [message.content],
-      sender: USERNAME,
-    });
-  } else {
-    saveMessage.push({
-      isMe: false,
-      messages: [message.content],
-      sender: message.sender,
-    });
-  }
+  saveMessage.push({
+    isMe: checkIsMe(message),
+    messages: [message.content],
+    sender: checkIsMe(message) ? USERNAME : message.sender,
+  });
 };

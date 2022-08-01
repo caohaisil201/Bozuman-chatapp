@@ -66,7 +66,7 @@ export class RoomsService {
       .limit(pageSize);
   };
 
-  static getNewestMessageBucket = async (room_id: any) => {
+  static getNewestMessageBucket = async (room_id: string) => {
     const roomId = new RegExp(`^${room_id}_`);
     try {
       return await Rooms.countDocuments({room_id: roomId});

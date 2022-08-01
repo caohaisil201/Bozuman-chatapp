@@ -69,7 +69,7 @@ export class Chat {
     }>,
     res: Response
   ) => {
-    const room_id = req.query.room_id
+    const room_id = req.query.room_id as string
     try {
       const newestIndex = await RoomsService.getNewestMessageBucket(room_id);
       res.status(200).json({newestIndex : newestIndex});
