@@ -15,6 +15,9 @@ import useGetUserInfo from 'hooks/useGetUserInfo';
 const TWO_NEWSET_BUCKET = 2
 const FIRST_NEWEST_BUCKET = 1
 import {io} from 'socket.io-client';
+import { getCookie } from 'cookies-next';
+
+const socket = io(`${process.env.NEXT_PUBLIC_DOMAIN}`);
 
 
 
@@ -29,19 +32,15 @@ const savedMessages: Array<MessageGroupProps> = [];
 
 function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
   const userInfo = useGetUserInfo();
+    
   const [textFieldContent, setTextFieldContent] = useState('');
-  const socket = io(`${process.env.NEXT_PUBLIC_DOMAIN}`);
-  
-socket.on('message', message => {
-  pushNewMessage(message, savedMessages);
-  setMessages(savedMessages);
-})
+
   const sendMessage = () => {
     socket.emit('chatMessage', {
       content: textFieldContent, 
       time: Date(),
-      username: 'bozuman1',
-      room: 'room1'
+      username: userInfo.username,
+      room: room_id
     });
     setTextFieldContent('');
   }
@@ -73,15 +72,33 @@ socket.on('message', message => {
     setMessages(savedMessages);
   };
   useEffect(() => {
+    
     getInitMessage();
-    if (userInfo) {
+    // if (userInfo) {
+    //   console.log('yeah h');
+    //   socket.emit('joinRoom', {
+    //     username: userInfo.username,
+    //     room: room_id
+    //   });
+    // }
+
+  }, [room_id]);
+
+  useEffect(() => {
+    const username = getCookie('username');
+    if (username) {
       socket.emit('joinRoom', {
-        username: userInfo.username,
+        username: username,
         room: room_id
       });
     }
 
-  }, [room_id]);
+    socket.on('message', message => {
+      pushNewMessage(message, savedMessages);
+      setMessages(savedMessages);
+    })
+  }, [])
+
 
   const getOldMessage = async () => {
     if (bucketIndex !== 0) {
