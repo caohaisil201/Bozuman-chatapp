@@ -9,6 +9,7 @@ import chat from './src/routes/chat.route';
 import user from './src/routes/user.route';
 import cors from 'cors';
 import 'dotenv/config';
+import { RoomsService } from './src/services/rooms.service';
 
 const db = new Database();
 db.dbConnect();
@@ -57,12 +58,14 @@ io.on('connection', (socket) => {
     socket.join(message.room);
   });
   socket.on('chatMessage', (message) => {
-    io.to(message.room).emit('message', {
+    let receivedMessage = {
       content: message.content,
       time: message.time,
       sender: message.sender,
       room_id: message.room,
-    });
+    };
+    io.to(message.room).emit('message', receivedMessage);
+    RoomsService.insertChatMessageIntoRoom(receivedMessage);
   });
 });
 
