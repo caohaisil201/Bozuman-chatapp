@@ -1,23 +1,117 @@
 import MessageGroup from 'components/MessageGroup';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { FaInfoCircle, FaTelegramPlane } from 'react-icons/fa';
-import { newestMessage, outputMessageInGroup } from 'helper/messageHandle';
+import { FaInfoCircle } from 'react-icons/fa';
+import {
+  pushOldMessage,
+  pushNewMessage,
+  MessageGroupProps,
+  MessageInput,
+} from 'helper/messageHandle';
+import axiosClient from 'helper/axiosClient';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import usePrevious from 'hooks/usePrevious'
+import InputMessage from './inputMessage';
+import { io } from 'socket.io-client';
+import { getCookie } from 'cookies-next';
+
+const TWO_NEWSET_BUCKET = 2
+const FIRST_NEWEST_BUCKET = 1
+
+const socket = io(`${process.env.NEXT_PUBLIC_DOMAIN}`);
+
 type ChatBoxProps = {
+  room_id: number;
   isChanel: boolean;
   name: string;
   listAvt: Array<string>;
 };
+const AVATAR_SIZE = 42;
+const savedMessages: Array<MessageGroupProps> = [];
 
-function ChatBox({ isChanel, listAvt, name }: ChatBoxProps) {
-  const AVATAR_SIZE = 42;
-  const  handleScroll = (event: any) => {
-    let element = event.target;
-    if (element.scrollTop===0) {
-      // TODO: call api get message
+function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
+  const sendMessage = (inputValue: string) => {
+    socket.emit('chatMessage', {
+      content: inputValue,
+      time: Date(),
+      sender: getCookie('username'),
+      room: room_id
+    });
+  }
+
+  const [messages, setMessages] = useState<Array<MessageGroupProps>>([]);
+  const [bucketIndex, setBucketIndex] = useState<number>(0);
+  const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
+  const getInitMessage = async () => {
+    const { data } = await axiosClient.get(
+      `/api/chat/get-newest-message-bucket?room_id=${room_id}`
+    );
+    setBucketIndex(data.newestIndex - TWO_NEWSET_BUCKET);
+    const firstBucket = await axiosClient.get(
+      `/api/chat/get-message-in-room?room_id=${room_id}&page=${data.newestIndex}`
+    );
+    if (firstBucket.data[0]) {
+      firstBucket.data[0].message_list.reverse().forEach((element: MessageInput) => {
+        pushOldMessage(element, savedMessages);
+      });
     }
- }
 
+    const secondBucket = await axiosClient.get(
+      `/api/chat/get-message-in-room?room_id=${room_id}&page=${data.newestIndex - FIRST_NEWEST_BUCKET}`
+    );
+    if (secondBucket.data[0]) {
+      secondBucket.data[0].message_list.reverse().forEach((element: MessageInput) => {
+        pushOldMessage(element, savedMessages);
+      });
+    }
+
+    setMessages(savedMessages);
+  };
+
+  useEffect(() => {
+    getInitMessage();
+  }, [room_id]);
+
+  useEffect(() => {
+    const username = getCookie('username');
+    if (username) {
+      socket.emit('joinRoom', {
+        sender: username,
+        room: room_id
+      });
+    }
+
+    socket.on('message', message => {
+      pushNewMessage(message, savedMessages);
+      setMessages([...savedMessages]);
+    })
+  }, [])
+
+
+
+  const getOldMessage = async () => {
+    if (bucketIndex !== 0) {
+      const res = await axiosClient.get(
+        `/api/chat/get-message-in-room?room_id=${room_id}&page=${bucketIndex}`
+      );
+      setBucketIndex(bucketIndex - 1);
+      res.data[0].message_list.reverse().forEach((element: MessageInput) => {
+        pushOldMessage(element, savedMessages);
+      });
+      setMessages(savedMessages);
+    } else {
+      setOutOfMessages(true);
+    }
+  }
+
+  const clickHandle = (inputValue: string) => {
+    sendMessage(inputValue);
+  };
+
+  const prevChatId = usePrevious(room_id);
+  if (prevChatId !== room_id) {
+    return null;
+  }
   return (
     <div className="chatBox">
       <div className="chatBox__infoBar">
@@ -45,39 +139,30 @@ function ChatBox({ isChanel, listAvt, name }: ChatBoxProps) {
         </div>
         <div className="chatBox__infoBar--bar"></div>
       </div>
-      <div className="chatBox__messagePanel" onScroll={ handleScroll}>
-        <div id="scrollEvent"></div>
-        {/* TODO: Load array of message from backend, distinguish sender and render in difference messageGroup. If isChanel===false then senderName is null by default*/}
-        <>
-        {/* TODO: Fix this dummy props */}
-          {newestMessage.map((item, index) => (
+      <div className="chatBox__messagePanel" id="scrollableDiv">
+        <InfiniteScroll
+          dataLength={messages.length}
+          next={getOldMessage}
+          style={{ display: 'flex', flexDirection: 'column-reverse' }}
+          inverse={true}
+          hasMore={true && !outOfMessages}
+          loader={<p className="loadingNewMessage">Loading...</p>}
+          scrollableTarget="scrollableDiv"
+        >
+          {messages.map((item, index) => (
             <MessageGroup
               key={`MESSAGEGROUP_KEY ${index}`}
               isMe={item.isMe}
               messages={item.messages}
-              senderName={item.senderName}
+              sender={item.sender}
             />
           ))}
-          
-
-        </>
-
-        {/* <MessageGroup
-          isMe={false}
-          messages={['Message', 'Tri']}
-          senderName={'Hung'}
-        />
-        <MessageGroup
-          isMe={true}
-          messages={['Message', 'Hung']}
-          senderName={'Trí'}
-        /> */}
+        </InfiniteScroll>
+        
       </div>
-
       <div className="chatBox__holdPlace">
         <div className="chatBox__input">
-          <input placeholder="Type your message" />
-          <FaTelegramPlane className="buttonIcon" />
+        <InputMessage clickHandle={clickHandle} />
         </div>
       </div>
     </div>

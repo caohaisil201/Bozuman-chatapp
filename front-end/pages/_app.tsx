@@ -9,10 +9,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
   async function checkLogin() {
-    const res = await axiosClient.get(`${process.env.NEXT_PUBLIC_DOMAIN}/`).then(res => res);
+    const res = await axiosClient
+      .get(`${process.env.NEXT_PUBLIC_DOMAIN}/`)
+      .then((res) => res);
     return res;
   }
-  
+
   async function checkAuth() {
     const publicPaths = [
       '/sign-in',
@@ -24,24 +26,24 @@ function MyApp({ Component, pageProps }: AppProps) {
     ];
 
     const path = router.asPath.split('?')[0];
-    const checkIsLogin : any = await checkLogin();
-    let isLogin : boolean = true;
+    const checkIsLogin: any = await checkLogin();
+    let isLogin: boolean = true;
 
     if (checkIsLogin.response) {
       isLogin = false;
     }
 
-    if(!publicPaths.includes(path)) {
-      if(!isLogin){
+    if (!publicPaths.includes(path)) {
+      if (!isLogin) {
         router.push({
           pathname: '/sign-in',
-        })
+        });
       }
-    }else{
-      if(isLogin){
+    } else {
+      if (isLogin) {
         router.push({
           pathname: '/',
-        })
+        });
       }
     }
   }
@@ -52,11 +54,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <SWRConfig
-        value={{
-          refreshInterval: 1000,
-        }}
-      >
+      <SWRConfig>
         <Component {...pageProps} />
       </SWRConfig>
     </>

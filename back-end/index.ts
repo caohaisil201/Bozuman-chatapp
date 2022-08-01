@@ -30,7 +30,6 @@ app.use(
     credentials: true,
   })
 );
-
 app.use('/api/auth', auth);
 app.use('/api/token', expiredAccessTokenHandler);
 app.use('/api/chat', checkAccessToken, chat);
@@ -51,6 +50,22 @@ const io = new Server(server, {
     ],
     credentials: false,
   },
+});
+
+io.on('connection', (socket) => {
+  socket.on('joinRoom', message => {
+    console.log('Some one join: ', message);
+    socket.join(message.room);
+  });
+  socket.on('chatMessage', message => {
+    io.to(message.room).emit('message', {
+      content: message.content,
+      time: message.time,
+      sender: message.sender,
+      room_id: message.room
+    });
+    
+});
 });
 
 const port = process.env.PORT || 3000;
