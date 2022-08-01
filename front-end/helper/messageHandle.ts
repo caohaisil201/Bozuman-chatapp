@@ -12,7 +12,7 @@ export interface MessageGroupProps {
   sender: string | undefined;
 }
 
-const USERNAME = getCookie('username')?.toString();
+
 
 export function pushOldMessage(
   message: MessageInput,
@@ -66,6 +66,7 @@ const checkIsSameSender = (
 };
 
 const checkIsMe = (message: MessageInput) => {
+  const USERNAME = getCookie('username')?.toString();
   if (message.sender === USERNAME) {
     return true;
   }
@@ -76,6 +77,7 @@ const pushMessageToBottom = (
   message: MessageInput,
   saveMessage: Array<MessageGroupProps>
 ) => {
+  const USERNAME = getCookie('username')?.toString();
   saveMessage.unshift({
     isMe: checkIsMe(message),
     messages: [message.content],
@@ -87,6 +89,7 @@ const pushMessageToTop = (
   message: MessageInput,
   saveMessage: Array<MessageGroupProps>
 ) => {
+  const USERNAME = getCookie('username')?.toString();
   saveMessage.push({
     isMe: checkIsMe(message),
     messages: [message.content],
