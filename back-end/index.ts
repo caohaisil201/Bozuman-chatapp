@@ -10,6 +10,8 @@ import user from './src/routes/user.route';
 import cors from 'cors';
 import 'dotenv/config';
 import { RoomsService } from './src/services/rooms.service';
+import * as jwt from 'jsonwebtoken';
+import jwt_decode from 'jwt-decode';
 
 const db = new Database();
 db.dbConnect();
@@ -54,19 +56,49 @@ const io = new Server(server, {
   },
 });
 
+const isValidJwt = (token: any) => {
+  if (token) {
+    jwt.verify(
+      token.toString(),
+      process.env.SECRET,
+      function (err: any, decoded: any) {
+        if (err) {
+          return false;
+        }
+      }
+    );
+    return true;
+  } else {
+    return false;
+  }
+};
+
+io.use(function (socket, next) {
+  if (socket.handshake.headers && socket.handshake.headers.authorization) {
+    const header = socket.handshake.headers['authorization'];
+    if (header && isValidJwt(header)) {
+      socket.data = jwt_decode(header);
+      return next();
+    }
+  }
+});
+
 io.on('connection', (socket) => {
   socket.on('joinRoom', (message) => {
     socket.join(message.room);
   });
   socket.on('chatMessage', (message) => {
-    let receivedMessage = {
-      content: message.content,
-      time: message.time,
-      sender: message.sender,
-      room_id: message.room,
-    };
-    io.to(message.room).emit('message', receivedMessage);
-    RoomsService.insertChatMessageIntoRoom(receivedMessage);
+    if (socket.data.username) {
+      let receivedMessage = {
+        content: message.content,
+        time: message.time,
+        sender: socket.data.username,
+        room_id: message.room,
+      };
+
+      io.to(message.room).emit('message', receivedMessage);
+      RoomsService.insertChatMessageIntoRoom(receivedMessage);
+    }
   });
 });
 
