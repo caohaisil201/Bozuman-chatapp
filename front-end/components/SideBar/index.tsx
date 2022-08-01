@@ -5,7 +5,8 @@ import { deleteCookie } from 'cookies-next';
 import { FaUserPlus, FaChevronDown, FaChevronUp, FaSignOutAlt } from 'react-icons/fa';
 import PersonalRoom from 'components/PersonalRoom';
 import GroupRoom from 'components/GroupRoom';
-
+import axiosClient
+ from 'helper/axiosClient';
 const SIZE_OF_AVATAR_PROFILE: number = 50;
 
 function SideBar() {
@@ -13,8 +14,37 @@ function SideBar() {
   const [name, setName] = useState('Vu Le Anh');
   const [showPersonalMessage, setShowPersonalMessage] = useState(true);
   const [showGroupMessage, setShowGroupMessage] = useState(true);
+  const [dataUser,setDataUser] = useState({});
 
-  function handleShowPersonalMessage() {
+  useEffect(()=>{
+    async function getUserInfo() {
+       try{
+          const res = await axiosClient.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/user/user-info`);
+          console.log(res);
+       }catch (err) {
+          console.log(err);
+       }
+    } 
+    getUserInfo();
+  },[])
+
+  // const personalRooms = ():Array<Room> => {
+  //    const personalRooms:Array<Room> = [];
+  //    dataUser.room_list.forEach((room:Room)=>{
+  //       if (room.type=="Direct Message") personalRooms.push(room);
+  //    })
+  //    return personalRooms;
+  // }
+  
+  // const groupRooms = ():Array<Room> => {
+  //    const groupRooms:Array<Room> = [];
+  //    dataUser.room_list.forEach((room:Room)=>{
+  //       if (room.type="Channel message") groupRooms.push(room);
+  //    })
+  //    return groupRooms;
+  // }
+
+  function handleShowPersonalMessage() {  
     setShowPersonalMessage((prevState) => !prevState);
   }
 

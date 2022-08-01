@@ -1,65 +1,80 @@
-import Image from 'next/image';
+import RoomPanel from "components/RoomPanel";
+import  {Room}  from "hooks/useGetUserInfo";
 
-const SIZE_OF_AVATAR_PROFILE: number = 52;
+const style: string = 'group';
 
-type RoomMiniShow = {
-  room_id: string;
-  last_message: string;
-  last_time: number;
-  unread: boolean;
-  name: string;
-};
-const roomListGroupMessage: RoomMiniShow[] = [
-  {
-    room_id: '1',
-    last_message: 'Lorem Ipsum is simply dummy',
-    last_time: 2222,
-    unread: false,
-    name: 'Bozuman',
-  },
-  {
-    room_id: '1',
-    last_message: 'Lorem Ipsum is simply dummy',
-    last_time: 2222,
-    unread: false,
-    name: 'Bozuman',
-  },
-  {
-    room_id: '1',
-    last_message: 'Lorem Ipsum is simply dummy',
-    last_time: 2222,
-    unread: false,
-    name: 'Bozuman',
-  },
-  {
-    room_id: '1',
-    last_message: 'Lorem Ipsum is simply dummy',
-    last_time: 2222,
-    unread: false,
-    name: 'Bozuman',
-  },
-];
+const roomListGroupMessage: Array<Room> =[
+   {  
+      "room_id":2,
+      "type":"a",
+      "last_message":"Lorem Ipsum is simply dummy dummy",
+      "last_time":new Date(2017, 4, 4, 17, 23, 42, 11),
+      "unread":false,
+      "room_name":"Cao Hai Sil2"
+   },
+   {  
+      "room_id":3,
+      "type":"a",
+      "last_message":"Lorem Ipsum is simply dummy dummy",
+      "last_time":new Date(2017, 4, 4, 17, 23, 42, 11),
+      "unread":false,
+      "room_name":"Cao Hai Sil2"
+   },
+   {  
+      "room_id":4,
+      "type":"a",
+      "last_message":"Lorem Ipsum is simply dummy dummy",
+      "last_time":new Date(2017, 4, 4, 17, 23, 42, 11),
+      "unread":false,
+      "room_name":"Cao Hai Sil2"
+   },
+   {  
+      "room_id":5,
+      "type":"a",
+      "last_message":"Lorem Ipsum is simply dummy dummy",
+      "last_time":new Date(2017, 4, 4, 17, 23, 42, 11),
+      "unread":false,
+      "room_name":"Cao Hai Sil2"
+
+   },
+   {  
+      "room_id":6,
+      "type":"a",
+      "last_message":"Lorem Ipsum is simply dummy dummy",
+      "last_time":new Date(2017, 4, 4, 17, 23, 42, 11),
+      "unread":false,
+      "room_name":"Cao Hai Sil2"
+   },
+   {  
+      "room_id":7,
+      "type":"a",
+      "last_message":"Lorem Ipsum is simply dummy dummy",
+      "last_time":new Date(2017, 4, 4, 17, 23, 42, 11),
+      "unread":false,
+      "room_name":"Cao Hai Sil2"
+   },
+   {  
+      "room_id":8,
+      "type":"a",
+      "last_message":"Lorem Ipsum is simply dummy dummy",
+      "last_time":new Date(2017, 4, 4, 17, 23, 42, 11),
+      "unread":false,
+      "room_name":"Cao Hai Sil2"
+   },
+   {  
+      "room_id":9,
+      "type":"a",
+      "last_message":"Lorem Ipsum is simply dummy dummy",
+      "last_time":new Date(2017, 4, 4, 17, 23, 42, 11),
+      "unread":false,
+      "room_name":"Cao Hai Sil2"
+   }
+]
 
 function GroupRoom() {
-  const list = roomListGroupMessage.map((room, index) => (
-    <div className="room" key={`GROUPROOM_KEY ${index}`}>
-      <Image
-        src="/avatar.png"
-        alt="avatar"
-        width={SIZE_OF_AVATAR_PROFILE}
-        height={SIZE_OF_AVATAR_PROFILE}
-      />
-      <div>
-        <p className="roomName">{room.name}</p>
-        <p className="lastMessage">{room.last_message}</p>
-      </div>
-    </div>
-  ));
-  return (
-    <div className="showRoomPanel">
-      <div className="group">{list}</div>
-    </div>
-  );
+   return (
+      <RoomPanel data={roomListGroupMessage} style={style}/>
+   )
 }
 
 export default GroupRoom;
