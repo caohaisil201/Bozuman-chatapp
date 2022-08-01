@@ -58,24 +58,17 @@ io.on('connection', (socket) => {
     socket.join(message.room);
   });
   socket.on('chatMessage', (message) => {
-    console.log(message);
     io.to(message.room).emit('message', {
       content: message.content,
       time: message.time,
       sender: message.sender,
       room_id: message.room,
     });
-    console.log({
-      content: message.content,
-      time: message.time,
-      sender: message.sender,
-      room_id: message.room
-    });
     RoomsService.insertChatMessageIntoRoom({
       content: message.content,
       time: message.time,
       sender: message.sender,
-      room_id: message.room
+      room_id: message.room,
     });
   });
 });
