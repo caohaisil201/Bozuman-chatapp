@@ -58,18 +58,14 @@ io.on('connection', (socket) => {
     socket.join(message.room);
   });
   socket.on('chatMessage', (message) => {
-    io.to(message.room).emit('message', {
+    let receivedMessage = {
       content: message.content,
       time: message.time,
       sender: message.sender,
       room_id: message.room,
-    });
-    RoomsService.insertChatMessageIntoRoom({
-      content: message.content,
-      time: message.time,
-      sender: message.sender,
-      room_id: message.room,
-    });
+    };
+    io.to(message.room).emit('message', receivedMessage);
+    RoomsService.insertChatMessageIntoRoom(receivedMessage);
   });
 });
 
