@@ -17,7 +17,7 @@ export interface Room {
   last_message: string;
   last_time:Date;
   unread: boolean;
-  room_name: string;
+  name: string;
   type: string;
 }
 const fetcher = async (url:string) => await axiosClient.get(url).then((res) => res.data);

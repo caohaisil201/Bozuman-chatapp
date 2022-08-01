@@ -7,20 +7,12 @@ import {io} from 'socket.io-client';
 const SIZE_OF_AVATAR_PROFILE: number = 48;
 
 type Props={
-   data: Room[]; 
+   data: Array<Room>; 
    style:string;
 }
 
 function RoomPanel({data, style}:Props){
-   useEffect(()=>{
-      data.map(room => {
-         if (room.last_message.length>=35) {
-            room.last_message = room.last_message.slice (0,32)+" ...";
-         }
-      })           
-   })
-
-   const [lastRoomID,setLastRoomID] = useState(data[0].room_id);
+   const [lastRoomID,setLastRoomID] = useState(1);
 
    const socket = io(`${process.env.NEXT_PUBLIC_DOMAIN}`);
    socket.on('message', message => {
@@ -30,34 +22,39 @@ function RoomPanel({data, style}:Props){
    const [roomList,setRoomList]=useState([<></>]);
 
    useEffect(()=>{
-
-      const tmp:Array<Room>=data;
-      const position:number = tmp.findIndex(value => value.room_id===lastRoomID);
-      if (position!=0){
-         const lastRoom:Room=tmp[position];
-         for(let i=position;i>0;i--){
-            tmp[i]=tmp[i-1];
+      if (data.length!==0){
+         const tmp:Array<Room>=data;
+         console.log(data);
+         const position:number = tmp.findIndex(value => value.room_id===lastRoomID);
+         if (position!=0){
+            const lastRoom:Room=tmp[position];
+            for(let i=position;i>0;i--){
+               tmp[i]=tmp[i-1];
+            }
+            tmp[0]=lastRoom;
          }
-         tmp[0]=lastRoom;
+
+         console.log("ffff",tmp);
+
+         const tmpList = tmp.map((room:Room,index) => 
+            <div className={room.unread?"room room_active":"room"} key={index}>
+               <Image
+                  src='/avatar.png'
+                  alt='avatar'
+                  width={SIZE_OF_AVATAR_PROFILE}
+                  height={SIZE_OF_AVATAR_PROFILE}
+               />      
+               <div className="room_info">
+                  <p className="roomName">{room.name}</p>
+                  <p className="lastTime">{new Date(room.last_time).getHours()}:{new Date(room.last_time).getMinutes()}</p>
+                  <p className="lastMessage">{room.last_message}</p>
+               </div>
+            </div>  
+         ) 
+         setRoomList(tmpList);
       }
 
-      const tmpList = tmp.map(room => 
-         <div className={room.unread?"room room_active":"room"} key={room.room_id}>
-            <Image
-               src='/avatar.png'
-               alt='avatar'
-               width={SIZE_OF_AVATAR_PROFILE}
-               height={SIZE_OF_AVATAR_PROFILE}
-            />      
-            <div className="room_info">
-               <p className="roomName">{room.room_name}</p>
-               <p className="lastTime">{room.last_time.getHours()}:{room.last_time.getMinutes()}</p>
-               <p className="lastMessage">{room.last_message}</p>
-            </div>
-         </div>  
-      ) 
-      setRoomList(tmpList);
-   },[lastRoomID])
+   },[lastRoomID,data.length])
 
    return(
       <div className='showRoomPanel'>

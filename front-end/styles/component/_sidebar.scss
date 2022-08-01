@@ -3,23 +3,28 @@
   min-height: 100vh;
   padding-left: 8px;
   padding-right: 12px;
-  
-  .personalInfo {
-    min-height: 70px;
+  .header {
     display: flex;
-    padding-top: 6px;
-    justify-content: flex-start;
     align-items: center;
-    .info{
-      margin-left: 18px;
-      .name{
-        font-weight: 600;
-        font-size:1rem;
-        margin-bottom: 0;
+    justify-content: space-between;
+      
+
+    .personalInfo {
+      min-height: 70px;
+      display: flex;
+      padding-top: 6px;
+      justify-content: flex-start;
+      align-items: center;
+      .info{
+        margin-left: 18px;
+        .name{
+          font-weight: 600;
+          font-size:1rem;
+          margin-bottom: 0;
+        }
       }
     }
   }
-  
   .searchAndAdd{
     display: flex;
     align-items: center;
