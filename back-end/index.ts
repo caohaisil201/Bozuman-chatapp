@@ -10,7 +10,6 @@ import user from './src/routes/user.route';
 import cors from 'cors';
 import 'dotenv/config';
 
-const userList: any = [];
 const db = new Database();
 db.dbConnect();
 

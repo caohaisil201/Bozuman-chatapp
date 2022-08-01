@@ -51,11 +51,14 @@ export class Chat {
   };
 
   public getMessageInRoomByPage = async (
-    req: TypedRequestBody<{
-    }>,
+    req: TypedRequestBody<{}>,
     res: Response
   ) => {
-    const data = {room_id: req.query.room_id, page: req.query.page, pageSize: req.query.pageSize};
+    const data = {
+      room_id: req.query.room_id,
+      page: req.query.page,
+      pageSize: req.query.pageSize,
+    };
     try {
       const messageList = await RoomsService.getMessageInRoomByPage(data);
       res.status(200).json(messageList);
@@ -65,17 +68,15 @@ export class Chat {
   };
 
   public getNewestMessageBucket = async (
-    req: TypedRequestBody<{
-    }>,
+    req: TypedRequestBody<{}>,
     res: Response
   ) => {
-    const room_id = req.query.room_id as string
+    const room_id = req.query.room_id as string;
     try {
       const newestIndex = await RoomsService.getNewestMessageBucket(room_id);
-      res.status(200).json({newestIndex : newestIndex});
+      res.status(200).json({ newestIndex: newestIndex });
     } catch (err) {
       throw err;
     }
   };
-
 }
