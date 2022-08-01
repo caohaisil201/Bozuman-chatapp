@@ -30,8 +30,6 @@ const AVATAR_SIZE = 42;
 const savedMessages: Array<MessageGroupProps> = [];
 
 function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
-  const [temp, setTemp] = useState(0)
-
   const sendMessage = (inputValue: string) => {
     socket.emit('chatMessage', {
       content: inputValue,
@@ -85,8 +83,7 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
 
     socket.on('message', message => {
       pushNewMessage(message, savedMessages);
-      setMessages(savedMessages);
-      setTemp(prev => prev + 1)
+      setMessages([...savedMessages]);
     })
   }, [])
 
