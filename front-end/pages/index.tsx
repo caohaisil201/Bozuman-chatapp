@@ -5,7 +5,6 @@ import ChatBox from 'components/ChatBox';
 import useGetUserInfo from 'hooks/useGetUserInfo'
 
 const Home: NextPage = () => {
-  const data = useGetUserInfo();
   return (
     <div>
       <Head>
@@ -18,7 +17,7 @@ const Home: NextPage = () => {
             <SideBar />
           </div>
           <div className="col-9">
-            <ChatBox room_id={2} isChanel={true} name="Bozuman" listAvt={['1', '2']} />
+            <ChatBox room_id={1} isChanel={true} roomName="Bozuman" listAvt={['1', '2']} />
           </div>
         </div>
       </div>
