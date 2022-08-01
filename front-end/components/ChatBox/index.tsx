@@ -112,7 +112,7 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
       res.data[0].message_list.reverse().forEach((element: MessageInput) => {
         pushOldMessage(element, savedMessages);
       });
-      setMessages(savedMessages);
+      setMessages([...savedMessages]);
     } else {
       setOutOfMessages(true);
     }
