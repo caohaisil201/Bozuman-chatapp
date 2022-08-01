@@ -1,58 +1,95 @@
-interface MessageInput {
+import { getCookie } from 'cookies-next';
+export interface MessageInput {
   content: string;
-  username: string;
+  sender: string;
   time: any;
+  room_id: number;
 }
 
-interface MessageGroupProps {
+export interface MessageGroupProps {
   isMe: boolean;
   messages: Array<string>;
-  senderName: string | null;
+  sender: string | undefined;
 }
 
-// TODO: write API get userInfo(secure later), write API get 10 newest message
-const USERNAME = 'bozuman1'
-export const newestMessage : Array<MessageGroupProps> = [{
-  isMe: false,
-  messages: ['Bozuman', 'Bozuman','Bozuman','lorem',],
-  senderName: 'Sil'
-}, {  isMe: false,
-  messages: ['Bozuman', 'Bozuman','Bozuman','lorem','Bozuman', 'Bozuman','Bozuman','lorem',],
-  senderName: 'Hung'}]
+const USERNAME = getCookie('username')?.toString();
 
-export function outputMessageInGroup (message: MessageInput) {
-  // Get array of message by API, this function will update it on cliend whenever socket emit a event)
-  if (checkSender(message)) {
-    newestMessage[0].messages.push(message.content)
+export function pushOldMessage(
+  message: MessageInput,
+  saveMessage: Array<MessageGroupProps>
+) {
+  if (checkIsFirstMessage(saveMessage)) {
+    return pushMessageToTop(message, saveMessage);
+  }
+  if (checkIsSameSender(message, saveMessage, false)) {
+    const LAST_ELEMENT = saveMessage.length - 1;
+    return saveMessage[LAST_ELEMENT].messages.unshift(message.content);
+  }
+  return pushMessageToTop(message, saveMessage);
+}
+
+export function pushNewMessage(
+  message: MessageInput,
+  saveMessage: Array<MessageGroupProps>
+) {
+  if (checkIsFirstMessage(saveMessage)) {
+    return pushMessageToBottom(message, saveMessage);
+  }
+  if (checkIsSameSender(message, saveMessage, true)) {
+    return saveMessage[0].messages.push(message.content);
+  }
+  return pushMessageToBottom(message, saveMessage);
+}
+
+const checkIsFirstMessage = (saveMessage: Array<MessageGroupProps>) => {
+  if (!saveMessage[0]) {
+    return true;
+  }
+  return false;
+};
+
+const checkIsSameSender = (
+  message: MessageInput,
+  saveMessage: Array<MessageGroupProps>,
+  isNew: boolean
+) => {
+  if (isNew) {
+    if (saveMessage[0].sender === message.sender) {
+      return true;
+    }
   } else {
-    if (checkIsMe(message)) {
-      newestMessage.unshift({
-        isMe: true,
-        messages: [message.content],
-        senderName: USERNAME
-      })
-    } else {
-      newestMessage.unshift({
-        isMe: false,
-        messages: [message.content],
-        senderName: message.username
-      })
+    if (saveMessage[saveMessage.length - 1].sender === message.sender) {
+      return true;
     }
   }
-    // TODO: identify message not rely on username, use it to query nickname or full name to show on page
-  
-}
-
-const checkSender = (message: MessageInput) => {
-  if (newestMessage[0].senderName === message.username){
-    return true;
-  }
-  return false
-}
+  return false;
+};
 
 const checkIsMe = (message: MessageInput) => {
-  if (message.username === USERNAME){
+  if (message.sender === USERNAME) {
     return true;
   }
-  return false
-}
+  return false;
+};
+
+const pushMessageToBottom = (
+  message: MessageInput,
+  saveMessage: Array<MessageGroupProps>
+) => {
+  saveMessage.unshift({
+    isMe: checkIsMe(message),
+    messages: [message.content],
+    sender: checkIsMe(message) ? USERNAME : message.sender,
+  });
+};
+
+const pushMessageToTop = (
+  message: MessageInput,
+  saveMessage: Array<MessageGroupProps>
+) => {
+  saveMessage.push({
+    isMe: checkIsMe(message),
+    messages: [message.content],
+    sender: checkIsMe(message) ? USERNAME : message.sender,
+  });
+};

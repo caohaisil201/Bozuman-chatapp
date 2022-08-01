@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import axiosClient from 'helper/axiosClient';
 import { appRoutes } from '../../constant/appRoutes';
 //TODO: fix type of Props
@@ -35,7 +35,7 @@ const ProtectedRoute = ({router, children}: Props) =>{
     }
   }
 
-  useEffect(()=>{
+  useLayoutEffect(()=>{
     checkAuth();
   },[])
 

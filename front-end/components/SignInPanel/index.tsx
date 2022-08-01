@@ -66,6 +66,7 @@ function SignInPanel() {
       });
       setCookie('access_token', res.data.accessToken);
       setCookie('refresh_token', res.data.refreshToken);
+      setCookie('username', username);
       router.push('/');
     } catch (error: any) {
       setErrorMessage({
