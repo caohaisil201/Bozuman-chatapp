@@ -12,14 +12,13 @@ import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import usePrevious from 'hooks/usePrevious'
 import useGetUserInfo from 'hooks/useGetUserInfo';
-const TWO_NEWSET_BUCKET = 2
-const FIRST_NEWEST_BUCKET = 1
-import {io} from 'socket.io-client';
+import { io } from 'socket.io-client';
 import { getCookie } from 'cookies-next';
 
+const TWO_NEWSET_BUCKET = 2
+const FIRST_NEWEST_BUCKET = 1
+
 const socket = io(`${process.env.NEXT_PUBLIC_DOMAIN}`);
-
-
 
 type ChatBoxProps = {
   room_id: number;
@@ -32,12 +31,12 @@ const savedMessages: Array<MessageGroupProps> = [];
 
 function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
   const userInfo = useGetUserInfo();
-    
+
   const [textFieldContent, setTextFieldContent] = useState('');
 
   const sendMessage = () => {
     socket.emit('chatMessage', {
-      content: textFieldContent, 
+      content: textFieldContent,
       time: Date(),
       username: userInfo.username,
       room: room_id
@@ -59,7 +58,7 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
     const firstBucket = await axiosClient.get(
       `/api/chat/get-message-in-room?room_id=${room_id}&page=${data.newestIndex}`
     );
-    
+
     firstBucket.data[0].message_list.reverse().forEach((element: MessageInput) => {
       pushOldMessage(element, savedMessages);
     });
@@ -71,17 +70,9 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
     });
     setMessages(savedMessages);
   };
-  useEffect(() => {
-    
-    getInitMessage();
-    // if (userInfo) {
-    //   console.log('yeah h');
-    //   socket.emit('joinRoom', {
-    //     username: userInfo.username,
-    //     room: room_id
-    //   });
-    // }
 
+  useEffect(() => {
+    getInitMessage();
   }, [room_id]);
 
   useEffect(() => {
@@ -112,10 +103,11 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
       setMessages(savedMessages);
     } else {
       setOutOfMessages(true);
-    } }
+    }
+  }
 
 
-  
+
   const prevChatId = usePrevious(room_id);
   if (prevChatId !== room_id) {
     return null;
@@ -169,8 +161,8 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
       </div>
       <div className="chatBox__holdPlace">
         <div className="chatBox__input">
-          <input placeholder="Type your message" value={textFieldContent} onChange={handleChange}/>
-          <FaTelegramPlane className="buttonIcon" onClick={sendMessage}/>
+          <input placeholder="Type your message" value={textFieldContent} onChange={handleChange} />
+          <FaTelegramPlane className="buttonIcon" onClick={sendMessage} />
         </div>
       </div>
     </div>
