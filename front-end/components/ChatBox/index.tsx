@@ -30,17 +30,18 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
   const getInitMessage = async () => {
     const { data } = await axiosClient.get(
-      `${process.env.NEXT_PUBLIC_DOMAIN}/api/chat/get-newest-message-bucket?room_id=${room_id}`
+      `/api/chat/get-newest-message-bucket?room_id=${room_id}`
     );
     setBucketIndex(data.newestIndex - TWO_NEWSET_BUCKET);
     const firstBucket = await axiosClient.get(
-      `${process.env.NEXT_PUBLIC_DOMAIN}/api/chat/get-message-in-room?room_id=${room_id}&page=${data.newestIndex}`
+      `/api/chat/get-message-in-room?room_id=${room_id}&page=${data.newestIndex}`
     );
+    
     firstBucket.data[0].message_list.reverse().forEach((element: MessageInput) => {
       pushOldMessage(element, savedMessages);
     });
     const secondBucket = await axiosClient.get(
-      `${process.env.NEXT_PUBLIC_DOMAIN}/api/chat/get-message-in-room?room_id=${room_id}&page=${data.newestIndex - FIRST_NEWEST_BUCKET}`
+      `/api/chat/get-message-in-room?room_id=${room_id}&page=${data.newestIndex - FIRST_NEWEST_BUCKET}`
     );
     secondBucket.data[0].message_list.reverse().forEach((element: MessageInput) => {
       pushOldMessage(element, savedMessages);
@@ -54,7 +55,7 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
   const getOldMessage = async () => {
     if (bucketIndex !== 0) {
       const res = await axiosClient.get(
-        `${process.env.NEXT_PUBLIC_DOMAIN}/api/chat/get-message-in-room?room_id=${room_id}&page=${bucketIndex}`
+        `/api/chat/get-message-in-room?room_id=${room_id}&page=${bucketIndex}`
       );
       setBucketIndex(bucketIndex - 1);
       res.data[0].message_list.reverse().forEach((element: MessageInput) => {
