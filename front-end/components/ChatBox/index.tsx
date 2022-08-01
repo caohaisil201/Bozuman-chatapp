@@ -101,8 +101,6 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
     })
   }, [])
 
-
-
   const getOldMessage = async () => {
     if (bucketIndex !== 0) {
       const res = await axiosClient.get(

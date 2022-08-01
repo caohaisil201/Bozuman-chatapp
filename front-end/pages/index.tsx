@@ -2,7 +2,6 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import SideBar from 'components/SideBar';
 import ChatBox from 'components/ChatBox';
-import useGetUserInfo from 'hooks/useGetUserInfo'
 
 const Home: NextPage = () => {
   return (
