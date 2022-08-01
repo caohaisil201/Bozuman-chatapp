@@ -23,13 +23,13 @@ const socket = io(`${process.env.NEXT_PUBLIC_DOMAIN}`);
 type ChatBoxProps = {
   room_id: number;
   isChanel: boolean;
-  name: string;
+  roomName: string;
   listAvt: Array<string>;
 };
 const AVATAR_SIZE = 42;
 const savedMessages: Array<MessageGroupProps> = [];
 
-function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
+function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
   const sendMessage = (inputValue: string) => {
     socket.emit('chatMessage', {
       content: inputValue,
@@ -42,31 +42,44 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
   const [messages, setMessages] = useState<Array<MessageGroupProps>>([]);
   const [bucketIndex, setBucketIndex] = useState<number>(0);
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
+
+  const getMessageBucket = async (page: number) => {
+    try {
+      const { data } = await axiosClient.get(
+        `/api/chat/get-message-in-room?room_id=${room_id}&page=${page}`
+      );
+      if (data[0]) {
+        data[0].message_list.reverse().forEach((element: MessageInput) => {
+          pushOldMessage(element, savedMessages);
+        });
+        setMessages([...savedMessages]);
+      }
+
+    } catch (error) {
+      // TODO: Do something when error
+    }
+  };
+  
   const getInitMessage = async () => {
-    const { data } = await axiosClient.get(
-      `/api/chat/get-newest-message-bucket?room_id=${room_id}`
-    );
-    console.log(data);
-    setBucketIndex(data.newestIndex - TWO_NEWSET_BUCKET);
-    const firstBucket = await axiosClient.get(
-      `/api/chat/get-message-in-room?room_id=${room_id}&page=${data.newestIndex}`
-    );
-    if (firstBucket.data[0]) {
-      firstBucket.data[0].message_list.reverse().forEach((element: MessageInput) => {
-        pushOldMessage(element, savedMessages);
-      });
+    try {
+      // Count message bucket to get the newest bucket index
+      const { data } = await axiosClient.get(
+        `/api/chat/get-newest-message-bucket?room_id=${room_id}`
+      );
+      if (data.newestIndex >= 2) {
+        await getMessageBucket(data.newestIndex);
+        await getMessageBucket(data.newestIndex - FIRST_NEWEST_BUCKET);
+        return setBucketIndex(data.newestIndex - TWO_NEWSET_BUCKET);
+      }
+      if (data.newestIndex === 1) {
+        await getMessageBucket(data.newestIndex);
+        return setBucketIndex(data.newestIndex - FIRST_NEWEST_BUCKET);
+      }
+      setOutOfMessages(true);
+      return setBucketIndex(data.newestIndex);
+    } catch (error) {
+      // TODO: Do something when error
     }
-
-    const secondBucket = await axiosClient.get(
-      `/api/chat/get-message-in-room?room_id=${room_id}&page=${data.newestIndex - FIRST_NEWEST_BUCKET}`
-    );
-    if (secondBucket.data[0]) {
-      secondBucket.data[0].message_list.reverse().forEach((element: MessageInput) => {
-        pushOldMessage(element, savedMessages);
-      });
-    }
-
-    setMessages(savedMessages);
   };
 
   useEffect(() => {
@@ -131,7 +144,7 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
                 />;
               })}
             </>
-            <p>{name}</p>
+            <p>{roomName}</p>
           </div>
           <div className="infoButton">
             {/* TODO: open information component, complete it in next sprint */}
