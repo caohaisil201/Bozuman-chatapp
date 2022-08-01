@@ -7,8 +7,11 @@ function InputMessage({clickHandle} : any) {
     setinputValue(event.target.value);
   };
   const onClickHandle = () => {
-    clickHandle(inputValue)
-    setinputValue('')
+    if (inputValue !== '') {
+      clickHandle(inputValue)
+      setinputValue('')
+    }
+
   }
   return (
     <div className="chatBox__input">
