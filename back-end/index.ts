@@ -10,8 +10,7 @@ import user from './src/routes/user.route';
 import cors from 'cors';
 import 'dotenv/config';
 import { RoomsService } from './src/services/rooms.service';
-import { UsersService } from './src/services/users.service';
-const jwt = require('jsonwebtoken');
+import * as jwt from 'jsonwebtoken';
 import jwt_decode from 'jwt-decode';
 
 const db = new Database();
@@ -81,7 +80,6 @@ io.use(function (socket, next) {
       return next();
     }
   }
-  // return next(new Error('authentication error'));
 });
 
 io.on('connection', (socket) => {

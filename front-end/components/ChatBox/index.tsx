@@ -1,7 +1,6 @@
 import MessageGroup from 'components/MessageGroup';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { FaInfoCircle } from 'react-icons/fa';
 import {
   pushOldMessage,
   pushNewMessage,
@@ -12,25 +11,8 @@ import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import usePrevious from 'hooks/usePrevious'
 import InputMessage from './inputMessage';
-import { io } from 'socket.io-client';
 import { getCookie } from 'cookies-next';
-// import { socket } from 'helper/socket';
-
-function getAccessToken () {
-  const access_token = getCookie('access_token');
-  return access_token;
-}
-
-const socket = io(`${process.env.NEXT_PUBLIC_DOMAIN}`,{
-  transportOptions: {
-    polling: {
-      extraHeaders: {
-        'Authorization': getAccessToken(),
-      },
-    },
-  },
-}
-);
+import { socket } from 'helper/socket';
 
 const TWO_NEWSET_BUCKET = 2
 const FIRST_NEWEST_BUCKET = 1
