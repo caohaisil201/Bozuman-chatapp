@@ -11,9 +11,12 @@ import {
 import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import usePrevious from 'hooks/usePrevious'
-
+import useGetUserInfo from 'hooks/useGetUserInfo';
 const TWO_NEWSET_BUCKET = 2
 const FIRST_NEWEST_BUCKET = 1
+import {io} from 'socket.io-client';
+
+
 
 type ChatBoxProps = {
   room_id: number;
@@ -25,6 +28,27 @@ const AVATAR_SIZE = 42;
 const savedMessages: Array<MessageGroupProps> = [];
 
 function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
+  const userInfo = useGetUserInfo();
+  const [textFieldContent, setTextFieldContent] = useState('');
+  const socket = io(`${process.env.NEXT_PUBLIC_DOMAIN}`);
+  
+socket.on('message', message => {
+  pushNewMessage(message, savedMessages);
+  setMessages(savedMessages);
+})
+  const sendMessage = () => {
+    socket.emit('chatMessage', {
+      content: textFieldContent, 
+      time: Date(),
+      username: 'bozuman1',
+      room: 'room1'
+    });
+    setTextFieldContent('');
+  }
+
+  const handleChange = (event: any) => {
+    setTextFieldContent(event.target.value)
+  }
   const [messages, setMessages] = useState<Array<MessageGroupProps>>([]);
   const [bucketIndex, setBucketIndex] = useState<number>(0);
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
@@ -50,6 +74,13 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
   };
   useEffect(() => {
     getInitMessage();
+    if (userInfo) {
+      socket.emit('joinRoom', {
+        username: userInfo.username,
+        room: room_id
+      });
+    }
+
   }, [room_id]);
 
   const getOldMessage = async () => {
@@ -64,8 +95,10 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
       setMessages(savedMessages);
     } else {
       setOutOfMessages(true);
-    }
-  };
+    } }
+
+
+  
   const prevChatId = usePrevious(room_id);
   if (prevChatId !== room_id) {
     return null;
@@ -119,8 +152,8 @@ function ChatBox({ room_id, isChanel, listAvt, name }: ChatBoxProps) {
       </div>
       <div className="chatBox__holdPlace">
         <div className="chatBox__input">
-          <input placeholder="Type your message" />
-          <FaTelegramPlane className="buttonIcon" />
+          <input placeholder="Type your message" value={textFieldContent} onChange={handleChange}/>
+          <FaTelegramPlane className="buttonIcon" onClick={sendMessage}/>
         </div>
       </div>
     </div>

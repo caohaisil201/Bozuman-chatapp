@@ -10,6 +10,7 @@ import user from './src/routes/user.route';
 import cors from 'cors';
 import 'dotenv/config';
 
+const userList: any = [];
 const db = new Database();
 db.dbConnect();
 
@@ -50,6 +51,22 @@ const io = new Server(server, {
     ],
     credentials: false,
   },
+});
+
+io.on('connection', (socket) => {
+  socket.on('joinRoom', message => {
+    console.log('Some one join: ', message);
+    socket.join(message.room);
+  });
+  socket.on('chatMessage', message => {
+    console.log(message)
+    io.to(message.room).emit('message', {
+      content: message.content,
+      time: message.time,
+      username: message.username
+    });
+    
+});
 });
 
 const port = process.env.PORT || 3000;
