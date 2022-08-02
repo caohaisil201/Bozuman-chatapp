@@ -7,6 +7,7 @@ import _CONF from 'config/config';
 import { useRouter } from 'next/router';
 import AuthPanel from 'components/AuthPanel';
 import Swal from 'sweetalert2';
+import md5 from 'md5';
 
 interface ResetPasswordForm {
   password: string;
@@ -61,7 +62,7 @@ function ResetPasswordPanel() {
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/reset-password`,
         {
           token: user,
-          password,
+          password: md5(password),
         }
       );
 

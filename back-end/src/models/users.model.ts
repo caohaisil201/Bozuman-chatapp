@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import mongoose from 'mongoose';
 import Joi from 'joi';
 
@@ -53,15 +52,32 @@ const UsersSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-
-  code: {
-    type: String,
-    required: false,
-  },
-
+  
   room_list: {
-    type: Array,
+    type: Array<{
+      room_id: {
+        type: Number,
+        required: true,
+      },
+
+      last_message: {
+        type: String,
+        required: true,
+      },
+
+      last_time: {
+        type: String,
+        required: true,
+      },
+
+      unread: {
+        type: Boolean,
+        required: true,
+        default: false,
+      }
+    }>,
     required: false,
+    default: [],
   },
 });
 
@@ -72,9 +88,7 @@ export const registerSchema = Joi.object({
     .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
     .required(),
   password: Joi.string()
-    .min(8)
-    .max(16)
-    .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
+    .max(50)
     .required(),
   full_name: Joi.string()
     .min(8)
@@ -94,9 +108,7 @@ export const signInSchema = Joi.object({
     .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
     .required(),
   password: Joi.string()
-    .min(8)
-    .max(16)
-    .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
+    .max(50)
     .required(),
 });
 

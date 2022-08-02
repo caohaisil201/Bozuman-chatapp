@@ -1,10 +1,10 @@
-/* eslint-disable camelcase */
 import { Users } from '../models/users.model';
 import * as jwt from 'jsonwebtoken';
 import _CONF from '../configs/auth.config';
 import { RefreshToken } from '../models/refreshToken.model';
+import _Error from '../utils/Error.utils';
 import crypto from 'crypto';
-import md5 from 'md5';
+import 'dotenv/config';
 
 export interface User {
   username: string;
@@ -19,11 +19,40 @@ export interface User {
   avatar?: string;
   description?: string;
   code?: string;
-  // TODO: Change room_list types
-  room_list?: Array<string>;
+  room_list?: Array<{
+    room_id: number;
+    name: string;
+    type: string;
+    last_mess: string;
+    last_time: Date;
+    unread: boolean;
+  }>;
 }
 
 export class UsersService {
+  static generateAccessToken = (username: any) => {
+    return jwt.sign({ username: username }, process.env.SECRET, {
+      expiresIn: _CONF.TOKEN_LIFE,
+    });
+  };
+
+  static generateRefreshToken = (username: string) => {
+    return new RefreshToken({
+      username: username,
+      token: jwt.sign(
+        { username: username, randomString: this.randomTokenString() },
+        process.env.SECRET_REFRESH,
+        {
+          expiresIn: _CONF.REFRESH_TOKEN_LIFE,
+        }
+      ),
+    });
+  };
+  
+  static randomTokenString = () => {
+    return crypto.randomBytes(40).toString('hex');
+  };
+
   static create = async (data: User) => {
     try {
       const user = {
@@ -35,47 +64,37 @@ export class UsersService {
       const response = await new Users(user).save();
       return response;
     } catch (error) {
-      // TODO: handle error
-      // eslint-disable-next-line no-console
-      console.log(error);
+      throw error;
     }
   };
 
-  static find = async (data: { username?: string; email?: string }) => {
+  static checkUserExist = async (data: { username?: string; email?: string }) => {
     const user = await Users.findOne({
       $or: [{ username: data.username }, { email: data.email }],
     }).exec();
     return user;
   };
 
-  static activateAccount = async (userName: string) => {
+  static activateAccount = async (username: string) => {
     try {
       await Users.findOneAndUpdate(
-        { username: userName },
+        { username: username },
         { active: true }
       ).exec();
       return { success: true, message: 'Activate account success' };
     } catch (error) {
-      // TODO: handle error
-      // eslint-disable-next-line no-console
-      console.log(error);
+      throw error;
     }
   };
 
   static authenticate = async (data: User) => {
     const { username, password } = data;
     const user = await Users.findOne({ username: username }).exec();
-    if (!user || md5(password) != user.password) {
-      throw {
-        code: 'SIGN_IN_007',
-        message: 'Username or password is incorrect',
-      };
+    if (!user || password != user.password) {
+      throw _Error.SIGN_IN_007
     }
     if (!user.active) {
-      throw {
-        code: 'SIGN_IN_008',
-        message: 'Your account is inactive',
-      };
+      throw _Error.SIGN_IN_008
     }
     const accessToken = this.generateAccessToken(user.username);
     const refreshToken = this.generateRefreshToken(user.username);
@@ -95,43 +114,24 @@ export class UsersService {
       password,
     });
     if (user) {
-      throw 'New password must not be the same as the old password';
+      throw _Error.FORGOT_PASSWORD_010
     }
 
     user = await Users.findOne({
       email,
     });
     if (user) {
-      user.password = md5(password);
+      user.password = password;
       return await user.save();
     } else {
-      throw {
-        code: 'FORGOT_PASSWORD_014',
-        message: 'Your account does not exist',
-      };
+      throw _Error.FORGOT_PASSWORD_014
     }
   };
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  static generateAccessToken = (username: any) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    return jwt.sign({ username: username }, _CONF.SECRET, {
-      expiresIn: _CONF.tokenLife,
-    });
-  };
 
-  static generateRefreshToken = (username: string) => {
-    return new RefreshToken({
-      username: username,
-      token: jwt.sign(
-        { username: username, randomString: this.randomTokenString() },
-        _CONF.SECRET_REFRESH,
-        {
-          expiresIn: _CONF.refreshTokenLife,
-        }
-      ),
-    });
-  };
-  static randomTokenString = () => {
-    return crypto.randomBytes(40).toString('hex');
-  };
+  static getUserInfo = async (username: string | undefined) => {
+    if(username){
+      return await Users.findOne({username: username}).select(['-password','-_id', '-active']).exec();
+    }
+    throw _Error.SERVER_ERROR;
+  }
 }

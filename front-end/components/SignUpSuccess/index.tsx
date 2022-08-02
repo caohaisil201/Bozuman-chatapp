@@ -11,7 +11,7 @@ export default function SignUpSuccess() {
     try {
       await axios
         .get(
-          `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/activate_account/${postData}`
+          `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/activate-account/${postData}`
         )
         .then((res) => {
           if (!res.data.success) {
@@ -21,7 +21,7 @@ export default function SignUpSuccess() {
           }
         });
     } catch (error) {
-      //TODO: handle error
+      throw error;
     }
   };
   const router = useRouter();

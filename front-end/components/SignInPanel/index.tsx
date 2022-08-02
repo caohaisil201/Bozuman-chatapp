@@ -8,6 +8,7 @@ import _CONF from 'config/config';
 import { useRouter } from 'next/router';
 import { setCookie } from 'cookies-next';
 import AuthPanel from 'components/AuthPanel';
+import md5 from 'md5';
 
 interface SignInForm {
   username: string;
@@ -50,10 +51,14 @@ function SignInPanel() {
     resolver: yupResolver(schema),
   });
   const onSubmit: SubmitHandler<SignInForm> = async (data) => {
+    let {username, password} = data;
+    password = md5(password);
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/sign-in`,
-        data
+        `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/sign-in`,{
+          username,
+          password
+        }
       );
       setErrorMessage({
         trigger: false,
@@ -61,6 +66,7 @@ function SignInPanel() {
       });
       setCookie('access_token', res.data.accessToken);
       setCookie('refresh_token', res.data.refreshToken);
+      setCookie('username', username);
       router.push('/');
     } catch (error: any) {
       setErrorMessage({

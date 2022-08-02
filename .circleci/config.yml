@@ -1,28 +1,6 @@
 version: 2.1
 
 jobs:
-  front-end-eslint:
-    docker: 
-      - image: cimg/node:16.16.0
-    steps:
-      - checkout
-      - run:
-          working_directory: ./front-end
-          command: |
-            npm install
-            npm run lint
-
-  back-end-eslint:
-    docker:
-      - image: cimg/node:16.16.0
-    steps:
-      - checkout
-      - run:
-          working_directory: ./back-end
-          command: |
-            npm install
-            npm run lint
-  
   front-end-deploy:
     docker:
       - image: cimg/node:16.16.0
@@ -68,18 +46,12 @@ jobs:
 workflows:
   Project-workflow:
     jobs:
-      - front-end-eslint
-      - back-end-eslint
       - front-end-deploy:
-          requires:
-            - front-end-eslint
           filters:
             branches:
               only:
                 - master
       - front-end-deploy-staging:
-          requires:
-            - front-end-eslint
           filters:
             branches:
               only:

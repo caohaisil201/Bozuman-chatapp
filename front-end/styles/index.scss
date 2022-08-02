@@ -2,13 +2,20 @@
 @import 'bootstrap/dist/css/bootstrap.css';
 @import './base/variable';
 @import './base/normalized.scss';
+@import './base/reset'; 
 
+@import './common/scrollBar';
 @import './common/button.scss';
 @import './common/textfield.scss';
 @import './common/link.scss';
 @import './common/label.scss';
+@import './common/icon.scss';
 
 @import './component/panel';
+@import './component/sidebar';
+@import './component/showroompanel';
+@import './component/chatBox';
+@import './component/messagesGroup';
 
 @import './pages/forgotpassword';
 @import './pages/signin';

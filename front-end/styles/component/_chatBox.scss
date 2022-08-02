@@ -1,0 +1,77 @@
+.chatBox {
+  background-color: $color-chatbox-bachground;
+  padding: 20px 30px;
+  height: 100vh;
+  &__messagePanel {
+    display: flex;
+    height: 85vh;
+    overflow-y: auto;
+    flex-direction: column-reverse;
+    padding-bottom: 60px;
+  }
+
+  &__infoBar{
+    padding: 0px 10px;
+
+    &--bar {
+        background-color: rgba(109, 104, 117, 1);
+        height: 2px;
+        margin: 10px auto;
+        width: 100%;
+    }
+
+    &--content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .infoIcon {
+        font-size: 32px;
+        color: $color-info-button;
+        cursor: pointer;
+      }
+
+      .userInfo {
+        display: flex;
+        align-items: center;
+
+        p {
+          margin-bottom: 0;
+          color: $color-title-boxchat;
+          font-size: $fs-2;
+          font-weight: bold;
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+  &__input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0px;
+    width: 100%;
+    position: relative;
+    
+    input {
+      width: 100%;
+      padding-right: 50px;
+    }
+
+    .buttonIcon {
+      font-size: 2rem;
+      z-index: 100;
+      position: absolute;
+      right: 20px;
+      cursor: pointer;
+    }
+  }
+
+  &__holdPlace{
+    height: 80px;
+    position: absolute;
+    bottom: 0;
+    width: 72vw;
+  }
+}
+

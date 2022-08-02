@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises*/
 import express from 'express';
 import {createValidator} from 'express-joi-validation'
 import { Auth } from '../controllers/authentication.controller'
@@ -15,7 +14,7 @@ router.post(
   validator.body(registerSchema),
   authentication.register
 );
-router.get('/activate_account/:name', authentication.activateAccount);
+router.get('/activate-account/:name', authentication.activateAccount);
 router.post('/sign-in',validator.body(signInSchema), authentication.signIn);
 router.post('/forgot-password', authentication.forgotPassword);
 router.post('/reset-password', authentication.resetPassword);

@@ -1,5 +1,7 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import SideBar from 'components/SideBar';
+import ChatBox from 'components/ChatBox';
 
 const Home: NextPage = () => {
   return (
@@ -8,14 +10,18 @@ const Home: NextPage = () => {
         <title>Bozuman chat app</title>
         <meta name="description" content="Chat app develop by bozuman team" />
       </Head>
-      <div className="container">
-        <h1>Bozuman chat app home pageeeeeeeeeeeeeeeeeeeeeeeee</h1>
-        <input type="user" name="user" />
-
-        <input type="submit" name="submit" value="Continue" />
+      <div className="warpper">
+        <div className="row">
+          <div className="col-3">
+            <SideBar />
+          </div>
+          <div className="col-9">
+            <ChatBox room_id={3} isChanel={true} roomName="Bozuman" listAvt={['1', '2']} />
+          </div>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

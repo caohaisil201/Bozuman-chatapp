@@ -1,8 +1,7 @@
 import nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { FORGOT_PASSWORD, ACTIVATE_ACCOUNT } from './Helper.utils';
-import dotenv from 'dotenv';
-dotenv.config();
+import 'dotenv/config';
 
 export class Email {
   private transporter = nodemailer.createTransport({
@@ -44,11 +43,7 @@ export class Email {
       mailOptions,
       function (error: Error | null, info: SMTPTransport.SentMessageInfo) {
         if (error) {
-          // eslint-disable-next-line no-console
-          console.log(error);
-        } else {
-          // eslint-disable-next-line no-console
-          console.log(`Email sent:  ${info.response}`);
+          throw error;
         }
       }
     );
