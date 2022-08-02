@@ -23,7 +23,7 @@ export interface RoomInterface {
 }
 
 type SideBarProps = {
-  selectRoom: (room_id: number, isChanel: boolean, roomName:string)=> void;
+  selectRoom: (room_id: number, isChanel: boolean, roomName:string, username: string | undefined)=> void;
 };
 
 function SideBar({selectRoom} : SideBarProps) {
@@ -33,15 +33,16 @@ function SideBar({selectRoom} : SideBarProps) {
   const [showGroupMessage, setShowGroupMessage] = useState(true);
   const [personalRooms, setPersonalRooms] = useState<Array<RoomInterface>>([]);
   const [groupRooms, setGroupRooms] = useState<Array<RoomInterface>>([]);
-
+  const [username, setUsername] = useState<string>()
   useEffect(() => {
     async function getUserInfo() {
       try {
-        const res = await axiosClient.get(
+        const {data} = await axiosClient.get(
           `${process.env.NEXT_PUBLIC_DOMAIN}/api/user/user-info`
         );
-        setFullname(res.data.data.full_name);
-        const room_list = res.data.data.room_list;
+        setFullname(data.data.full_name);
+        setUsername(data.data.username)
+        const room_list = data.data.room_list;
         const personalRoomsArr: Array<RoomInterface> = [];
         const groupRoomsArr: Array<RoomInterface> = [];
         room_list.forEach((room: RoomInterface) => {
@@ -79,7 +80,7 @@ function SideBar({selectRoom} : SideBarProps) {
   }
 
 const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) => {
-  selectRoom(room_id, isChanel, roomName)
+  selectRoom(room_id, isChanel, roomName, username)
 }
 
   return (

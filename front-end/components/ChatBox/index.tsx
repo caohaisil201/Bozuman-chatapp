@@ -11,7 +11,6 @@ import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import usePrevious from 'hooks/usePrevious';
 import InputMessage from './inputMessage';
-import { getCookie } from 'cookies-next';
 import { socket } from 'helper/socket';
 
 const TWO_NEWSET_BUCKET = 2;
@@ -21,11 +20,13 @@ export type ChatBoxProps = {
   room_id: number;
   isChanel: boolean;
   roomName: string;
+  username?: string;
 };
 const AVATAR_SIZE = 42;
 
 
-function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
+function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
+  console.log(username);
   const savedMessages: Array<MessageGroupProps> = [];
   const sendMessage = (inputValue: string) => {
     socket.emit('chatMessage', {
@@ -37,7 +38,6 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
   const [messages, setMessages] = useState<Array<MessageGroupProps>>([]);
   const [bucketIndex, setBucketIndex] = useState<number>(0);
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
-
   const getMessageBucket = async (page: number) => {
     try {
       const { data } = await axiosClient.get(
@@ -45,7 +45,7 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
       );
       if (data[0]) {
         data[0].message_list.reverse().forEach((element: MessageInput) => {
-          pushOldMessage(element, savedMessages);
+          pushOldMessage(element, savedMessages, username);
         });
         setMessages([...savedMessages]);
       }
@@ -78,8 +78,6 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
 
   useEffect(() => {
     getInitMessage();
-    const username = getCookie('username');
-
     if (username) {
       socket.emit('joinRoom', {
         sender: username,
@@ -88,7 +86,7 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
     }
 
     socket.on('message', (message) => {
-      pushNewMessage(message, savedMessages);
+      pushNewMessage(message, savedMessages, username);
       setMessages([...savedMessages]);
     });
   }, [room_id]);
@@ -100,7 +98,7 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
       );
       setBucketIndex(bucketIndex - 1);
       res.data[0].message_list.reverse().forEach((element: MessageInput) => {
-        pushOldMessage(element, savedMessages);
+        pushOldMessage(element, savedMessages, username);
       });
       setMessages([...savedMessages]);
     } else {
@@ -129,7 +127,7 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
                 width={AVATAR_SIZE}
                 height={AVATAR_SIZE}
               />
-              ;
+              
             </>
             <p>{roomName}</p>
           </div>
