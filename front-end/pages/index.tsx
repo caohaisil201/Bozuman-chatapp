@@ -7,7 +7,7 @@ import SideBar from 'components/SideBar';
 import ChatBox from 'components/ChatBox';
 import Loading from 'components/Loading';
 import router from 'next/router';
-import axiosClient from 'helper/axiosClient';
+
 
 
 const Home: NextPage = () => {
