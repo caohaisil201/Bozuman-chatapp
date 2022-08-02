@@ -124,7 +124,6 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
             {/* TODO: use loader to load img from backend  */}
             <>
               <Image
-                // loader={item}
                 src={'/avatarPlaceHolder.png'}
                 alt="user avatar"
                 width={AVATAR_SIZE}

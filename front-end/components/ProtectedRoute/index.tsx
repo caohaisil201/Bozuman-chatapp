@@ -1,10 +1,5 @@
 import axiosClient from 'helper/axiosClient';
 import { appRoutes } from '../../constant/appRoutes';
-//TODO: fix type of Props
-interface Props {
-  router: any,
-  children: any,
-}
 
 const unProtectedRoutes = [
   appRoutes.SIGN_IN_PAGE,

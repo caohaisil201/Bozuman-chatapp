@@ -5,18 +5,18 @@ import Image from 'next/image';
 type RoomProps = {
   room: Room,
   mapKey: string,
-  clickHandle: (room_id: number, isChanel: boolean, name:string)=>void
+  clickRoomHandle: (room_id: number, isChanel: boolean, name:string)=>void
 };
 const SIZE_OF_AVATAR_PROFILE: number = 42;
-function Room({room, mapKey, clickHandle}:RoomProps) {
-  const choseRoom = () => {
+function Room({room, mapKey, clickRoomHandle}:RoomProps) {
+  const chooseRoom = () => {
     const isChanel = room.type === 'Direct message' ? false : true
-    clickHandle(room.room_id, isChanel, room.name)
+    clickRoomHandle(room.room_id, isChanel, room.name)
   }
   return (
     <div
       className={room.unread ? 'room room_active' : 'room'}
-      key={mapKey} onClick={choseRoom}
+      key={mapKey} onClick={chooseRoom}
     >
       <Image
         src="/avatar.png"

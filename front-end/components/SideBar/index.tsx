@@ -76,7 +76,7 @@ function SideBar({selectRoom} : SideBarProps) {
     router.push('/sign-in');
   }
 
-const clickHandle = (room_id: number, isChanel: boolean, roomName:string) => {
+const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) => {
   selectRoom(room_id, isChanel, roomName)
 }
 
@@ -112,7 +112,7 @@ const clickHandle = (room_id: number, isChanel: boolean, roomName:string) => {
               />
               <div className="showRoomPanel">
                 {personalRooms.map((room, index) => (
-                  <Room room={room} mapKey={`personalRooms ${index}`} clickHandle={clickHandle}/>
+                  <Room room={room} mapKey={`personalRooms ${index}`} clickRoomHandle={clickRoomHandle}/>
                 ))}
               </div>
             </>
