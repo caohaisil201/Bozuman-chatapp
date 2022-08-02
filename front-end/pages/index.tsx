@@ -32,12 +32,7 @@ const Home: NextPage = () => {
             <SideBar />
           </div>
           <div className="col-9">
-            <ChatBox
-              room_id={1}
-              isChanel={true}
-              roomName="Bozuman"
-              listAvt={['1', '2']}
-            />
+            <ChatBox room_id={3} isChanel={true} roomName="Bozuman" listAvt={['1', '2']} />
           </div>
         </div>
       </div>

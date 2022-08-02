@@ -1,7 +1,6 @@
 import MessageGroup from 'components/MessageGroup';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { FaInfoCircle } from 'react-icons/fa';
 import {
   pushOldMessage,
   pushNewMessage,
@@ -12,13 +11,13 @@ import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import usePrevious from 'hooks/usePrevious'
 import InputMessage from './inputMessage';
-import { io } from 'socket.io-client';
 import { getCookie } from 'cookies-next';
+import { socket } from 'helper/socket';
 
 const TWO_NEWSET_BUCKET = 2
 const FIRST_NEWEST_BUCKET = 1
 
-const socket = io(`${process.env.NEXT_PUBLIC_DOMAIN}`);
+
 
 type ChatBoxProps = {
   room_id: number;
@@ -34,7 +33,6 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
     socket.emit('chatMessage', {
       content: inputValue,
       time: Date(),
-      sender: getCookie('username'),
       room: room_id
     });
   }
@@ -59,7 +57,7 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
       // TODO: Do something when error
     }
   };
-  
+
   const getInitMessage = async () => {
     try {
       // Count message bucket to get the newest bucket index
@@ -88,6 +86,7 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
 
   useEffect(() => {
     const username = getCookie('username');
+
     if (username) {
       socket.emit('joinRoom', {
         sender: username,
@@ -110,7 +109,7 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
       res.data[0].message_list.reverse().forEach((element: MessageInput) => {
         pushOldMessage(element, savedMessages);
       });
-      setMessages(savedMessages);
+      setMessages([...savedMessages]);
     } else {
       setOutOfMessages(true);
     }
@@ -170,11 +169,11 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
             />
           ))}
         </InfiniteScroll>
-        
+
       </div>
       <div className="chatBox__holdPlace">
         <div className="chatBox__input">
-        <InputMessage clickHandle={clickHandle} />
+          <InputMessage clickHandle={clickHandle} />
         </div>
       </div>
     </div>
