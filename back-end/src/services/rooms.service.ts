@@ -21,7 +21,6 @@ export class RoomsService {
 
       // Also have to add room info into room_list of each user
       data.user_list.map((user: string) => {
-        console.log('User: ', user)
         Users.findOneAndUpdate({username: user}, {
           $push: {
             room_list: {
@@ -29,9 +28,8 @@ export class RoomsService {
               name: data.name,
               type: data.type,
               unread: true,
-              last_message: undefined,
+              last_message: 'The room have just been created',
               last_time: new Date().getTime(),
-
             } as any,
           },
         }).exec();

@@ -5,6 +5,6 @@ const user = new User();
 const router = express.Router();
 
 router.get('/user-info', user.getUserInfo);
-router.post('/insert-room')
+router.post('/change-room-status', user.changeRoomStatus)
 
 export default router;
