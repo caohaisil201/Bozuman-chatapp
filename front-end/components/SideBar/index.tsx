@@ -25,6 +25,7 @@ function SideBar() {
   function handleSignOut() {
     deleteCookie('access_token');
     deleteCookie('refresh_token');
+    deleteCookie('username');
     router.push('/sign-in');
   }
 

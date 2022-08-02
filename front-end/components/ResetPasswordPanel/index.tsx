@@ -101,26 +101,22 @@ function ResetPasswordPanel() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <input
           {...register('password')}
-          placeholder="Enter new passowrd"
+          placeholder="Enter new password"
           type="password"
           required
         />
-        <div className="errorMessage">
           {errors.password && <p className="error">{errors.password.message}</p>}
-        </div>
 
         <input
           {...register('confirmPassword')}
-          placeholder="Enter confirm passowrd"
+          placeholder="Enter confirm password"
           type="password"
           required
         />
-        <div className="errorMessage">
           {(errors.confirmPassword && (
             <p className="error">{errors.confirmPassword.message}</p>
           )) ||
             (errorMessage.trigger && <p className="error">{errorMessage.message}</p>)}
-        </div>
         <button type="submit" className="button__search">
           Submit
         </button>
