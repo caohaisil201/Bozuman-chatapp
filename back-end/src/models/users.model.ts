@@ -66,7 +66,7 @@ const UsersSchema = new mongoose.Schema({
       },
 
       last_time: {
-        type: String,
+        type: Date,
         required: true,
       },
 

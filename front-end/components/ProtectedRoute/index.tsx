@@ -1,12 +1,5 @@
-import { useState, useEffect } from 'react';
 import axiosClient from 'helper/axiosClient';
 import { appRoutes } from '../../constant/appRoutes';
-import Loading from 'components/Loading';
-//TODO: fix type of Props
-interface Props {
-  router: any,
-  children: any,
-}
 
 const unProtectedRoutes = [
   appRoutes.SIGN_IN_PAGE,
@@ -43,9 +36,4 @@ export async function checkAuth(router: any) {
   return true;
 }
 
-const ProtectedRoute = ({router, children}: Props) =>{
 
-  return  children;
-}
-
-export default ProtectedRoute;
