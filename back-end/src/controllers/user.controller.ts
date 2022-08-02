@@ -10,6 +10,7 @@ export class User {
     try{
       const username = req.context?.DecodePayload.username;
       const userInfo = await UsersService.getUserInfo(username);
+      console.log(userInfo);
       res.status(200).json({
         success: true,
         data: userInfo,
