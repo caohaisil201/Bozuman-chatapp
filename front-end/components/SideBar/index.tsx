@@ -134,7 +134,7 @@ const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) =>
               />
               <div className="showRoomPanel">
                 {groupRooms.map((room, index) => (
-                  <Room room={room} mapKey={`groupRooms ${index}`} clickHandle={clickHandle}/>
+                  <Room room={room} mapKey={`groupRooms ${index}`} clickRoomHandle={clickRoomHandle}/>
                 ))}
               </div>
             </>
