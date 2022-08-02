@@ -5,7 +5,9 @@
     flex-direction: row-reverse;
 
     .messageGroup__messageContainer--message {
-      max-width: 90%;
+      max-width: 55vw;
+
+      overflow-wrap: break-word;
 
       border-top-right-radius: 5px;
       margin-left: auto;
@@ -19,7 +21,7 @@
   &.senderIsNotUser {
 
     .messageGroup__messageContainer--message {
-      max-width: 90%;
+      max-width: 55vw;
 
       border-top-left-radius: 5px;
       overflow-wrap: break-word;
