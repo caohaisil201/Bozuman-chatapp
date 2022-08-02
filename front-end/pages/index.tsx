@@ -45,7 +45,7 @@ const Home: NextPage = () => {
                 roomName={chatBoxProps?.roomName}
               />
             ) : (
-              <div>Chọn phòng đi</div>
+              <div className='homePage'><p>Bozuman chat app</p></div>
             )}
           </div>
         </div>
