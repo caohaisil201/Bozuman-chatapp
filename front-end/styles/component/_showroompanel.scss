@@ -1,52 +1,54 @@
-.showRoomPanel{
-   background-color: $while;
-   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-   border-radius: 10px;
-   overflow: scroll;
-   .personal{
-      height: 41vh;
-      margin-bottom: 10px;
-      padding-top: 1.5vh;
-   }
-   .group{
-      height: 29vh;
-      padding-top: 10px;
-   }
-   .room{
-      cursor: pointer;
-      height: 6.5vh;
-      margin-left: 4px;
-      margin-right: 4px;
-      padding-top: 0.2vh;
-
-      border-radius: 10px;
-
-      display: flex; 
-      justify-content: flex-start;
-      align-items: center;
-      font-size: 0.8rem;
-      &:hover{
-         background: rgba(0, 0, 0, 0.25);
+.showRoomPanel {
+  background-color: $while;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  overflow-y: auto;
+  margin: 10px 0;
+  .personal {
+    height: 41vh;
+    margin-bottom: 10px;
+    padding-top: 1.5vh;
+  }
+  .group {
+    height: 29vh;
+    padding-top: 10px;
+  }
+  .room {
+    padding: 0px 10px;
+    cursor: pointer;
+    height: 6.5vh;
+    padding-top: 0.2vh;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 0.8rem;
+    &:hover {
+      background: rgba(0, 0, 0, 0.25);
+    }
+    &_active {
+      background: rgba(0, 0, 0, 0.12);
+    }
+    &_info {
+      display: block;
+      width: 80%;
+      .roomName {
+        font-weight: 600;
+        margin-bottom: 0;
+        margin-left: 8px;
+        display: inline-block;
+        font-size: 1rem;
       }
-      &_active{
-         background: rgba(0, 0, 0, 0.12);
+      .lastTime {
+        float: right;
       }
-      &_info{
-         display: block;
-         width: 75%;
+      .lastMessage {
+        overflow: hidden;
+        white-space: nowrap;
+        margin-left: 8px;
+        font-weight: 500;
+        text-overflow: ellipsis;
       }
-      .roomName{
-         font-weight: 600;
-         margin-bottom: 0;
-         margin-left: 8px;
-         display: inline-block;
-      }
-      .lastTime{
-         float: right;
-      }
-      .lastMessage{
-         margin-left: 8px;
-         font-weight: 500;
-      }
-   }
+    }
+  }
 }

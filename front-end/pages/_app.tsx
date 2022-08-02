@@ -9,9 +9,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
     <>
       <ProtectedRoute router={router}>
         <SWRConfig
-          value={{
-            refreshInterval: 10000,
-          }}
+           value={{ provider: () => new Map() }}
         >
           <Component {...pageProps} />
         </SWRConfig>
