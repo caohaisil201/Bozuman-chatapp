@@ -1,5 +1,5 @@
 import MessageGroup from 'components/MessageGroup';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import {
   pushOldMessage,
@@ -26,8 +26,7 @@ const AVATAR_SIZE = 42;
 
 
 function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
-  console.log(username);
-  const savedMessages: Array<MessageGroupProps> = [];
+  const savedMessagesRef = useRef<Array<MessageGroupProps>>([]);
   const sendMessage = (inputValue: string) => {
     socket.emit('chatMessage', {
       content: inputValue,
@@ -45,9 +44,9 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       );
       if (data[0]) {
         data[0].message_list.reverse().forEach((element: MessageInput) => {
-          pushOldMessage(element, savedMessages, username);
+          pushOldMessage(element, savedMessagesRef.current, username);
         });
-        setMessages([...savedMessages]);
+        setMessages([...savedMessagesRef.current]);
       }
     } catch (error) {
       // TODO: Do something when error
@@ -75,8 +74,16 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       // TODO: Do something when error
     }
   };
-
   useEffect(() => {
+    socket.on('message', (message) => {
+      pushNewMessage(message, savedMessagesRef.current, username);
+      setMessages([...savedMessagesRef.current]);
+    });
+
+  }, [])
+  
+  useEffect(() => {
+    savedMessagesRef.current = [];
     getInitMessage();
     if (username) {
       socket.emit('joinRoom', {
@@ -84,11 +91,9 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
         room: room_id,
       });
     }
+    setOutOfMessages(false)
 
-    socket.on('message', (message) => {
-      pushNewMessage(message, savedMessages, username);
-      setMessages([...savedMessages]);
-    });
+
   }, [room_id]);
 
   const getOldMessage = async () => {
@@ -98,14 +103,13 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       );
       setBucketIndex(bucketIndex - 1);
       res.data[0].message_list.reverse().forEach((element: MessageInput) => {
-        pushOldMessage(element, savedMessages, username);
+        pushOldMessage(element, savedMessagesRef.current, username);
       });
-      setMessages([...savedMessages]);
+      setMessages([...savedMessagesRef.current]);
     } else {
       setOutOfMessages(true);
     }
   };
-
   const clickHandle = (inputValue: string) => {
     sendMessage(inputValue);
   };

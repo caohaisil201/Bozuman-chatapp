@@ -111,7 +111,7 @@ const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) =>
               />
               <div className="showRoomPanel">
                 {personalRooms.map((room, index) => (
-                  <Room room={room} mapKey={`personalRooms ${index}`} clickRoomHandle={clickRoomHandle}/>
+                  <Room room={room} key={`personalRooms ${index}`} clickRoomHandle={clickRoomHandle}/>
                 ))}
               </div>
             </>
@@ -133,7 +133,7 @@ const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) =>
               />
               <div className="showRoomPanel">
                 {groupRooms.map((room, index) => (
-                  <Room room={room} mapKey={`groupRooms ${index}`} clickRoomHandle={clickRoomHandle}/>
+                  <Room room={room} key={`groupRooms ${index}`} clickRoomHandle={clickRoomHandle}/>
                 ))}
               </div>
             </>

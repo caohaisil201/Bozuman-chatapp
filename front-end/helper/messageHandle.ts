@@ -35,6 +35,7 @@ export function pushNewMessage(
   username: string | undefined
 ) {
   if (checkIsFirstMessage(saveMessage)) {
+    
     return pushMessageToBottom(message, saveMessage, username);
   }
   if (checkIsSameSender(message, saveMessage, true)) {
