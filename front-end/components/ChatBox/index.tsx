@@ -147,7 +147,7 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
           style={{ display: 'flex', flexDirection: 'column-reverse' }}
           inverse={true}
           hasMore={true && !outOfMessages}
-          loader={<p className="loadingNewMessage">Loading...</p>}
+          loader={<p className="loadingNewMessage"></p>}
           scrollableTarget="scrollableDiv"
         >
           {messages.map((item, index) => (

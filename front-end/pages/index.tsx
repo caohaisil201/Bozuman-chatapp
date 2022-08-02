@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import { useState, useEffect } from 'react';
-import { ChatBoxProps } from 'components/ChatBox';
+import {  ChatBoxProps} from 'components/ChatBox';
 import { checkAuth } from 'components/ProtectedRoute';
 import Head from 'next/head';
 import SideBar from 'components/SideBar';
@@ -50,7 +50,7 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
-    </div> :<Loading/>
+    </div> : <Loading/>
   );
 };
 

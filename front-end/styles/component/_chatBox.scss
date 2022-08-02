@@ -1,23 +1,28 @@
 .chatBox {
-  background-color: $color-chatbox-bachground;
   padding: 20px 30px;
   height: 100vh;
+
+  background-color: $color-chatbox-bachground;
+
   &__messagePanel {
-    display: flex;
     height: 85vh;
-    overflow-y: auto;
-    flex-direction: column-reverse;
     padding-bottom: 60px;
+
+    display: flex;
+    flex-direction: column-reverse;
+
+    overflow-y: auto;
   }
 
   &__infoBar{
     padding: 0px 10px;
 
     &--bar {
-        background-color: rgba(109, 104, 117, 1);
-        height: 2px;
-        margin: 10px auto;
-        width: 100%;
+      height: 2px;
+      margin: 10px auto;
+      width: 100%;
+
+      background-color: rgba(109, 104, 117, 1);
     }
 
     &--content {
@@ -37,20 +42,24 @@
 
         p {
           margin-bottom: 0;
-          color: $color-title-boxchat;
+          margin-left: 10px;
+
           font-size: $fs-2;
           font-weight: bold;
-          margin-left: 10px;
+          color: $color-title-boxchat;
         }
       }
     }
   }
+
   &__input {
+    width: 100%;
+
+    position: relative;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
-    position: relative;
     
     input {
       width: 100%;
@@ -58,19 +67,22 @@
     }
 
     .buttonIcon {
-      font-size: 2rem;
-      z-index: 100;
       position: absolute;
       right: 20px;
+
+      z-index: 100;
+
+      font-size: 2rem;
       cursor: pointer;
     }
   }
 
   &__holdPlace{
     height: 80px;
+    width: 72vw;
+    
     position: absolute;
     bottom: 0;
-    width: 72vw;
   }
 }
 

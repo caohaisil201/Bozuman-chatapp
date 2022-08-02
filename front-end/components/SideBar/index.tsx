@@ -10,8 +10,9 @@ import {
 } from 'react-icons/fa';
 import axiosClient from 'helper/axiosClient';
 import Room from 'components/Room';
-import {ChatBoxProps} from 'components/ChatBox'
+
 const SIZE_OF_AVATAR_PROFILE: number = 50;
+
 export interface RoomInterface {
   room_id: number;
   last_message: string;
@@ -20,6 +21,7 @@ export interface RoomInterface {
   name: string;
   type: string;
 }
+
 type SideBarProps = {
   selectRoom: (room_id: number, isChanel: boolean, roomName:string)=> void;
 };
@@ -97,12 +99,8 @@ const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) =>
         </div>
         <FaSignOutAlt className="iconSignOut" onClick={handleSignOut} />
       </div>
-      <div className="searchAndAdd mt-1">
-        <input className="search" type="text" placeholder="Search"></input>
-        <FaUserPlus className="iconAdd" />
-      </div>
       <div className="typeMessage mt-2">
-        <div>
+        <div className="roomList">
           Personal message
           {showPersonalMessage ? (
             <>
@@ -124,7 +122,7 @@ const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) =>
           )}
         </div>
 
-        <div>
+        <div className="roomList">
           Group message
           {showGroupMessage ? (
             <>
