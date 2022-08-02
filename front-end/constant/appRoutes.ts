@@ -5,4 +5,6 @@ export const appRoutes = {
   SIGN_UP_SUCCESS_PAGE: '/sign-up-success',
   RESET_PASSWORD_PAGE: '/reset-password',
   ACTIVATE_ACCOUNT_PAGE: '/activate-account',
+  HOME_PAGE: '/',
+  PROFILE_PAGE: '/profile',
 }

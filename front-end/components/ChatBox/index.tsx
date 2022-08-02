@@ -78,9 +78,6 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
 
   useEffect(() => {
     getInitMessage();
-  }, [room_id]);
-
-  useEffect(() => {
     const username = getCookie('username');
 
     if (username) {
@@ -94,7 +91,7 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
       pushNewMessage(message, savedMessages);
       setMessages([...savedMessages]);
     });
-  }, []);
+  }, [room_id]);
 
   const getOldMessage = async () => {
     if (bucketIndex !== 0) {

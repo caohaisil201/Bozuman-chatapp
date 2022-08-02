@@ -1,18 +1,33 @@
 import type { NextPage } from 'next';
 import { useState, useEffect } from 'react';
+import { ChatBoxProps } from 'components/ChatBox';
+import { checkAuth } from 'components/ProtectedRoute';
 import Head from 'next/head';
 import SideBar from 'components/SideBar';
 import ChatBox from 'components/ChatBox';
-import { ChatBoxProps } from 'components/ChatBox';
+import Loading from 'components/Loading';
+import router from 'next/router';
+
 
 const Home: NextPage = () => {
   const [chatBoxProps, setChatBoxProps] = useState<ChatBoxProps | null>(null);
+  const [isLogIn, setIsLogIn] = useState(false);
   const selectRoom = (room_id: number, isChanel: boolean, roomName:string) => {
     setChatBoxProps({...chatBoxProps, room_id, isChanel, roomName})
-    // console.log(chatBoxProps);
   };
+
+
+  useEffect(() => {
+    async function checkLogIn() {
+      if(await checkAuth(router)){
+        setIsLogIn(true);
+      }
+    }
+    checkLogIn()
+  }, [isLogIn]);
+
   return (
-    <div>
+    isLogIn ? <div>
       <Head>
         <title>Bozuman chat app</title>
         <meta name="description" content="Chat app develop by bozuman team" />
@@ -35,7 +50,7 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div> :<Loading/>
   );
 };
 
