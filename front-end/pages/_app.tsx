@@ -5,14 +5,11 @@ import ProtectedRoute from 'components/ProtectedRoute';
 
 function MyApp({ Component, pageProps, router }: AppProps) {
 
+
   return (
     <>
       <ProtectedRoute router={router}>
-        <SWRConfig
-          value={{
-            refreshInterval: 10000,
-          }}
-        >
+        <SWRConfig>
           <Component {...pageProps} />
         </SWRConfig>
       </ProtectedRoute>
