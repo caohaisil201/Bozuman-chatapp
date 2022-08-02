@@ -15,7 +15,7 @@ function Room({room, mapKey, clickRoomHandle}:RoomProps) {
   }
   return (
     <div
-      className={room.unread ? 'room room_active' : 'room'}
+      className={room.unread ? 'room room_unread' : 'room'}
       key={mapKey} onClick={chooseRoom}
     >
       <Image
