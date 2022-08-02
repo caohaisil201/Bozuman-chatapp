@@ -1,64 +1,88 @@
 .sidebar {
-  background-color: #ffe0cf;
   min-height: 100vh;
   padding-left: 8px;
   padding-right: 12px;
 
+  position: relative;
+  
+  background-color: #ffe0cf;
+
+  user-select: none;
+
   .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;    
+
+    .personalInfo {
+      min-height: 70px;
+      padding-top: 6px;
+
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+
+      .info{
+        margin-left: 18px;
+
+        .name{
+          font-weight: 600;
+          font-size:1rem;
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    .iconSignOut{
+      cursor: pointer;
+      @include icon_customization(1.3rem,1.3rem);
+    }
+  }
+
+  .searchAndAdd{
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    .personalInfo {
-      min-height: 70px;
-      display: flex;
-      padding-top: 6px;
-      justify-content: flex-start;
-      align-items: center;
-      .info {
-        margin-left: 18px;
-        .name {
-          font-weight: 600;
-          font-size: 1.2rem;
-          margin-bottom: 0;
-        }
+    .search{
+        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+        min-width: 80%;  
+    }
+
+    .iconAdd{
+        cursor: pointer;
+        @include icon_customization(2rem,2rem);
+    }
+  }
+
+  .typeMessage{
+    font-weight: 600;
+    font-size:0.9rem;
+
+    .roomList{
+      margin-bottom: 20px;
+
+      .iconScrollTypeMessage{
+        margin-left: 10px;
+        cursor: pointer;
+        @include icon_customization(1rem,1rem);
       }
-      
-    }
-    .iconSignOut {
-      cursor: pointer;
-      @include icon_customization(1.4rem, 1.4rem);
     }
   }
-  .searchAndAdd {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .search {
-      filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-      min-width: 80%;
-    }
-    .iconAdd {
-      cursor: pointer;
-      @include icon_customization(2rem, 2rem);
-    }
+
+  .split{
+    margin-top: 1.5vh;
   }
-  .typeMessage {
-    font-weight: 600;
-    font-size: 1rem;
-    padding-left: 4px;
-    .iconScrollTypeMessage {
-      cursor: pointer;
-      @include icon_customization(1rem, 1rem);
-      margin-left: 10px;
-    }
+
+  .title{
+    padding-left: 10px;
   }
-  .copyRight {
-    font-weight: 600;
-    font-size: 0.8rem;
+
+  .copyRight{
     margin: 10px 0;
-    text-align: center;
-    position: fixed;
+
+    font-weight: 600;
+    position: absolute;
     bottom: 0%;
   }
 }

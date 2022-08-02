@@ -13,7 +13,7 @@ function MessageGroup({ isMe, messages, sender }: MessageGroupProps) {
     <div
       className={'messageGroup ' + (isMe ? 'senderIsUser' : 'senderIsNotUser')}
     >
-      <div className="messageGroup__avatar senderIsNotUser">
+      <div className="messageGroup__avatar">
         {/* TODO: use loader to load img from backend */}
         <Image
           src={'/avatarPlaceHolder.png'}

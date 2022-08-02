@@ -9,34 +9,31 @@ import {
 } from 'helper/messageHandle';
 import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import usePrevious from 'hooks/usePrevious'
+import usePrevious from 'hooks/usePrevious';
 import InputMessage from './inputMessage';
 import { getCookie } from 'cookies-next';
 import { socket } from 'helper/socket';
 
-const TWO_NEWSET_BUCKET = 2
-const FIRST_NEWEST_BUCKET = 1
+const TWO_NEWSET_BUCKET = 2;
+const FIRST_NEWEST_BUCKET = 1;
 
-
-
-type ChatBoxProps = {
+export type ChatBoxProps = {
   room_id: number;
   isChanel: boolean;
   roomName: string;
-  listAvt: Array<string>;
 };
 const AVATAR_SIZE = 42;
-const savedMessages: Array<MessageGroupProps> = [];
 
-function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
+
+function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
+  const savedMessages: Array<MessageGroupProps> = [];
   const sendMessage = (inputValue: string) => {
     socket.emit('chatMessage', {
       content: inputValue,
       time: Date(),
-      room: room_id
+      room: room_id,
     });
-  }
-
+  };
   const [messages, setMessages] = useState<Array<MessageGroupProps>>([]);
   const [bucketIndex, setBucketIndex] = useState<number>(0);
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
@@ -52,7 +49,6 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
         });
         setMessages([...savedMessages]);
       }
-
     } catch (error) {
       // TODO: Do something when error
     }
@@ -82,23 +78,20 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
 
   useEffect(() => {
     getInitMessage();
-  }, [room_id]);
-
-  useEffect(() => {
     const username = getCookie('username');
 
     if (username) {
       socket.emit('joinRoom', {
         sender: username,
-        room: room_id
+        room: room_id,
       });
     }
 
-    socket.on('message', message => {
+    socket.on('message', (message) => {
       pushNewMessage(message, savedMessages);
       setMessages([...savedMessages]);
-    })
-  }, [])
+    });
+  }, [room_id]);
 
   const getOldMessage = async () => {
     if (bucketIndex !== 0) {
@@ -113,7 +106,7 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
     } else {
       setOutOfMessages(true);
     }
-  }
+  };
 
   const clickHandle = (inputValue: string) => {
     sendMessage(inputValue);
@@ -130,16 +123,13 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
           <div className={isChanel ? 'userInfo' : 'userInfo'}>
             {/* TODO: use loader to load img from backend  */}
             <>
-              {listAvt.map((item, index) => {
-                <Image
-                  // loader={item}
-                  key={index}
-                  src={'/avatarPlaceHolder.png'}
-                  alt="user avatar"
-                  width={AVATAR_SIZE}
-                  height={AVATAR_SIZE}
-                />;
-              })}
+              <Image
+                src={'/avatarPlaceHolder.png'}
+                alt="user avatar"
+                width={AVATAR_SIZE}
+                height={AVATAR_SIZE}
+              />
+              ;
             </>
             <p>{roomName}</p>
           </div>
@@ -157,7 +147,7 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
           style={{ display: 'flex', flexDirection: 'column-reverse' }}
           inverse={true}
           hasMore={true && !outOfMessages}
-          loader={<p className="loadingNewMessage">Loading...</p>}
+          loader={<p className="loadingNewMessage"></p>}
           scrollableTarget="scrollableDiv"
         >
           {messages.map((item, index) => (
@@ -169,7 +159,6 @@ function ChatBox({ room_id, isChanel, listAvt, roomName }: ChatBoxProps) {
             />
           ))}
         </InfiniteScroll>
-
       </div>
       <div className="chatBox__holdPlace">
         <div className="chatBox__input">

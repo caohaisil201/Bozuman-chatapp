@@ -1,11 +1,33 @@
 import type { NextPage } from 'next';
+import { useState, useEffect } from 'react';
+import {  ChatBoxProps} from 'components/ChatBox';
+import { checkAuth } from 'components/ProtectedRoute';
 import Head from 'next/head';
 import SideBar from 'components/SideBar';
 import ChatBox from 'components/ChatBox';
+import Loading from 'components/Loading';
+import router from 'next/router';
+
 
 const Home: NextPage = () => {
+  const [chatBoxProps, setChatBoxProps] = useState<ChatBoxProps | null>(null);
+  const [isLogIn, setIsLogIn] = useState(false);
+  const selectRoom = (room_id: number, isChanel: boolean, roomName:string) => {
+    setChatBoxProps({...chatBoxProps, room_id, isChanel, roomName})
+  };
+
+
+  useEffect(() => {
+    async function checkLogIn() {
+      if(await checkAuth(router)){
+        setIsLogIn(true);
+      }
+    }
+    checkLogIn()
+  }, [isLogIn]);
+
   return (
-    <div>
+    isLogIn ? <div>
       <Head>
         <title>Bozuman chat app</title>
         <meta name="description" content="Chat app develop by bozuman team" />
@@ -13,14 +35,22 @@ const Home: NextPage = () => {
       <div className="warpper">
         <div className="row">
           <div className="col-3">
-            <SideBar />
+            <SideBar selectRoom={selectRoom} />
           </div>
           <div className="col-9">
-            <ChatBox room_id={3} isChanel={true} roomName="Bozuman" listAvt={['1', '2']} />
+            {chatBoxProps ? (
+              <ChatBox
+                room_id={chatBoxProps?.room_id}
+                isChanel={chatBoxProps?.isChanel}
+                roomName={chatBoxProps?.roomName}
+              />
+            ) : (
+              <div>Chọn phòng đi</div>
+            )}
           </div>
         </div>
       </div>
-    </div>
+    </div> : <Loading/>
   );
 };
 
