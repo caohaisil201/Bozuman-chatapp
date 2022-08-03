@@ -1,39 +1,100 @@
-.showRoomPanel{
-   background-color: $while;
-   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-   border-radius: 10px;
-   .personal{
-      min-height: 42vh;
-      margin-top: 8px;
-      margin-bottom: 10px;
-      padding-top: 8px;
-   }
-   .group{
-      min-height: 29vh;
-      margin-top: 10px;
-      padding-top: 10px;
-   }
-   .room{
-      cursor: pointer;
-      min-height: 9px;
-      border-radius: 10px;
-      margin-left: 4px;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      &:hover{
-         background: rgba(0, 0, 0, 0.12);
+.showRoomPanel {
+  max-height: 40%;
+  margin: 10px 0;
+
+  background-color: $white;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+  border-radius: 10px;
+  overflow-y: auto;
+
+  .personal {
+    height: 41vh;
+    margin-bottom: 10px;
+    padding-top: 1.5vh;
+  }
+
+  .group {
+    height: 29vh;
+    padding-top: 10px;
+  }
+
+  .room {
+    height: 6.5vh;
+    padding: 0px 10px;
+    padding-top: 0.2vh;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    
+    border-bottom: 1px solid #ddd;
+    font-size: 0.8rem;
+    background-color: #fff;
+
+    font-weight: normal;
+
+    cursor: pointer;
+    
+    &:hover {
+      background-color: #ddd;
+    }
+
+    &_info {
+      width: 80%;
+      display: block;
+
+      .roomName {
+        margin-bottom: 0;
+        margin-left: 8px;
+
+        display: inline-block;
+        
+        font-weight: 600;
+        font-size: 1rem;
       }
-      .roomName{
-         font-weight: 600;
-         margin-bottom: 0;
-         margin-left: 8px;
+
+      .lastTime {
+        float: right;
+        position: relative;
       }
+
+      .lastMessage {
+        margin-left: 8px;
+
+        font-weight: 500;
+        
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      
+    }
+
+    &_unread {
+      font-weight: bold;
+
+      .lastTime,
       .lastMessage{
-         margin: 0;
-         font-size: 0.8rem;
-         margin-left: 8px;
-         font-weight: 500;
+        font-weight: bold;
       }
-   }
+
+      .lastTime::after{
+        content: '';
+
+        width: 10px;
+        height: 10px;
+
+        display: block;
+        position: absolute;
+
+        left: 80%;
+        transform: translateX(-50%);
+
+        border-radius: 50%;
+
+        background-color: #007DF2;
+      }
+    }
+  }
 }

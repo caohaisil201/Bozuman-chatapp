@@ -5,6 +5,10 @@
     flex-direction: row-reverse;
 
     .messageGroup__messageContainer--message {
+      max-width: 55vw;
+
+      overflow-wrap: break-word;
+
       border-top-right-radius: 5px;
       margin-left: auto;
     }
@@ -17,27 +21,30 @@
   &.senderIsNotUser {
 
     .messageGroup__messageContainer--message {
+      max-width: 55vw;
+
       border-top-left-radius: 5px;
+      overflow-wrap: break-word;
     }
 
     .messageGroup__senderName {
       text-align: left;
     }
   }
-  
 
   &__avatar {
     margin: 0px 10px;
   }
 
   &__senderName {
+    margin-bottom: 0;
+
     color: $color-title-boxchat;
     font-weight: bold;
-
-    margin-bottom: 0;
   }
 
   &__messageContainer {
+
     &--message {
       width: fit-content;
       height: fit-content;
@@ -49,10 +56,10 @@
       border-radius: 15px;
 
       &--content {
+        margin-bottom: 0%;
+
         font-size: $fs-1;
         color: $color-message-text;
-
-        margin-bottom: 0%;
       }
     }
   }
