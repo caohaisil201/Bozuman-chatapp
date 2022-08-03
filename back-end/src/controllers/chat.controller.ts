@@ -27,29 +27,6 @@ export class Chat {
     }
   };
 
-  public insertMessageIntoRoom = async (
-    req: TypedRequestBody<{
-      room_id: string;
-      sender: string;
-      content: string;
-    }>,
-    res: Response
-  ) => {
-    const message = {
-      room_id: req.body.room_id,
-      sender: req.body.sender,
-      content: req.body.content,
-    };
-    try {
-      const insertMessage = await RoomsService.insertChatMessageIntoRoom(
-        message
-      );
-      res.status(200).json(insertMessage);
-    } catch (err) {
-      throw err;
-    }
-  };
-
   public getMessageInRoomByPage = async (
     req: TypedRequestBody<{}>,
     res: Response
@@ -74,7 +51,7 @@ export class Chat {
     const room_id = req.query.room_id as string;
     try {
       const newestIndex = await RoomsService.getNewestMessageBucket(room_id);
-      res.status(200).json({ newestIndex: newestIndex });
+      res.status(200).json({ success: true ,newestIndex: newestIndex });
     } catch (err) {
       throw err;
     }
