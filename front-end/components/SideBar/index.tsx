@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fa';
 import axiosClient from 'helper/axiosClient';
 import Room from 'components/Room';
+import { socket } from 'helper/socket';
 
 const SIZE_OF_AVATAR_PROFILE: number = 50;
 

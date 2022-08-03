@@ -11,7 +11,8 @@ import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import usePrevious from 'hooks/usePrevious';
 import InputMessage from './inputMessage';
-import { socket } from 'helper/socket';
+import { io } from 'socket.io-client';
+import { getCookie } from 'cookies-next';
 
 const TWO_NEWSET_BUCKET = 2;
 const FIRST_NEWEST_BUCKET = 1;
@@ -24,16 +25,14 @@ export type ChatBoxProps = {
 };
 const AVATAR_SIZE = 42;
 
+function getAccessToken () {
+  const access_token = getCookie('access_token');
+  return access_token;
+}
 
 function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
   const savedMessagesRef = useRef<Array<MessageGroupProps>>([]);
-  const sendMessage = (inputValue: string) => {
-    socket.emit('chatMessage', {
-      content: inputValue,
-      time: Date(),
-      room: room_id,
-    });
-  };
+  
   const [messages, setMessages] = useState<Array<MessageGroupProps>>([]);
   const [bucketIndex, setBucketIndex] = useState<number>(0);
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
@@ -74,8 +73,20 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       // TODO: Do something when error
     }
   };
+
+  const socketRef = useRef<any>(null);
   useEffect(() => {
-    socket.on('message', (message) => {
+    socketRef.current = io(`${process.env.NEXT_PUBLIC_DOMAIN}`,{
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            'Authorization': getAccessToken(),
+          },
+        },
+      },
+    }
+    );
+    socketRef.current.on('message', (message: any) => {
       pushNewMessage(message, savedMessagesRef.current, username);
       setMessages([...savedMessagesRef.current]);
     });
@@ -86,15 +97,21 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
     savedMessagesRef.current = [];
     getInitMessage();
     if (username) {
-      socket.emit('joinRoom', {
+      socketRef.current.emit('joinRoom', {
         sender: username,
         room: room_id,
       });
     }
     setOutOfMessages(false)
-
-
   }, [room_id]);
+
+  const sendMessage = (inputValue: string) => {
+    socketRef.current.emit('chatMessage', {
+      content: inputValue,
+      time: Date(),
+      room: room_id,
+    });
+  };
 
   const getOldMessage = async () => {
     if (bucketIndex !== 0) {
