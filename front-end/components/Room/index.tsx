@@ -14,7 +14,7 @@ function Room({room, clickRoomHandle}:RoomProps) {
   }
   return (
     <div
-      className={room.unread ? 'room room_unread' : 'room'} onClick={chooseRoom}
+      className={'room ' + (room.unread ? 'room_unread' : '')} onClick={chooseRoom}
     >
       <Image
         src="/avatar.png"
