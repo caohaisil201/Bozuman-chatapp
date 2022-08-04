@@ -102,7 +102,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
         `/api/chat/room-info?room_id=${room_id}`
       );
       if (data.roomInfo.type === 'Direct message') {
-        return setIsAdmin(true)
+        setIsAdmin(true)
       }
       if (data.roomInfo.admin === username) {
         setRoomInfo({
@@ -198,7 +198,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
         Swal.fire({
           position: 'center',
           icon: 'success',
-          title: 'Create room successfully',
+          title: 'Update room successfully',
           showConfirmButton: false,
           timer: 1500
         })
