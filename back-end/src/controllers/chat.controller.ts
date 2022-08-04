@@ -34,7 +34,7 @@ export class Chat {
     const data = {
       room_id: req.query.room_id,
       page: req.query.page,
-      pageSize: req.query.pageSize,
+      page_size: req.query.page_size,
     };
     try {
       const messageList = await RoomsService.getMessageInRoomByPage(data);

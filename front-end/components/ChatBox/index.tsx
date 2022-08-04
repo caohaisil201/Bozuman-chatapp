@@ -11,6 +11,7 @@ import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import usePrevious from 'hooks/usePrevious';
 import InputMessage from './inputMessage';
+import Loading from 'components/Loading'
 import { io } from 'socket.io-client';
 import { getCookie } from 'cookies-next';
 
@@ -32,7 +33,7 @@ function getAccessToken () {
 
 function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
   const savedMessagesRef = useRef<Array<MessageGroupProps>>([]);
-  
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [messages, setMessages] = useState<Array<MessageGroupProps>>([]);
   const [bucketIndex, setBucketIndex] = useState<number>(0);
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
@@ -58,13 +59,16 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       const { data } = await axiosClient.get(
         `/api/chat/get-newest-message-bucket?room_id=${room_id}`
       );
+      setIsLoading(false)
       if (data.newestIndex >= 2) {
         await getMessageBucket(data.newestIndex);
         await getMessageBucket(data.newestIndex - FIRST_NEWEST_BUCKET);
+        // setIsLoading(false)
         return setBucketIndex(data.newestIndex - TWO_NEWSET_BUCKET);
       }
       if (data.newestIndex === 1) {
         await getMessageBucket(data.newestIndex);
+        // setIsLoading(false)
         return setBucketIndex(data.newestIndex - FIRST_NEWEST_BUCKET);
       }
       setOutOfMessages(true);
@@ -106,11 +110,14 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
   }, [room_id]);
 
   const sendMessage = (inputValue: string) => {
-    socketRef.current.emit('chatMessage', {
-      content: inputValue,
-      time: Date(),
-      room: room_id,
-    });
+    if (inputValue.trim().length !== 0) {
+      socketRef.current.emit('chatMessage', {
+        content: inputValue,
+        time: Date(),
+        room: room_id,
+      });
+    }
+
   };
 
   const getOldMessage = async () => {
@@ -136,6 +143,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
     return null;
   }
   return (
+    isLoading ? <Loading /> :
     <div className="chatBox">
       <div className="chatBox__infoBar">
         <div className="chatBox__infoBar--content">
