@@ -16,6 +16,7 @@ import Loading from 'components/Loading';
 import { io } from 'socket.io-client';
 import { getCookie } from 'cookies-next';
 import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
+import Swal from 'sweetalert2';
 
 const TWO_NEWSET_BUCKET = 2;
 const FIRST_NEWEST_BUCKET = 1;
@@ -27,6 +28,12 @@ export type ChatBoxProps = {
   roomName: string;
   username?: string;
 };
+
+interface IRoomInfo {
+  name: string;
+  user_list: Array<string>;
+  admin: string;
+}
 
 function getAccessToken() {
   const access_token = getCookie('access_token');
@@ -41,6 +48,11 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
   const [bucketIndex, setBucketIndex] = useState<number>(0);
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
   const [showEditRoom, setShowEditRoom] = useState<boolean>(false);
+  const [roomInfo, setRoomInfo] = useState<IRoomInfo>({
+    name: '',
+    user_list: [],
+    admin: '',
+  });
 
   const getMessageBucket = async (page: number) => {
     try {
@@ -90,6 +102,12 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
         `/api/chat/room-info?room_id=${room_id}`
       );
       if (data.roomInfo.admin === username) {
+        setRoomInfo({
+          ...roomInfo,
+          name: data.roomInfo.name,
+          user_list: [...data.roomInfo.user_list],
+          admin: data.roomInfo.admin,
+        });
         return setIsAdmin(true);
       }
       setIsAdmin(false);
@@ -165,9 +183,20 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
     setShowEditRoom(false);
   };
 
-  const handleEditRoom = (users: Array<string>, roomName: string) => {
-    console.log(users, roomName);
-    //TODO: call API
+  const handleEditRoom = async (users: Array<string>, roomName: string) => {
+    try{
+      const res = await axiosClient.post('/api/chat/edit-room', {
+        room_id,
+        user_list: users,
+        name: roomName,
+      })
+      if(res.data.success) {
+        handleCloseEditRoomPopup();
+        Swal.fire('Update successfully');
+      }
+    }catch (error) {
+      //TODO: catch error;
+    }
   };
 
   const prevChatId = usePrevious(room_id);
@@ -195,7 +224,14 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
             </div>
 
             <div className="infoButton">
-              {isAdmin ? <FaInfoCircle className="infoIcon" /> : <></>}
+              {isAdmin ? (
+                <FaInfoCircle
+                  onClick={handleShowEditRoomPopup}
+                  className="infoIcon"
+                />
+              ) : (
+                <></>
+              )}
             </div>
           </div>
           <div className="chatBox__infoBar--bar"></div>
@@ -231,7 +267,8 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
           isEdit
           click={handleEditRoom}
           close={handleCloseEditRoomPopup}
-          users={[{ username: '123' }]}
+          roomName={roomInfo.name}
+          users={roomInfo.user_list}
         />
       )}
     </>

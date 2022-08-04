@@ -1,29 +1,24 @@
 import React from 'react';
 
-interface User {
-  username: string;
-}
-
 type Props = {
-  user: User;
+  user: string;
   isDelete?: boolean | undefined;
-  click: (user: User) => void;
+  click: (user: string) => void;
 };
 
-const User = ({ user, isDelete, click}: Props) => {
+const User = ({ user, isDelete, click }: Props) => {
   const handleOnclick = () => {
-    click(user)
-  }
+    click(user);
+  };
 
   return (
     <div className="user">
-      {user.username}
-      {<button
-        className={isDelete ? 'delete' : 'add'}
-        onClick={handleOnclick}
-      >
-        {isDelete ? 'delete' : 'add'}
-      </button>}
+      {user}
+      {
+        <button className={isDelete ? 'delete' : 'add'} onClick={handleOnclick}>
+          {isDelete ? 'delete' : 'add'}
+        </button>
+      }
     </div>
   );
 };
