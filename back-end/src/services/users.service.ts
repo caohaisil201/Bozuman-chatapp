@@ -161,4 +161,14 @@ export class UsersService {
     }
     throw _Error.SERVER_ERROR;
   };
+
+  static changeOtherUserStatusToUnread = async (username: string, room_id: string) => {
+    if (username && room_id) {
+      return await Users.updateOne(
+        { username: {$ne: username}, 'room_list.room_id': room_id },
+        { $set: { 'room_list.$.unread': true } }
+      ).exec();
+    }
+    throw _Error.SERVER_ERROR;
+  }
 }

@@ -12,6 +12,7 @@ import 'dotenv/config';
 import { RoomsService } from './src/services/rooms.service';
 import * as jwt from 'jsonwebtoken';
 import jwt_decode from 'jwt-decode';
+import { UsersService } from './src/services/users.service';
 
 const db = new Database();
 db.dbConnect();
@@ -34,6 +35,7 @@ app.use(
   })
 );
 
+app.use('/api/auth', auth);
 app.use('/api/token', expiredAccessTokenHandler);
 app.use('/api/chat', checkAccessToken, chat);
 app.use('/api/user', checkAccessToken, user);
@@ -97,6 +99,7 @@ io.on('connection', (socket) => {
 
       io.to(message.room).emit('message', receivedMessage);
       RoomsService.insertChatMessageIntoRoom(receivedMessage);
+      UsersService.changeOtherUserStatusToUnread(socket.data.username, message.room)
     }
   });
 });
