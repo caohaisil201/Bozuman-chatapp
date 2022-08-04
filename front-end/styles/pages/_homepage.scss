@@ -1,0 +1,14 @@
+.col-9 {
+  position: relative;
+  .homePage {
+    position: absolute;
+    top:50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    p {
+      
+      font-weight: bold;
+      font-size: 3rem;
+    }
+  }
+}

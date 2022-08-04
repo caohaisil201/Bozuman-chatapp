@@ -10,8 +10,10 @@ import {
 } from 'react-icons/fa';
 import axiosClient from 'helper/axiosClient';
 import Room from 'components/Room';
-import {ChatBoxProps} from 'components/ChatBox'
+import { socket } from 'helper/socket';
+
 const SIZE_OF_AVATAR_PROFILE: number = 50;
+
 export interface RoomInterface {
   room_id: number;
   last_message: string;
@@ -20,8 +22,9 @@ export interface RoomInterface {
   name: string;
   type: string;
 }
+
 type SideBarProps = {
-  selectRoom: (room_id: number, isChanel: boolean, roomName:string)=> void;
+  selectRoom: (room_id: number, isChanel: boolean, roomName:string, username: string | undefined)=> void;
 };
 
 function SideBar({selectRoom} : SideBarProps) {
@@ -31,15 +34,16 @@ function SideBar({selectRoom} : SideBarProps) {
   const [showGroupMessage, setShowGroupMessage] = useState(true);
   const [personalRooms, setPersonalRooms] = useState<Array<RoomInterface>>([]);
   const [groupRooms, setGroupRooms] = useState<Array<RoomInterface>>([]);
-
+  const [username, setUsername] = useState<string>()
   useEffect(() => {
     async function getUserInfo() {
       try {
-        const res = await axiosClient.get(
+        const {data} = await axiosClient.get(
           `${process.env.NEXT_PUBLIC_DOMAIN}/api/user/user-info`
         );
-        setFullname(res.data.data.full_name);
-        const room_list = res.data.data.room_list;
+        setFullname(data.data.full_name);
+        setUsername(data.data.username)
+        const room_list = data.data.room_list;
         const personalRoomsArr: Array<RoomInterface> = [];
         const groupRoomsArr: Array<RoomInterface> = [];
         room_list.forEach((room: RoomInterface) => {
@@ -77,7 +81,7 @@ function SideBar({selectRoom} : SideBarProps) {
   }
 
 const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) => {
-  selectRoom(room_id, isChanel, roomName)
+  selectRoom(room_id, isChanel, roomName, username)
 }
 
   return (
@@ -97,12 +101,8 @@ const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) =>
         </div>
         <FaSignOutAlt className="iconSignOut" onClick={handleSignOut} />
       </div>
-      <div className="searchAndAdd mt-1">
-        <input className="search" type="text" placeholder="Search"></input>
-        <FaUserPlus className="iconAdd" />
-      </div>
       <div className="typeMessage mt-2">
-        <div>
+        <div className="roomList">
           Personal message
           {showPersonalMessage ? (
             <>
@@ -112,7 +112,7 @@ const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) =>
               />
               <div className="showRoomPanel">
                 {personalRooms.map((room, index) => (
-                  <Room room={room} mapKey={`personalRooms ${index}`} clickRoomHandle={clickRoomHandle}/>
+                  <Room room={room} key={`personalRooms ${index}`} clickRoomHandle={clickRoomHandle}/>
                 ))}
               </div>
             </>
@@ -124,7 +124,7 @@ const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) =>
           )}
         </div>
 
-        <div>
+        <div className="roomList">
           Group message
           {showGroupMessage ? (
             <>
@@ -134,7 +134,7 @@ const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) =>
               />
               <div className="showRoomPanel">
                 {groupRooms.map((room, index) => (
-                  <Room room={room} mapKey={`groupRooms ${index}`} clickRoomHandle={clickRoomHandle}/>
+                  <Room room={room} key={`groupRooms ${index}`} clickRoomHandle={clickRoomHandle}/>
                 ))}
               </div>
             </>

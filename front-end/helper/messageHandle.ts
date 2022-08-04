@@ -16,29 +16,32 @@ export interface MessageGroupProps {
 
 export function pushOldMessage(
   message: MessageInput,
-  saveMessage: Array<MessageGroupProps>
+  saveMessage: Array<MessageGroupProps>,
+  username: string | undefined
 ) {
   if (checkIsFirstMessage(saveMessage)) {
-    return pushMessageToTop(message, saveMessage);
+    return pushMessageToTop(message, saveMessage, username);
   }
   if (checkIsSameSender(message, saveMessage, false)) {
     const LAST_ELEMENT = saveMessage.length - 1;
     return saveMessage[LAST_ELEMENT].messages.unshift(message.content);
   }
-  return pushMessageToTop(message, saveMessage);
+  return pushMessageToTop(message, saveMessage, username);
 }
 
 export function pushNewMessage(
   message: MessageInput,
-  saveMessage: Array<MessageGroupProps>
+  saveMessage: Array<MessageGroupProps>,
+  username: string | undefined
 ) {
   if (checkIsFirstMessage(saveMessage)) {
-    return pushMessageToBottom(message, saveMessage);
+    
+    return pushMessageToBottom(message, saveMessage, username);
   }
   if (checkIsSameSender(message, saveMessage, true)) {
     return saveMessage[0].messages.push(message.content);
   }
-  return pushMessageToBottom(message, saveMessage);
+  return pushMessageToBottom(message, saveMessage, username);
 }
 
 const checkIsFirstMessage = (saveMessage: Array<MessageGroupProps>) => {
@@ -65,9 +68,8 @@ const checkIsSameSender = (
   return false;
 };
 
-const checkIsMe = (message: MessageInput) => {
-  const USERNAME = getCookie('username')?.toString();
-  if (message.sender === USERNAME) {
+const checkIsMe = (message: MessageInput, username: string | undefined) => {
+  if (message.sender === username) {
     return true;
   }
   return false;
@@ -75,24 +77,24 @@ const checkIsMe = (message: MessageInput) => {
 
 const pushMessageToBottom = (
   message: MessageInput,
-  saveMessage: Array<MessageGroupProps>
+  saveMessage: Array<MessageGroupProps>,
+  username: string | undefined
 ) => {
-  const USERNAME = getCookie('username')?.toString();
   saveMessage.unshift({
-    isMe: checkIsMe(message),
+    isMe: checkIsMe(message, username),
     messages: [message.content],
-    sender: checkIsMe(message) ? USERNAME : message.sender,
+    sender: checkIsMe(message, username) ? username : message.sender,
   });
 };
 
 const pushMessageToTop = (
   message: MessageInput,
-  saveMessage: Array<MessageGroupProps>
+  saveMessage: Array<MessageGroupProps>,
+  username: string | undefined
 ) => {
-  const USERNAME = getCookie('username')?.toString();
   saveMessage.push({
-    isMe: checkIsMe(message),
+    isMe: checkIsMe(message, username),
     messages: [message.content],
-    sender: checkIsMe(message) ? USERNAME : message.sender,
+    sender: checkIsMe(message, username) ? username : message.sender,
   });
 };

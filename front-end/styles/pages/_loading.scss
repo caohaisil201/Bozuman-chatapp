@@ -13,12 +13,14 @@
     transform: translateZ(1px);
     
     div{
-      display: inline-block;
       width: 64px;
       height: 64px;
       margin: 8px;
+
+      display: inline-block;
       border-radius: 50%;
       background: #fff;
+      
       animation: lds-circle 10s cubic-bezier(0, 0.2, 0.8, 1) infinite;
     }
   }
