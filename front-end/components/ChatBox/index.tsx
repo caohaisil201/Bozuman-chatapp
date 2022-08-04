@@ -180,7 +180,6 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
           </div>
           <div className="infoButton">
             {isAdmin ? <FaInfoCircle className="infoIcon" /> : <></>}
-            {/* <FaInfoCircle className="infoIcon" /> */}
           </div>
         </div>
         <div className="chatBox__infoBar--bar"></div>
