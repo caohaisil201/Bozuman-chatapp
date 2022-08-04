@@ -41,6 +41,8 @@ function SideBar({selectRoom} : SideBarProps) {
   const [groupRooms, setGroupRooms] = useState<Array<RoomInterface>>([]);
   const [username, setUsername] = useState<string>()
   const [socketState, setSocketState] = useState(false);
+  const [unread,setUnread]=useState(true);
+
   const socketRef = useRef<any>(null);
 
   useEffect(() => {
@@ -57,7 +59,6 @@ function SideBar({selectRoom} : SideBarProps) {
     socketRef.current.on('message', (message: any) => {
       setSocketState(prev=>!prev);
     });
-
   }, [])
 
   useEffect(() => {
@@ -69,6 +70,12 @@ function SideBar({selectRoom} : SideBarProps) {
         setFullname(data.data.full_name);
         setUsername(data.data.username)
         const room_list = data.data.room_list;
+        room_list.map((room: any) => {
+          socketRef.current.emit('joinRoom', {
+            sender: 'anonymous',
+            room: room.room_id,
+          });
+        })
         const personalRoomsArr: Array<RoomInterface> = [];
         const groupRoomsArr: Array<RoomInterface> = [];
         room_list.forEach((room: RoomInterface) => {
@@ -88,7 +95,7 @@ function SideBar({selectRoom} : SideBarProps) {
       } catch (err) {}
     }
     getUserInfo();
-  }, [socketState]);
+  }, [socketState,unread]);
 
   function handleShowPersonalMessage() {
     setShowPersonalMessage((prevState) => !prevState);
@@ -113,6 +120,7 @@ function SideBar({selectRoom} : SideBarProps) {
       })
     }
     catch(err){}
+    setUnread(prev=>!prev);
   }
   
   const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) => {
