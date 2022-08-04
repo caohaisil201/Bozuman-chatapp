@@ -7,13 +7,15 @@ import {
   MessageGroupProps,
   MessageInput,
 } from 'helper/messageHandle';
+import { FaInfoCircle } from 'react-icons/fa';
 import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import usePrevious from 'hooks/usePrevious';
 import InputMessage from './inputMessage';
-import Loading from 'components/Loading'
+import Loading from 'components/Loading';
 import { io } from 'socket.io-client';
 import { getCookie } from 'cookies-next';
+import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
 
 const TWO_NEWSET_BUCKET = 2;
 const FIRST_NEWEST_BUCKET = 1;
@@ -26,7 +28,7 @@ export type ChatBoxProps = {
   username?: string;
 };
 
-function getAccessToken () {
+function getAccessToken() {
   const access_token = getCookie('access_token');
   return access_token;
 }
@@ -37,7 +39,8 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
   const [messages, setMessages] = useState<Array<MessageGroupProps>>([]);
   const [bucketIndex, setBucketIndex] = useState<number>(0);
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
-  
+  const [showEditRoom, setShowEditRoom] = useState<boolean>(false);
+
   const getMessageBucket = async (page: number) => {
     try {
       const { data } = await axiosClient.get(
@@ -61,7 +64,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
         `/api/chat/get-newest-message-bucket?room_id=${room_id}`
       );
 
-      setIsLoading(false)
+      setIsLoading(false);
       if (data.newestIndex >= 2) {
         await getMessageBucket(data.newestIndex);
         await getMessageBucket(data.newestIndex - FIRST_NEWEST_BUCKET);
@@ -80,23 +83,21 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
 
   const socketRef = useRef<any>(null);
   useEffect(() => {
-    socketRef.current = io(`${process.env.NEXT_PUBLIC_DOMAIN}`,{
+    socketRef.current = io(`${process.env.NEXT_PUBLIC_DOMAIN}`, {
       transportOptions: {
         polling: {
           extraHeaders: {
-            'Authorization': getAccessToken(),
+            Authorization: getAccessToken(),
           },
         },
       },
-    }
-    );
+    });
     socketRef.current.on('message', (message: any) => {
       pushNewMessage(message, savedMessagesRef.current, username);
       setMessages([...savedMessagesRef.current]);
     });
+  }, []);
 
-  }, [])
-  
   useEffect(() => {
     savedMessagesRef.current = [];
     getInitMessage();
@@ -106,7 +107,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
         room: room_id,
       });
     }
-    setOutOfMessages(false)
+    setOutOfMessages(false);
   }, [room_id]);
 
   const sendMessage = (inputValue: string) => {
@@ -138,61 +139,86 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
     sendMessage(inputValue);
   };
 
+  const handleShowEditRoomPopup = () => {
+    setShowEditRoom(true);
+  }
+
+  const handleCloseEditRoomPopup = () => {
+    setShowEditRoom(false);
+  }
+
+  const handleEditRoom = (users: Array<string>, roomName: string) => {
+    console.log(users,roomName);
+    //TODO: call API
+  }
+
   const prevChatId = usePrevious(room_id);
   if (prevChatId !== room_id) {
     return null;
   }
-  return (
-    isLoading ? <Loading /> :
-    <div className="chatBox">
-      <div className="chatBox__infoBar">
-        <div className="chatBox__infoBar--content">
-          <div className={isChanel ? 'userInfo' : 'userInfo'}>
-            {/* TODO: use loader to load img from backend  */}
-            <>
-              <Image
-                src={'/avatarPlaceHolder.png'}
-                alt="user avatar"
-                width={AVATAR_SIZE}
-                height={AVATAR_SIZE}
+  return isLoading ? (
+    <Loading />
+  ) : (
+    <>
+      <div className="chatBox">
+        <div className="chatBox__infoBar">
+          <div className="chatBox__infoBar--content">
+            <div className={isChanel ? 'userInfo' : 'userInfo'}>
+              {/* TODO: use loader to load img from backend  */}
+              <>
+                <Image
+                  src={'/avatarPlaceHolder.png'}
+                  alt="user avatar"
+                  width={AVATAR_SIZE}
+                  height={AVATAR_SIZE}
+                />
+              </>
+              <p>{roomName}</p>
+            </div>
+            <div className="infoButton">
+              {/* TODO: open information component, complete it in next sprint */}
+              <FaInfoCircle 
+                className="infoIcon" 
+                onClick={handleShowEditRoomPopup}
               />
-              
-            </>
-            <p>{roomName}</p>
+            </div>
           </div>
-          <div className="infoButton">
-            {/* TODO: open information component, complete it in next sprint */}
-            {/* <FaInfoCircle className="infoIcon" /> */}
+          <div className="chatBox__infoBar--bar"></div>
+        </div>
+        <div className="chatBox__messagePanel" id="scrollableDiv">
+          <InfiniteScroll
+            dataLength={messages.length}
+            next={getOldMessage}
+            style={{ display: 'flex', flexDirection: 'column-reverse' }}
+            inverse={true}
+            hasMore={true && !outOfMessages}
+            loader={<p className="loadingNewMessage"></p>}
+            scrollableTarget="scrollableDiv"
+          >
+            {messages.map((item, index) => (
+              <MessageGroup
+                key={`MESSAGEGROUP_KEY ${index}`}
+                isMe={item.isMe}
+                messages={item.messages}
+                sender={item.sender}
+              />
+            ))}
+          </InfiniteScroll>
+        </div>
+        <div className="chatBox__holdPlace">
+          <div className="chatBox__input">
+            <InputMessage clickHandle={clickHandle} />
           </div>
         </div>
-        <div className="chatBox__infoBar--bar"></div>
       </div>
-      <div className="chatBox__messagePanel" id="scrollableDiv">
-        <InfiniteScroll
-          dataLength={messages.length}
-          next={getOldMessage}
-          style={{ display: 'flex', flexDirection: 'column-reverse' }}
-          inverse={true}
-          hasMore={true && !outOfMessages}
-          loader={<p className="loadingNewMessage"></p>}
-          scrollableTarget="scrollableDiv"
-        >
-          {messages.map((item, index) => (
-            <MessageGroup
-              key={`MESSAGEGROUP_KEY ${index}`}
-              isMe={item.isMe}
-              messages={item.messages}
-              sender={item.sender}
-            />
-          ))}
-        </InfiniteScroll>
-      </div>
-      <div className="chatBox__holdPlace">
-        <div className="chatBox__input">
-          <InputMessage clickHandle={clickHandle} />
-        </div>
-      </div>
-    </div>
+      {showEditRoom && 
+      <RoomBehaviourPopup 
+        isEdit
+        click={handleEditRoom}
+        close={handleCloseEditRoomPopup}
+        users={[{username: '123'}]}
+      />}
+    </>
   );
 }
 

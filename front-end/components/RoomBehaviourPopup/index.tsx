@@ -80,6 +80,7 @@ const RoomBehaviourPopup = ({ roomName, users, isEdit, close, click }: Props) =>
         <input 
           placeholder="Enter room name"
           ref={roomNameRef}
+          value={roomName ? roomName : ''}
         />
         <div className="search">
           <input 

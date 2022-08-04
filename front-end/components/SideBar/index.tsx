@@ -94,7 +94,7 @@ function SideBar({ selectRoom }: SideBarProps) {
     setShowAddRoom(true);
   }
 
-  const closeAddRoomPopup = () : void => {
+  const handleCloseAddRoomPopup = () : void => {
     setShowAddRoom(false);
   }
 
@@ -189,7 +189,7 @@ function SideBar({ selectRoom }: SideBarProps) {
       </div>
       {showAddRoom && 
       <RoomBehaviourPopup 
-        close={closeAddRoomPopup}
+        close={handleCloseAddRoomPopup}
         users={[]}
         click={handleCreateRoom}
       />}
