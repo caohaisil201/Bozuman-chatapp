@@ -13,6 +13,7 @@ import usePrevious from 'hooks/usePrevious';
 import InputMessage from './inputMessage';
 import { getCookie } from 'cookies-next';
 import { socket } from 'helper/socket';
+import Loading from 'components/Loading';
 
 const TWO_NEWSET_BUCKET = 2;
 const FIRST_NEWEST_BUCKET = 1;
@@ -22,11 +23,12 @@ export type ChatBoxProps = {
   isChanel: boolean;
   roomName: string;
 };
-const AVATAR_SIZE = 42;
 
+const AVATAR_SIZE = 42;
 
 function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
   const savedMessages: Array<MessageGroupProps> = [];
+  const [isLoading, setIsLoading] = useState(true);
   const sendMessage = (inputValue: string) => {
     socket.emit('chatMessage', {
       content: inputValue,
@@ -60,6 +62,7 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
       const { data } = await axiosClient.get(
         `/api/chat/get-newest-message-bucket?room_id=${room_id}`
       );
+      setIsLoading(false);
       if (data.newestIndex >= 2) {
         await getMessageBucket(data.newestIndex);
         await getMessageBucket(data.newestIndex - FIRST_NEWEST_BUCKET);
@@ -75,6 +78,8 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
       // TODO: Do something when error
     }
   };
+
+  
 
   useEffect(() => {
     getInitMessage();
@@ -117,7 +122,7 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
     return null;
   }
   return (
-    <div className="chatBox">
+    isLoading ? <Loading/> : <div className="chatBox">
       <div className="chatBox__infoBar">
         <div className="chatBox__infoBar--content">
           <div className={isChanel ? 'userInfo' : 'userInfo'}>
