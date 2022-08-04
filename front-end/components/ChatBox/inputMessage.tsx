@@ -16,7 +16,7 @@ function InputMessage({ clickHandle }: any) {
 
   const press = (event: any) => {
     if (event.key === 'Enter' && inputValue !== '') {
-      clickHandle(inputValue);
+      clickHandle(inputValue.trim());
       setinputValue('');
     }
   };

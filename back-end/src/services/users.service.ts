@@ -138,7 +138,15 @@ export class UsersService {
         .exec();
     }
     throw _Error.SERVER_ERROR;
-  };
+  }
+
+  static getSearchUserResult = async (searchValue: string | undefined) => {
+    if(searchValue){
+      
+      return await Users.find({username: { $regex: searchValue, $options: 'i'}}).select(['username', '-_id']).exec();
+    }
+    throw _Error.SERVER_ERROR;
+  }
 
   static changeRoomStatus = async (
     username: string | undefined,
@@ -147,10 +155,20 @@ export class UsersService {
   ) => {
     if (username && room_id) {
       return await Users.updateOne(
-        { username: username, 'room_list.room_id': room_id},
-        {$set: {"room_list.$.unread": status}}
+        { username: username, 'room_list.room_id': room_id },
+        { $set: { 'room_list.$.unread': status } }
       ).exec();
     }
     throw _Error.SERVER_ERROR;
   };
+
+  static changeOtherUserStatusToUnread = async (username: string, room_id: string) => {
+    if (username && room_id) {
+      return await Users.updateOne(
+        { username: {$ne: username}, 'room_list.room_id': room_id },
+        { $set: { 'room_list.$.unread': true } }
+      ).exec();
+    }
+    throw _Error.SERVER_ERROR;
+  }
 }

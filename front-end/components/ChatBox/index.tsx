@@ -11,8 +11,10 @@ import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import usePrevious from 'hooks/usePrevious';
 import InputMessage from './inputMessage';
+import Loading from 'components/Loading'
 import { io } from 'socket.io-client';
 import { getCookie } from 'cookies-next';
+import { FaInfoCircle } from 'react-icons/fa';
 
 const TWO_NEWSET_BUCKET = 2;
 const FIRST_NEWEST_BUCKET = 1;
@@ -32,7 +34,8 @@ const getAccessToken = () => {
 
 function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
   const savedMessagesRef = useRef<Array<MessageGroupProps>>([]);
-  
+  const [isAdmin, setIsAdmin] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [messages, setMessages] = useState<Array<MessageGroupProps>>([]);
   const [bucketIndex, setBucketIndex] = useState<number>(0);
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
@@ -58,17 +61,35 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       const { data } = await axiosClient.get(
         `/api/chat/get-newest-message-bucket?room_id=${room_id}`
       );
+      
       if (data.newestIndex >= 2) {
         await getMessageBucket(data.newestIndex);
         await getMessageBucket(data.newestIndex - FIRST_NEWEST_BUCKET);
+        setIsLoading(false)
         return setBucketIndex(data.newestIndex - TWO_NEWSET_BUCKET);
       }
       if (data.newestIndex === 1) {
         await getMessageBucket(data.newestIndex);
+        setIsLoading(false)
         return setBucketIndex(data.newestIndex - FIRST_NEWEST_BUCKET);
       }
       setOutOfMessages(true);
+      setIsLoading(false)
       return setBucketIndex(data.newestIndex);
+    } catch (error) {
+      // TODO: Do something when error
+    }
+  };
+
+  const getRoomInfo = async () => {
+    try {
+      const { data } = await axiosClient.get(
+        `/api/chat/room-info?room_id=${room_id}`
+      );
+      if (data.roomInfo.admin === username) {
+        return setIsAdmin(true)
+      }
+      setIsAdmin(false)
     } catch (error) {
       // TODO: Do something when error
     }
@@ -92,8 +113,9 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
     });
 
   }, [])
-  
+
   useEffect(() => {
+    getRoomInfo()
     savedMessagesRef.current = [];
     getInitMessage();
     if (username) {
@@ -106,11 +128,14 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
   }, [room_id]);
 
   const sendMessage = (inputValue: string) => {
-    socketRef.current.emit('chatMessage', {
-      content: inputValue,
-      time: Date(),
-      room: room_id,
-    });
+    if (inputValue.trim().length !== 0) {
+      socketRef.current.emit('chatMessage', {
+        content: inputValue,
+        time: Date(),
+        room: room_id,
+      });
+    }
+
   };
 
   const getOldMessage = async () => {
@@ -136,6 +161,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
     return null;
   }
   return (
+    isLoading ? <Loading /> :
     <div className="chatBox">
       <div className="chatBox__infoBar">
         <div className="chatBox__infoBar--content">
@@ -153,8 +179,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
             <p>{roomName}</p>
           </div>
           <div className="infoButton">
-            {/* TODO: open information component, complete it in next sprint */}
-            {/* <FaInfoCircle className="infoIcon" /> */}
+            {isAdmin ? <FaInfoCircle className="infoIcon" /> : <></>}
           </div>
         </div>
         <div className="chatBox__infoBar--bar"></div>
