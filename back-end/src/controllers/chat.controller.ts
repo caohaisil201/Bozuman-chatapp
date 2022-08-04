@@ -11,22 +11,10 @@ export class Chat {
     }>,
     res: Response
   ) => {
-    if (
-      typeof req.body.name === 'undefined' ||
-      typeof req.body.user_list === 'undefined'
-    ) {
-      res.status(404).json({
-        success: false,
-        error: 'Bad request'
-      });
-    }
     const username: any = req.context?.DecodePayload.username;
     let userList: any = req.body.user_list;
     userList = userList.filter((user: string) => user != username);
     userList = [...userList, username];
-    if (req.body.name === '') {
-      req.body.name = userList.join(', ');
-    }
     let type = 'Direct message';
     if (userList.length > 2) {
       type = 'Channel message';
@@ -40,7 +28,7 @@ export class Chat {
     try {
       const createRoomResponse = await RoomsService.addNewRoom(room);
       if (createRoomResponse) {
-        res.status(200).json({success: true});
+        res.status(200).json({ success: true });
       }
     } catch (err) {
       res.status(500).json({ success: false, error: err });
@@ -77,14 +65,32 @@ export class Chat {
     }
   };
 
-  public getRoomInfo = async (
-    req: TypedRequestBody<{}>,
-    res: Response
-  ) => {
+  public getRoomInfo = async (req: TypedRequestBody<{}>, res: Response) => {
     const room_id = req.query.room_id as string;
     try {
       const roomInfo = await RoomsService.getRoomInfo(room_id);
-      res.status(200).json({ success: true ,roomInfo: roomInfo });
+      res.status(200).json({ success: true, roomInfo: roomInfo });
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  public postEditRoom = async (
+    req: TypedRequestBody<{ name: string, user_list: Array<string>, room_id: number }>,
+    res: Response
+  ) => {
+    const username: any = req.context?.DecodePayload.username;
+    const {name, user_list, room_id} = req.body
+    try {
+      const roomInfo = await RoomsService.getRoomInfo(room_id);
+      if (roomInfo) {
+        if (roomInfo.admin !== username) {
+          return res.status(401).json({ success: false, error: "Unauthorized" });
+        }
+        await RoomsService.editRoom(name, user_list, room_id)
+        res.status(200).json({ success: true});
+      }
+
     } catch (err) {
       throw err;
     }

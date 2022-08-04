@@ -86,6 +86,9 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       const { data } = await axiosClient.get(
         `/api/chat/room-info?room_id=${room_id}`
       );
+      if (data.roomInfo.type === 'Direct message') {
+        return setIsAdmin(true)
+      }
       if (data.roomInfo.admin === username) {
         return setIsAdmin(true)
       }

@@ -93,13 +93,23 @@ export class RoomsService {
     }
   }
 
-  static getRoomInfo = async (room_id: string) => {
+  static getRoomInfo = async (room_id: string | number) => {
     const roomId = new RegExp(`^${room_id}_`);
     return await Rooms.findOne({
       room_id: roomId,
     })
       .sort({ _id: 1 })
       .skip(0)
-      .limit(1).select(['name', 'user_list', 'admin', '-_id']);
+      .limit(1).select(['name', 'user_list', 'admin', 'type', '_id']);
   };
+
+  static editRoom = async (name: string, user_list: Array<string>, room_id: number) => {
+    const roomId = new RegExp(`^${room_id}_`);
+    const type = user_list.length <= 2 ? 'Direct message' : 'Channel message'
+    return await Rooms.updateMany({room_id: roomId}, {$set: {
+      name: name,
+      user_list: user_list,
+      type: type
+    }})
+  }
 }
