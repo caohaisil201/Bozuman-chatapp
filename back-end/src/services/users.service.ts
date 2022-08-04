@@ -147,8 +147,8 @@ export class UsersService {
   ) => {
     if (username && room_id) {
       return await Users.updateOne(
-        { username: username, 'room_list.room_id': room_id},
-        {$set: {"room_list.$.unread": status}}
+        { username: username, 'room_list.room_id': room_id },
+        { $set: { 'room_list.$.unread': status } }
       ).exec();
     }
     throw _Error.SERVER_ERROR;
