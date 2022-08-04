@@ -1,4 +1,4 @@
-// @import './base/reset';
+
 @import 'bootstrap/dist/css/bootstrap.css';
 @import './base/variable';
 @import './base/normalized.scss';
@@ -18,6 +18,7 @@
 @import './component/messagesGroup';
 @import './component/roomBehaviour';
 
+@import './pages/homepage';
 @import './pages/loading';
 @import './pages/forgotpassword';
 @import './pages/signin';

@@ -11,6 +11,7 @@ import {
 import axiosClient from 'helper/axiosClient';
 import Room from 'components/Room';
 import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
+import { socket } from 'helper/socket';
 
 const SIZE_OF_AVATAR_PROFILE: number = 50;
 
@@ -28,7 +29,7 @@ export interface UserType {
 }
 
 type SideBarProps = {
-  selectRoom: (room_id: number, isChanel: boolean, roomName: string) => void;
+  selectRoom: (room_id: number, isChanel: boolean, roomName:string, username: string | undefined)=> void;
 };
 
 function SideBar({ selectRoom }: SideBarProps) {
@@ -40,14 +41,16 @@ function SideBar({ selectRoom }: SideBarProps) {
   const [groupRooms, setGroupRooms] = useState<Array<RoomInterface>>([]);
   const [showAddRoom, setShowAddRoom] = useState<boolean>(false);
 
+  const [username, setUsername] = useState<string>()
   useEffect(() => {
     async function getUserInfo() {
       try {
-        const res = await axiosClient.get(
+        const {data} = await axiosClient.get(
           `${process.env.NEXT_PUBLIC_DOMAIN}/api/user/user-info`
         );
-        setFullname(res.data.data.full_name);
-        const room_list = res.data.data.room_list;
+        setFullname(data.data.full_name);
+        setUsername(data.data.username)
+        const room_list = data.data.room_list;
         const personalRoomsArr: Array<RoomInterface> = [];
         const groupRoomsArr: Array<RoomInterface> = [];
         room_list.forEach((room: RoomInterface) => {
@@ -84,14 +87,9 @@ function SideBar({ selectRoom }: SideBarProps) {
     router.push('/sign-in');
   }
 
-  const clickRoomHandle = (
-    room_id: number,
-    isChanel: boolean,
-    roomName: string
-  ) => {
-    selectRoom(room_id, isChanel, roomName);
-  };
-
+  const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) => {
+    selectRoom(room_id, isChanel, roomName, username)
+  }
   const  handleShowAddRoomPopup = () : void => {
     setShowAddRoom(true);
   }
@@ -114,6 +112,7 @@ function SideBar({ selectRoom }: SideBarProps) {
     //   //TODO: handle error
     // }
   }
+
 
   return (
     <>
@@ -147,22 +146,18 @@ function SideBar({ selectRoom }: SideBarProps) {
                   onClick={handleShowPersonalMessage}
                 />
                 <div className="showRoomPanel">
-                  {personalRooms.map((room, index) => (
-                    <Room
-                      room={room}
-                      mapKey={`personalRooms ${index}`}
-                      clickRoomHandle={clickRoomHandle}
-                    />
-                  ))}
-                </div>
-              </>
+                {personalRooms.map((room, index) => (
+                  <Room room={room} key={`personalRooms ${index}`} clickRoomHandle={clickRoomHandle}/>
+                ))}
+              </div>
+            </>
             ) : (
               <FaChevronDown
-                className="iconScrollTypeMessage"
-                onClick={handleShowPersonalMessage}
-              />
+              className="iconScrollTypeMessage"
+              onClick={handleShowPersonalMessage}
+            />
             )}
-          </div>
+        </div>
 
           <div className="roomList">
             Group message
@@ -176,7 +171,7 @@ function SideBar({ selectRoom }: SideBarProps) {
                   {groupRooms.map((room, index) => (
                     <Room
                       room={room}
-                      mapKey={`groupRooms ${index}`}
+                      key={`groupRooms ${index}`}
                       clickRoomHandle={clickRoomHandle}
                     />
                   ))}

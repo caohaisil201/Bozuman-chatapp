@@ -1,5 +1,5 @@
 import MessageGroup from 'components/MessageGroup';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import {
   pushOldMessage,
@@ -11,35 +11,31 @@ import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import usePrevious from 'hooks/usePrevious';
 import InputMessage from './inputMessage';
+import { io } from 'socket.io-client';
 import { getCookie } from 'cookies-next';
-import { socket } from 'helper/socket';
-import Loading from 'components/Loading';
 
 const TWO_NEWSET_BUCKET = 2;
 const FIRST_NEWEST_BUCKET = 1;
+const AVATAR_SIZE = 42;
 
 export type ChatBoxProps = {
   room_id: number;
   isChanel: boolean;
   roomName: string;
+  username?: string;
 };
 
-const AVATAR_SIZE = 42;
+function getAccessToken () {
+  const access_token = getCookie('access_token');
+  return access_token;
+}
 
-function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
-  const savedMessages: Array<MessageGroupProps> = [];
-  const [isLoading, setIsLoading] = useState(true);
-  const sendMessage = (inputValue: string) => {
-    socket.emit('chatMessage', {
-      content: inputValue,
-      time: Date(),
-      room: room_id,
-    });
-  };
+function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
+  const savedMessagesRef = useRef<Array<MessageGroupProps>>([]);
+  
   const [messages, setMessages] = useState<Array<MessageGroupProps>>([]);
   const [bucketIndex, setBucketIndex] = useState<number>(0);
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
-
   const getMessageBucket = async (page: number) => {
     try {
       const { data } = await axiosClient.get(
@@ -47,9 +43,9 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
       );
       if (data[0]) {
         data[0].message_list.reverse().forEach((element: MessageInput) => {
-          pushOldMessage(element, savedMessages);
+          pushOldMessage(element, savedMessagesRef.current, username);
         });
-        setMessages([...savedMessages]);
+        setMessages([...savedMessagesRef.current]);
       }
     } catch (error) {
       // TODO: Do something when error
@@ -62,7 +58,7 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
       const { data } = await axiosClient.get(
         `/api/chat/get-newest-message-bucket?room_id=${room_id}`
       );
-      setIsLoading(false);
+
       if (data.newestIndex >= 2) {
         await getMessageBucket(data.newestIndex);
         await getMessageBucket(data.newestIndex - FIRST_NEWEST_BUCKET);
@@ -79,24 +75,44 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
     }
   };
 
-  
-
+  const socketRef = useRef<any>(null);
   useEffect(() => {
-    getInitMessage();
-    const username = getCookie('username');
+    socketRef.current = io(`${process.env.NEXT_PUBLIC_DOMAIN}`,{
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            'Authorization': getAccessToken(),
+          },
+        },
+      },
+    }
+    );
+    socketRef.current.on('message', (message: any) => {
+      pushNewMessage(message, savedMessagesRef.current, username);
+      setMessages([...savedMessagesRef.current]);
+    });
 
+  }, [])
+  
+  useEffect(() => {
+    savedMessagesRef.current = [];
+    getInitMessage();
     if (username) {
-      socket.emit('joinRoom', {
+      socketRef.current.emit('joinRoom', {
         sender: username,
         room: room_id,
       });
     }
-
-    socket.on('message', (message) => {
-      pushNewMessage(message, savedMessages);
-      setMessages([...savedMessages]);
-    });
+    setOutOfMessages(false)
   }, [room_id]);
+
+  const sendMessage = (inputValue: string) => {
+    socketRef.current.emit('chatMessage', {
+      content: inputValue,
+      time: Date(),
+      room: room_id,
+    });
+  };
 
   const getOldMessage = async () => {
     if (bucketIndex !== 0) {
@@ -105,14 +121,13 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
       );
       setBucketIndex(bucketIndex - 1);
       res.data[0].message_list.reverse().forEach((element: MessageInput) => {
-        pushOldMessage(element, savedMessages);
+        pushOldMessage(element, savedMessagesRef.current, username);
       });
-      setMessages([...savedMessages]);
+      setMessages([...savedMessagesRef.current]);
     } else {
       setOutOfMessages(true);
     }
   };
-
   const clickHandle = (inputValue: string) => {
     sendMessage(inputValue);
   };
@@ -122,7 +137,7 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
     return null;
   }
   return (
-    isLoading ? <Loading/> : <div className="chatBox">
+    <div className="chatBox">
       <div className="chatBox__infoBar">
         <div className="chatBox__infoBar--content">
           <div className={isChanel ? 'userInfo' : 'userInfo'}>
@@ -134,7 +149,7 @@ function ChatBox({ room_id, isChanel, roomName }: ChatBoxProps) {
                 width={AVATAR_SIZE}
                 height={AVATAR_SIZE}
               />
-              ;
+              
             </>
             <p>{roomName}</p>
           </div>
