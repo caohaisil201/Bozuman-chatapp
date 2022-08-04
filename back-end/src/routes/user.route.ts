@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.get('/user-info', user.getUserInfo);
 router.get('/search-user', user.getSearchUserResult);
+router.post('/change-room-status', user.changeRoomStatus)
 
 export default router;

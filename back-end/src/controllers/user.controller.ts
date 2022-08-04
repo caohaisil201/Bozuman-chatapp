@@ -34,4 +34,35 @@ export class User {
       });
     }
   };
+
+  public changeRoomStatus = async (req: Request, res: Response) => {
+    try {
+      const username = req.context?.DecodePayload.username;
+      const room_id = req.body.room_id;
+      const status = req.body.status;
+      if (
+        typeof username === 'undefined' ||
+        typeof room_id === 'undefined' ||
+        typeof status === 'undefined'
+      ) {
+        res.status(404).json({
+          success: false,
+          error: 'Bad request',
+        });
+      }
+      const userInfo = await UsersService.changeRoomStatus(
+        username,
+        room_id,
+        status
+      );
+      res.status(200).json({
+        success: true,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error,
+      });
+    }
+  };
 }
