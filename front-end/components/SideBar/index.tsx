@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { deleteCookie } from 'cookies-next';
+import { deleteCookie, getCookie } from 'cookies-next';
 import {
   FaUserPlus,
   FaChevronDown,
@@ -10,7 +10,8 @@ import {
 } from 'react-icons/fa';
 import axiosClient from 'helper/axiosClient';
 import Room from 'components/Room';
-import { socket } from 'helper/socket';
+import axios from 'axios';
+import { io } from 'socket.io-client';
 
 const SIZE_OF_AVATAR_PROFILE: number = 50;
 
@@ -21,6 +22,11 @@ export interface RoomInterface {
   unread: boolean;
   name: string;
   type: string;
+}
+
+const getAccessToken = () => {
+  const access_token = getCookie('access_token');
+  return access_token;
 }
 
 type SideBarProps = {
@@ -35,6 +41,26 @@ function SideBar({selectRoom} : SideBarProps) {
   const [personalRooms, setPersonalRooms] = useState<Array<RoomInterface>>([]);
   const [groupRooms, setGroupRooms] = useState<Array<RoomInterface>>([]);
   const [username, setUsername] = useState<string>()
+  const [socketState, setSocketState] = useState(false);
+  const socketRef = useRef<any>(null);
+
+  useEffect(() => {
+    socketRef.current = io(`${process.env.NEXT_PUBLIC_DOMAIN}`,{
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            'Authorization': getAccessToken(),
+          },
+        },
+      },
+    }
+    );
+    socketRef.current.on('message', (message: any) => {
+      setSocketState(prev=>!prev);
+    });
+
+  }, [])
+
   useEffect(() => {
     async function getUserInfo() {
       try {
@@ -63,7 +89,7 @@ function SideBar({selectRoom} : SideBarProps) {
       } catch (err) {}
     }
     getUserInfo();
-  }, []);
+  }, [socketState]);
 
   function handleShowPersonalMessage() {
     setShowPersonalMessage((prevState) => !prevState);
@@ -76,13 +102,24 @@ function SideBar({selectRoom} : SideBarProps) {
   function handleSignOut() {
     deleteCookie('access_token');
     deleteCookie('refresh_token');
-    deleteCookie('username');
     router.push('/sign-in');
   }
 
-const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) => {
-  selectRoom(room_id, isChanel, roomName, username)
-}
+  const setRoomStatus= async(room_id:number,status:boolean) => {
+    try{
+      await axiosClient
+      .post(`/api/user/change-room-status`,{
+        room_id,
+        status
+      })
+    }
+    catch(err){}
+  }
+  
+  const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) => {
+    setRoomStatus(room_id,false);
+    selectRoom(room_id, isChanel, roomName, username);
+  }
 
   return (
     <div className="sidebar">

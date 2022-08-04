@@ -1,9 +1,9 @@
 import React from 'react';
-import { Room } from 'hooks/useGetUserInfo';
+import { RoomInterface } from 'components/SideBar';
 import Image from 'next/image';
 
 type RoomProps = {
-  room: Room,
+  room: RoomInterface,
   clickRoomHandle: (room_id: number, isChanel: boolean, name:string)=>void
 };
 const SIZE_OF_AVATAR_PROFILE: number = 42;
