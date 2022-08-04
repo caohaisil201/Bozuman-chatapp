@@ -138,7 +138,15 @@ export class UsersService {
         .exec();
     }
     throw _Error.SERVER_ERROR;
-  };
+  }
+
+  static getSearchUserResult = async (searchValue: string | undefined) => {
+    if(searchValue){
+      
+      return await Users.find({username: { $regex: searchValue, $options: 'i'}}).select(['username', '-_id']).exec();
+    }
+    throw _Error.SERVER_ERROR;
+  }
 
   static changeRoomStatus = async (
     username: string | undefined,
