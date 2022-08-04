@@ -111,7 +111,7 @@
     }
 
     .button {
-      @include button_customization(2rem, 5rem, 16px);
+      padding: 10px 20px;
       margin: 2rem auto;
       display: block;
 
@@ -124,7 +124,7 @@
       text-transform: uppercase;
 
       border: unset;
-      border-radius: 20px;
+      border-radius: 5px;
 
       cursor: pointer;
 

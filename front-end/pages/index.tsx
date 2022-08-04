@@ -16,7 +16,6 @@ const Home: NextPage = () => {
     setChatBoxProps({...chatBoxProps, room_id, isChanel, roomName})
   };
 
-
   useEffect(() => {
     async function checkLogIn() {
       if(await checkAuth(router)){

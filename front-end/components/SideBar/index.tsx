@@ -23,6 +23,10 @@ export interface RoomInterface {
   type: string;
 }
 
+export interface UserType {
+  username: string;
+}
+
 type SideBarProps = {
   selectRoom: (room_id: number, isChanel: boolean, roomName: string) => void;
 };
@@ -88,12 +92,27 @@ function SideBar({ selectRoom }: SideBarProps) {
     selectRoom(room_id, isChanel, roomName);
   };
 
-  function handleShowAddRoomPopup(): void {
+  const  handleShowAddRoomPopup = () : void => {
     setShowAddRoom(true);
   }
 
-  function closeAddRoomPopup(): void {
+  const closeAddRoomPopup = () : void => {
     setShowAddRoom(false);
+  }
+
+  const handleCreateRoom = (users: Array<UserType>, roomName: string) => {
+    console.log(users,roomName);
+    //TODO: call API
+    // try{
+    //   const res = axiosClient.post('/api/chat/add-new-room', {
+    //     name: roomName,
+    //     user_list: users,
+    //   })
+    //   console.log(res);
+    //   // if(res.success)
+    // }catch(err) {
+    //   //TODO: handle error
+    // }
   }
 
   return (
@@ -173,7 +192,12 @@ function SideBar({ selectRoom }: SideBarProps) {
         </div>
         <p className="copyRight">Copyright 2022 All Rights Reserved Bozuman </p>
       </div>
-      {showAddRoom && <RoomBehaviourPopup close={closeAddRoomPopup}/>}
+      {showAddRoom && 
+      <RoomBehaviourPopup 
+        close={closeAddRoomPopup}
+        users={[]}
+        click={handleCreateRoom}
+      />}
     </>
   );
 }
