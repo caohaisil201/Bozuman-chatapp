@@ -56,4 +56,17 @@ export class Chat {
       throw err;
     }
   };
+
+  public getRoomInfo = async (
+    req: TypedRequestBody<{}>,
+    res: Response
+  ) => {
+    const room_id = req.query.room_id as string;
+    try {
+      const roomInfo = await RoomsService.getRoomInfo(room_id);
+      res.status(200).json({ success: true ,roomInfo: roomInfo });
+    } catch (err) {
+      throw err;
+    }
+  };
 }
