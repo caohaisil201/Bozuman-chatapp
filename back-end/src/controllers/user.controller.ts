@@ -19,6 +19,7 @@ export class User {
       });
     }
   };
+  
   public getSearchUserResult = async (req: TypedRequestBody<{}>, res: Response) => {
     try {
       const searchValue = req.query.search_value as string;
@@ -50,7 +51,7 @@ export class User {
           error: 'Bad request',
         });
       }
-      const userInfo = await UsersService.changeRoomStatus(
+      await UsersService.changeRoomStatus(
         username,
         room_id,
         status
