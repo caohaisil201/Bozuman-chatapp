@@ -87,13 +87,15 @@ io.use(function (socket, next) {
 io.on('connection', (socket) => {
   socket.on('joinRoom', (message) => {
     const roomArray = Array.from(socket.rooms);
-    roomArray.map((room) => {
-      socket.leave(room);
+    roomArray.map((room) => { 
+      if (!room.toString().includes('SideBar')){
+        socket.leave(room);
+      }
     });
     socket.join(message.room);
   });
   socket.on('joinRoomForSideBar', (message) => {
-    socket.join(message.room);
+    socket.join('SideBar'+ message.room);
   });
   socket.on('chatMessage', (message) => {
     if (socket.data.username) {
@@ -110,7 +112,7 @@ io.on('connection', (socket) => {
         message.room
       );
       io.to(message.room).emit('message', receivedMessage);
-      io.to(message.room).emit('messageForSideBar', receivedMessage);
+      io.to('SideBar'+ message.room).emit('messageForSideBar', receivedMessage);
     }
   });
 });
