@@ -86,6 +86,13 @@ io.use(function (socket, next) {
 
 io.on('connection', (socket) => {
   socket.on('joinRoom', (message) => {
+    const roomArray = Array.from(socket.rooms);
+    roomArray.map((room) => {
+      socket.leave(room);
+    });
+    socket.join(message.room);
+  });
+  socket.on('joinRoomForSideBar', (message) => {
     socket.join(message.room);
   });
   socket.on('chatMessage', (message) => {
@@ -98,8 +105,12 @@ io.on('connection', (socket) => {
       };
 
       RoomsService.insertChatMessageIntoRoom(receivedMessage);
-      UsersService.changeOtherUserStatusToUnread(socket.data.username, message.room)
+      UsersService.changeOtherUserStatusToUnread(
+        socket.data.username,
+        message.room
+      );
       io.to(message.room).emit('message', receivedMessage);
+      io.to(message.room).emit('messageForSideBar', receivedMessage);
     }
   });
 });
