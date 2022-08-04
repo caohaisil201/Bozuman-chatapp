@@ -24,10 +24,23 @@ export class User {
       const username = req.context?.DecodePayload.username;
       const room_id = req.body.room_id;
       const status = req.body.status;
-      const userInfo = await UsersService.changeRoomStatus(username, room_id, status);
+      if (
+        typeof username === 'undefined' ||
+        typeof room_id === 'undefined' ||
+        typeof status === 'undefined'
+      ) {
+        res.status(404).json({
+          success: false,
+          error: 'Bad request',
+        });
+      }
+      const userInfo = await UsersService.changeRoomStatus(
+        username,
+        room_id,
+        status
+      );
       res.status(200).json({
         success: true,
-        data: userInfo,
       });
     } catch (error) {
       res.status(500).json({
