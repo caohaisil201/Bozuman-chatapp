@@ -24,6 +24,9 @@ export class Chat {
     let userList: any = req.body.user_list;
     userList = userList.filter((user: string) => user != username);
     userList = [...userList, username];
+    if (req.body.name === '') {
+      req.body.name = userList.join(', ');
+    }
     let type = 'Direct message';
     if (userList.length > 2) {
       type = 'Channel message';
