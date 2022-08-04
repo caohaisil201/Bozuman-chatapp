@@ -81,7 +81,7 @@ export class RoomsService {
     })
       .sort({ _id: 1 })
       .skip((page - 1) * page_size)
-      .limit(page_size);
+      .limit(page_size).select(['message_list', 'count', '-_id']);
   };
 
   static getNewestMessageBucket = async (room_id: string) => {
@@ -92,4 +92,14 @@ export class RoomsService {
       throw err;
     }
   }
+
+  static getRoomInfo = async (room_id: string) => {
+    const roomId = new RegExp(`^${room_id}_`);
+    return await Rooms.findOne({
+      room_id: roomId,
+    })
+      .sort({ _id: 1 })
+      .skip(0)
+      .limit(1).select(['name', 'user_list', 'admin', '-_id']);
+  };
 }

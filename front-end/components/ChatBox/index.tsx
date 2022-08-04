@@ -14,6 +14,7 @@ import InputMessage from './inputMessage';
 import Loading from 'components/Loading'
 import { io } from 'socket.io-client';
 import { getCookie } from 'cookies-next';
+import { FaInfoCircle } from 'react-icons/fa';
 
 const TWO_NEWSET_BUCKET = 2;
 const FIRST_NEWEST_BUCKET = 1;
@@ -33,6 +34,7 @@ function getAccessToken () {
 
 function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
   const savedMessagesRef = useRef<Array<MessageGroupProps>>([]);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [messages, setMessages] = useState<Array<MessageGroupProps>>([]);
   const [bucketIndex, setBucketIndex] = useState<number>(0);
@@ -59,20 +61,35 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       const { data } = await axiosClient.get(
         `/api/chat/get-newest-message-bucket?room_id=${room_id}`
       );
-      setIsLoading(false)
+      
       if (data.newestIndex >= 2) {
         await getMessageBucket(data.newestIndex);
         await getMessageBucket(data.newestIndex - FIRST_NEWEST_BUCKET);
-        // setIsLoading(false)
+        setIsLoading(false)
         return setBucketIndex(data.newestIndex - TWO_NEWSET_BUCKET);
       }
       if (data.newestIndex === 1) {
         await getMessageBucket(data.newestIndex);
-        // setIsLoading(false)
+        setIsLoading(false)
         return setBucketIndex(data.newestIndex - FIRST_NEWEST_BUCKET);
       }
       setOutOfMessages(true);
+      setIsLoading(false)
       return setBucketIndex(data.newestIndex);
+    } catch (error) {
+      // TODO: Do something when error
+    }
+  };
+
+  const getRoomInfo = async () => {
+    try {
+      const { data } = await axiosClient.get(
+        `/api/chat/room-info?room_id=${room_id}`
+      );
+      if (data.roomInfo.admin === username) {
+        return setIsAdmin(true)
+      }
+      setIsAdmin(false)
     } catch (error) {
       // TODO: Do something when error
     }
@@ -96,8 +113,9 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
     });
 
   }, [])
-  
+
   useEffect(() => {
+    getRoomInfo()
     savedMessagesRef.current = [];
     getInitMessage();
     if (username) {
@@ -161,8 +179,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
             <p>{roomName}</p>
           </div>
           <div className="infoButton">
-            {/* TODO: open information component, complete it in next sprint */}
-            {/* <FaInfoCircle className="infoIcon" /> */}
+            {isAdmin ? <FaInfoCircle className="infoIcon" /> : <></>}
           </div>
         </div>
         <div className="chatBox__infoBar--bar"></div>
