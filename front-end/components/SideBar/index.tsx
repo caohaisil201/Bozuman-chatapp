@@ -3,14 +3,12 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { deleteCookie } from 'cookies-next';
 import {
-  FaUserPlus,
   FaChevronDown,
   FaChevronUp,
   FaSignOutAlt,
 } from 'react-icons/fa';
 import axiosClient from 'helper/axiosClient';
 import Room from 'components/Room';
-import { socket } from 'helper/socket';
 
 const SIZE_OF_AVATAR_PROFILE: number = 50;
 

@@ -56,14 +56,14 @@ export class RoomsService {
   };
 
   static getMessageInRoomByPage = async (data: any) => {
-    const { room_id, page, pageSize = PAGESIZE_DEFAULT } = data;
+    const { room_id, page, page_size = PAGESIZE_DEFAULT } = data;
     const roomId = new RegExp(`^${room_id}_`);
     return await Rooms.find({
       room_id: roomId,
     })
       .sort({ _id: 1 })
-      .skip((page - 1) * pageSize)
-      .limit(pageSize);
+      .skip((page - 1) * page_size)
+      .limit(page_size);
   };
 
   static getNewestMessageBucket = async (room_id: string) => {

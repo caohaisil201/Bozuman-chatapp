@@ -5,5 +5,6 @@ const user = new User();
 const router = express.Router();
 
 router.get('/user-info', user.getUserInfo);
+router.get('/search-user', user.getSearchUserResult);
 
 export default router;

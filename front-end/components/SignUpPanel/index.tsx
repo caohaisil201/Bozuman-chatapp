@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import md5 from 'md5';
 
-interface SignUpForm {
+interface SignUpFormProperty {
   full_name: string;
   email: string;
   username: string;
@@ -58,11 +58,11 @@ function SignUpPanel() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignUpForm>({
+  } = useForm<SignUpFormProperty>({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
+  const onSubmit: SubmitHandler<SignUpFormProperty> = async (data) => {
     delete data.passwordConfirmation;
     let {username,email,password,full_name} = data;
     password = md5(password);
