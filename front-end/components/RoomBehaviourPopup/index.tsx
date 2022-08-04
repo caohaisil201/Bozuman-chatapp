@@ -9,7 +9,7 @@ type Props = {
   users: Array<UserType>;
   isEdit?: boolean;
   close: () => void;
-  click: (users: Array<UserType>, roomName: string) => void;
+  click: (users: Array<string>, roomName: string) => void;
 };
 
 const RoomBehaviourPopup = ({ roomName, users, isEdit, close, click }: Props) => {
@@ -64,9 +64,13 @@ const RoomBehaviourPopup = ({ roomName, users, isEdit, close, click }: Props) =>
   }
 
   const handleClick = () => {
+    if(userResult.length === 0){
+      return;
+    }
+    let userNameData = userResult.map(element => element.username);
     roomNameRef.current?.value 
-      ? click(userResult,roomNameRef.current.value)
-      : click(userResult,'');
+      ? click(userNameData,roomNameRef.current.value)
+      : click(userNameData,'');
   }
 
   return (

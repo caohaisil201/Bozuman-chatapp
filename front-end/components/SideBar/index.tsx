@@ -98,7 +98,7 @@ function SideBar({ selectRoom }: SideBarProps) {
     setShowAddRoom(false);
   }
 
-  const handleCreateRoom = (users: Array<UserType>, roomName: string) => {
+  const handleCreateRoom = (users: Array<string>, roomName: string) => {
     console.log(users,roomName);
     //TODO: call API
     // try{
