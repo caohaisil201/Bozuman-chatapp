@@ -1,12 +1,15 @@
 .col-9 {
-  position: relative;
+  
   .homePage {
-    position: absolute;
-    top:50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    p {
-      
+    width: 500px;
+    height: 100vh;
+    margin: 0 auto;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    p { 
       font-weight: bold;
       font-size: 3rem;
     }

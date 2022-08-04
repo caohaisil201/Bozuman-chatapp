@@ -33,7 +33,7 @@ app.use(
     credentials: true,
   })
 );
-app.use('/api/auth', auth);
+
 app.use('/api/token', expiredAccessTokenHandler);
 app.use('/api/chat', checkAccessToken, chat);
 app.use('/api/user', checkAccessToken, user);

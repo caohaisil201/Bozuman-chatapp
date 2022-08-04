@@ -1,5 +1,5 @@
 import axiosClient from 'helper/axiosClient';
-import React, { useState, useRef, MouseEventHandler } from 'react';
+import React, { useState, useRef, KeyboardEvent } from 'react';
 import { FaTimes, FaSearch } from 'react-icons/fa';
 import User from './user';
 import { UserType } from 'components/SideBar';
@@ -18,7 +18,7 @@ const RoomBehaviourPopup = ({ roomName, users, isEdit, close, click }: Props) =>
   const [userFind, setUserFind] = useState<Array<UserType>>([]);
   const [userResult, setUserResult] = useState<Array<UserType>>([...users]);
 
-  const  onSubmitSearch = async () => {
+  const onSubmitSearch = async () => {
     if (searchRef.current?.value) {
       const searchValue: string = searchRef.current.value.trim();
       //TODO: call API, it return users
@@ -51,6 +51,10 @@ const RoomBehaviourPopup = ({ roomName, users, isEdit, close, click }: Props) =>
     }
   };
 
+  const pressEnterToSearch = (event: KeyboardEvent) => {
+    console.log(event.key);
+  }
+
   const onAddUser = (user: UserType) : void => {
     if(userResult.find(element => element['username']===user['username'])){
       return
@@ -80,6 +84,7 @@ const RoomBehaviourPopup = ({ roomName, users, isEdit, close, click }: Props) =>
         <input 
           placeholder="Enter room name"
           ref={roomNameRef}
+          onKeyDown={pressEnterToSearch}
           value={roomName ? roomName : ''}
         />
         <div className="search">
