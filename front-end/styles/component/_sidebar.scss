@@ -4,7 +4,7 @@
   padding-right: 12px;
 
   position: relative;
-  
+
   background-color: #ffe0cf;
 
   user-select: none;
@@ -12,7 +12,7 @@
   .header {
     display: flex;
     align-items: center;
-    justify-content: space-between;    
+    justify-content: space-between;
 
     .personalInfo {
       min-height: 70px;
@@ -22,63 +22,56 @@
       justify-content: flex-start;
       align-items: center;
 
-      .info{
+      .info {
         margin-left: 18px;
 
-        .name{
+        .name {
           font-weight: 600;
-          font-size:1rem;
+          font-size: 1rem;
           margin-bottom: 0;
         }
       }
     }
 
-    .iconSignOut{
+    .iconSignOut {
       cursor: pointer;
-      @include icon_customization(1.3rem,1.3rem);
+      @include icon_customization(1.3rem, 1.3rem);
     }
   }
 
-  .searchAndAdd{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .iconAdd {
+    cursor: pointer;
+    @include icon_customization(2rem, 2rem);
 
-    .search{
-        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-        min-width: 80%;  
-    }
-
-    .iconAdd{
-        cursor: pointer;
-        @include icon_customization(2rem,2rem);
-    }
+    position: absolute;
+    right: 1rem;
+    transform: translateY(-10px);
   }
 
-  .typeMessage{
+  .typeMessage {
     font-weight: 600;
-    font-size:0.9rem;
+    font-size: 0.9rem;
 
-    .roomList{
+    .roomList {
       margin-bottom: 20px;
 
-      .iconScrollTypeMessage{
+      .iconScrollTypeMessage {
         margin-left: 10px;
         cursor: pointer;
-        @include icon_customization(1rem,1rem);
+        @include icon_customization(1rem, 1rem);
       }
     }
   }
 
-  .split{
+  .split {
     margin-top: 1.5vh;
   }
 
-  .title{
+  .title {
     padding-left: 10px;
   }
 
-  .copyRight{
+  .copyRight {
     margin: 10px 0;
 
     font-weight: 600;
