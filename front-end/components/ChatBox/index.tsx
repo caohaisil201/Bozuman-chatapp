@@ -35,10 +35,10 @@ interface IRoomInfo {
   admin: string;
 }
 
-function getAccessToken() {
+const getAccessToken = () => {
   const access_token = getCookie('access_token');
   return access_token;
-}
+};
 
 function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
   const savedMessagesRef = useRef<Array<MessageGroupProps>>([]);
@@ -184,17 +184,23 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
   };
 
   const handleEditRoom = async (users: Array<string>, roomName: string) => {
-    try{
+    try {
       const res = await axiosClient.post('/api/chat/edit-room', {
         room_id,
         user_list: users,
         name: roomName,
-      })
-      if(res.data.success) {
+      });
+      if (res.data.success) {
         handleCloseEditRoomPopup();
-        Swal.fire('Update successfully');
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Create room successfully',
+          showConfirmButton: false,
+          timer: 1500
+        })
       }
-    }catch (error) {
+    } catch (error) {
       //TODO: catch error;
     }
   };
