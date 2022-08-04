@@ -10,7 +10,7 @@ import { setCookie } from 'cookies-next';
 import AuthPanel from 'components/AuthPanel';
 import md5 from 'md5';
 
-interface SignInForm {
+interface SignInFormProperty {
   username: string;
   password: string;
 }
@@ -47,10 +47,10 @@ function SignInPanel() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<SignInForm>({
+  } = useForm<SignInFormProperty>({
     resolver: yupResolver(schema),
   });
-  const onSubmit: SubmitHandler<SignInForm> = async (data) => {
+  const onSubmit: SubmitHandler<SignInFormProperty> = async (data) => {
     let {username, password} = data;
     password = md5(password);
     try {
