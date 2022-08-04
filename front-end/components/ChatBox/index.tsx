@@ -27,7 +27,7 @@ export type ChatBoxProps = {
 };
 const AVATAR_SIZE = 42;
 
-function getAccessToken () {
+const getAccessToken = () => {
   const access_token = getCookie('access_token');
   return access_token;
 }

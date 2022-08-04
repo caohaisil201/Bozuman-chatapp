@@ -97,9 +97,9 @@ io.on('connection', (socket) => {
         room_id: message.room,
       };
 
-      io.to(message.room).emit('message', receivedMessage);
       RoomsService.insertChatMessageIntoRoom(receivedMessage);
       UsersService.changeOtherUserStatusToUnread(socket.data.username, message.room)
+      io.to(message.room).emit('message', receivedMessage);
     }
   });
 });
