@@ -71,7 +71,7 @@ function SideBar({ selectRoom }: SideBarProps) {
       },
     }
     );
-    socketRef.current.on('message', (message: any) => {
+    socketRef.current.on('messageForSideBar', (message: any) => {
       setSocketState(prev=>!prev);
     });
   }, [])
@@ -84,7 +84,7 @@ function SideBar({ selectRoom }: SideBarProps) {
         setUsername(data.data.username);
         const room_list = data.data.room_list;
         room_list.map((room: any) => {
-          socketRef.current.emit('joinRoom', {
+          socketRef.current.emit('joinRoomForSideBar', {
             sender: 'anonymous',
             room: room.room_id,
           });

@@ -143,7 +143,7 @@ export class UsersService {
   static getSearchUserResult = async (searchValue: string | undefined) => {
     if(searchValue){
       
-      return await Users.find({username: { $regex: searchValue, $options: 'i'}}).select(['username', '-_id']).exec();
+      return await Users.find({username: { $regex: searchValue, $options: 'i'}}).select(['username', '-_id']).sort({ username: 1 }).exec();
     }
     throw _Error.SERVER_ERROR;
   }
@@ -167,6 +167,16 @@ export class UsersService {
       return await Users.updateOne(
         { username: {$ne: username}, 'room_list.room_id': room_id },
         { $set: { 'room_list.$.unread': true } }
+      ).exec();
+    }
+    throw _Error.SERVER_ERROR;
+  }
+
+  static updateLastMessAndLastTime = async (username: string, room_id: string, content: string, time: Date) => {
+    if (username && room_id) {
+      return await Users.updateMany(
+        { 'room_list.room_id': room_id },
+        { $set: { 'room_list.$.last_message': content, 'room_list.$.last_time': time } }
       ).exec();
     }
     throw _Error.SERVER_ERROR;

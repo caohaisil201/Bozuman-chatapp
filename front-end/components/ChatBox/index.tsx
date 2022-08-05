@@ -101,6 +101,9 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       const { data } = await axiosClient.get(
         `/api/chat/room-info?room_id=${room_id}`
       );
+      if (data.roomInfo.type === 'Direct message') {
+        setIsAdmin(true)
+      }
       if (data.roomInfo.admin === username) {
         setRoomInfo({
           ...roomInfo,
@@ -195,7 +198,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
         Swal.fire({
           position: 'center',
           icon: 'success',
-          title: 'Create room successfully',
+          title: 'Update room successfully',
           showConfirmButton: false,
           timer: 1500
         })

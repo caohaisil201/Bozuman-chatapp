@@ -88,7 +88,7 @@ export class Auth {
 
   public signIn = async (req: Request, res: Response) => {
     try {
-      const inputData = req.body as User;  
+      const inputData = req.body as User; 
       const response = await UsersService.authenticate(inputData);
       res.status(200).json(response);
     } catch (error) {
