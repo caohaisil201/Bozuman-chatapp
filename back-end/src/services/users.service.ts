@@ -171,4 +171,14 @@ export class UsersService {
     }
     throw _Error.SERVER_ERROR;
   }
+
+  static updateLastMessAndLastTime = async (username: string, room_id: string, content: string, time: Date) => {
+    if (username && room_id) {
+      return await Users.updateMany(
+        { 'room_list.room_id': room_id },
+        { $set: { 'room_list.$.last_message': content, 'room_list.$.last_time': time } }
+      ).exec();
+    }
+    throw _Error.SERVER_ERROR;
+  }
 }
