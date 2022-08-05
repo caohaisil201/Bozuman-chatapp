@@ -57,7 +57,6 @@ axiosClient.interceptors.response.use(
       window.location = '/sign-in';
     }
     console.log(window.location.pathname)
-    // console.log(first)
     return error;
   }
 );
