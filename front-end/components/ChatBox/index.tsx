@@ -7,7 +7,7 @@ import {
   MessageGroupProps,
   MessageInput,
 } from 'helper/messageHandle';
-import { FaInfoCircle } from 'react-icons/fa';
+import { FaEdit } from 'react-icons/fa';
 import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import usePrevious from 'hooks/usePrevious';
@@ -41,7 +41,9 @@ const getAccessToken = () => {
 };
 
 function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
+  const socketRef = useRef<any>(null);
   const savedMessagesRef = useRef<Array<MessageGroupProps>>([]);
+
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [messages, setMessages] = useState<Array<MessageGroupProps>>([]);
@@ -119,35 +121,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
     }
   };
 
-  const socketRef = useRef<any>(null);
-  useEffect(() => {
-    socketRef.current = io(`${process.env.NEXT_PUBLIC_DOMAIN}`, {
-      transportOptions: {
-        polling: {
-          extraHeaders: {
-            Authorization: getAccessToken(),
-          },
-        },
-      },
-    });
-    socketRef.current.on('message', (message: any) => {
-      pushNewMessage(message, savedMessagesRef.current, username);
-      setMessages([...savedMessagesRef.current]);
-    });
-  }, []);
-
-  useEffect(() => {
-    getRoomInfo();
-    savedMessagesRef.current = [];
-    getInitMessage();
-    if (username) {
-      socketRef.current.emit('joinRoom', {
-        sender: username,
-        room: room_id,
-      });
-    }
-    setOutOfMessages(false);
-  }, [room_id]);
+  
 
   const sendMessage = (inputValue: string) => {
     if (inputValue.trim().length !== 0) {
@@ -186,14 +160,16 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
     setShowEditRoom(false);
   };
 
-  const handleEditRoom = async (users: Array<string>, roomName: string) => {
+  const handleEditRoom = async (users: Array<string>, roomName: string, admin?: string) => {
     try {
       const res = await axiosClient.post('/api/chat/edit-room', {
         room_id,
         user_list: users,
         name: roomName,
+        admin: admin,
       });
       if (res.data.success) {
+        admin !== username ? setIsAdmin(false) : {};
         handleCloseEditRoomPopup();
         Swal.fire({
           position: 'center',
@@ -208,10 +184,40 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
     }
   };
 
+  useEffect(() => {
+    socketRef.current = io(`${process.env.NEXT_PUBLIC_DOMAIN}`, {
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            Authorization: getAccessToken(),
+          },
+        },
+      },
+    });
+    socketRef.current.on('message', (message: any) => {
+      pushNewMessage(message, savedMessagesRef.current, username);
+      setMessages([...savedMessagesRef.current]);
+    });
+  }, []);
+
+  useEffect(() => {
+    getRoomInfo();
+    savedMessagesRef.current = [];
+    getInitMessage();
+    if (username) {
+      socketRef.current.emit('joinRoom', {
+        sender: username,
+        room: room_id,
+      });
+    }
+    setOutOfMessages(false);
+  }, [room_id]);
+
   const prevChatId = usePrevious(room_id);
   if (prevChatId !== room_id) {
     return null;
   }
+
   return isLoading ? (
     <Loading />
   ) : (
@@ -234,7 +240,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
 
             <div className="infoButton">
               {isAdmin ? (
-                <FaInfoCircle
+                <FaEdit
                   onClick={handleShowEditRoomPopup}
                   className="infoIcon"
                 />
@@ -278,6 +284,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
           close={handleCloseEditRoomPopup}
           roomName={roomInfo.name}
           users={roomInfo.user_list}
+          admin={roomInfo.admin}
         />
       )}
     </>

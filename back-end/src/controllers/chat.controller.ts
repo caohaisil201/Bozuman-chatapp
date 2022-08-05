@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { UsersService } from '../services/users.service';
 import { RoomsService } from '../services/rooms.service';
 import { TypedRequestBody } from '../utils/TypeRequestBody.utils';
 import _Error from '../utils/Error.utils';
@@ -75,18 +76,19 @@ export class Chat {
   };
 
   public postEditRoom = async (
-    req: TypedRequestBody<{ name: string, user_list: Array<string>, room_id: number }>,
+    req: TypedRequestBody<{ name: string, user_list: Array<string>, room_id: number, admin: string}>,
     res: Response
   ) => {
     const username: any = req.context?.DecodePayload.username;
-    const {name, user_list, room_id} = req.body
+    const {name, user_list, room_id, admin} = req.body;
     try {
+      await UsersService.checkUserIsInRoom(username, room_id);
       const roomInfo = await RoomsService.getRoomInfo(room_id);
       if (roomInfo) {
         if (roomInfo.admin !== username) {
           return res.status(401).json({ success: false, error: "Unauthorized" });
         }
-        await RoomsService.editRoom(name, user_list, room_id)
+        await RoomsService.editRoom(name, user_list, room_id, admin)
         res.status(200).json({ success: true});
       }
 
