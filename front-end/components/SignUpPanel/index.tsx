@@ -35,8 +35,8 @@ function SignUpPanel() {
     username: yup
       .string()
       .required('Username must not be empty')
-      .min(8, 'Username must have 8-32 character')
-      .max(32, 'Username must have 8-32 character')
+      .min(8, 'Username must have 8-16 character')
+      .max(16, 'Username must have 8-16 character')
       .matches(
         _CONF.REGEX_USENAME_PASSWORD,
         'Username must not contain special character like @#$^...'
@@ -45,7 +45,7 @@ function SignUpPanel() {
       .string()
       .required('Password must not be empty')
       .min(8, 'Password must have 8-16 character')
-      .max(316, 'Password must have 8-16 character')
+      .max(16, 'Password must have 8-16 character')
       .matches(
         _CONF.REGEX_USENAME_PASSWORD,
         'Password must not contain special character like @#$^...'

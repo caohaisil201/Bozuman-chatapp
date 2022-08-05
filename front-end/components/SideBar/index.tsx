@@ -76,6 +76,9 @@ function SideBar({ selectRoom }: SideBarProps) {
     socketRef.current.on('messageForSideBar', (message: any) => {
       setSocketState(prev=>!prev);
     });
+    socketRef.current.on('roomUpdater', () => {
+      setSocketState(prev=>!prev);
+    });
   }, [])
 
   useEffect(() => {
@@ -143,6 +146,7 @@ function SideBar({ selectRoom }: SideBarProps) {
       });
       if (res.data.success) {
         handleCloseAddRoomPopup();
+        socketRef.current.emit('roomUpdate', users);
         Swal.fire({
           position: 'center',
           icon: 'success',

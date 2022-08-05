@@ -25,8 +25,8 @@ function SignInPanel() {
     username: yup
       .string()
       .required('Username must not be empty')
-      .min(8, 'Username must have 8-32 character')
-      .max(32, 'Username must have 8-32 character')
+      .min(8, 'Username must have 8-16 character')
+      .max(16, 'Username must have 8-16 character')
       .matches(
         _CONF.REGEX_USENAME_PASSWORD,
         'Username must not contain special character like @#$^...'
