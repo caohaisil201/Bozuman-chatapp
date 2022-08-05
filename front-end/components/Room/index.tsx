@@ -1,15 +1,16 @@
 import React from 'react';
 import { RoomInterface } from 'components/SideBar';
 import Image from 'next/image';
-import {useState} from 'react'
+
 type RoomProps = {
   room: RoomInterface;
   clickRoomHandle: (room_id: number, isChanel: boolean, name: string) => void;
 };
+const DIRECT_MESSAGE = 'Direct message';
 const SIZE_OF_AVATAR_PROFILE: number = 42;
 function Room({ room, clickRoomHandle }: RoomProps) {
   const chooseRoom = () => {
-    const isChanel = room.type === 'Direct message' ? false : true;
+    const isChanel = room.type === DIRECT_MESSAGE ? false : true;
     clickRoomHandle(room.room_id, isChanel, room.name);
   };
   

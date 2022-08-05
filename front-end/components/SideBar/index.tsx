@@ -13,7 +13,6 @@ import Room from 'components/Room';
 import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
 import { socket } from 'helper/socket';
 import Swal from 'sweetalert2';
-import axios from 'axios';
 import { io } from 'socket.io-client';
 
 const SIZE_OF_AVATAR_PROFILE: number = 50;
@@ -45,8 +44,8 @@ type SideBarProps = {
   ) => void;
 };
 
-function sort(room1:RoomInterface, room2:RoomInterface){
-  return new Date(room2.last_time).valueOf() - new Date(room1.last_time).valueOf();
+function sort(firstRoom:RoomInterface, secondRoom:RoomInterface){
+  return new Date(secondRoom.last_time).valueOf() - new Date(firstRoom.last_time).valueOf();
 }
 
 function SideBar({ selectRoom }: SideBarProps) {
