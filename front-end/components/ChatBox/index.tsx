@@ -139,10 +139,13 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
         `/api/chat/get-message-in-room?room_id=${room_id}&page=${bucketIndex}`
       );
       setBucketIndex(bucketIndex - 1);
-      res.data[0].message_list.reverse().forEach((element: MessageInput) => {
-        pushOldMessage(element, savedMessagesRef.current, username);
-      });
-      setMessages([...savedMessagesRef.current]);
+      if (res.data[0]) {
+        res.data[0].message_list.reverse().forEach((element: MessageInput) => {
+          pushOldMessage(element, savedMessagesRef.current, username);
+        });
+        setMessages([...savedMessagesRef.current]);
+      }
+
     } else {
       setOutOfMessages(true);
     }
