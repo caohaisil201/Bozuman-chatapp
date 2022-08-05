@@ -120,13 +120,19 @@ const RoomBehaviourPopup = ({
         </div>
         <p className="errorMessage">{searchError}</p>
         <div className="userList">
-          {userFind.map((user, index) => (
-            <User
-              key={`find ${index}`}
-              user={user.username}
-              click={onAddUser}
-            />
-          ))}
+          {userFind.map((user, index) => {
+            const showButton = !userResult.some(
+              (elem) => elem === user.username
+            );
+            return (
+              <User
+                key={`find ${index}`}
+                user={user.username}
+                click={onAddUser}
+                showButton={showButton}
+              />
+            );
+          })}
         </div>
         <div className="userList">
           {userResult.map((user, index) => (
@@ -135,6 +141,7 @@ const RoomBehaviourPopup = ({
               user={user}
               click={onDeleteUser}
               isDelete
+              showButton={true}
             />
           ))}
         </div>

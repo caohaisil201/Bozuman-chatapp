@@ -7,7 +7,7 @@ import {
   MessageGroupProps,
   MessageInput,
 } from 'helper/messageHandle';
-import { FaInfoCircle } from 'react-icons/fa';
+import { FaEdit } from 'react-icons/fa';
 import axiosClient from 'helper/axiosClient';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import usePrevious from 'hooks/usePrevious';
@@ -231,7 +231,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
 
             <div className="infoButton">
               {isAdmin ? (
-                <FaInfoCircle
+                <FaEdit
                   onClick={handleShowEditRoomPopup}
                   className="infoIcon"
                 />
