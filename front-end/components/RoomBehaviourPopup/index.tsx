@@ -12,14 +12,16 @@ type Props = {
   roomName?: string;
   users: Array<string>;
   isEdit?: boolean;
+  admin?: string | undefined;
   close: () => void;
-  click: (users: Array<string>, roomName: string) => void;
+  click: (users: Array<string>, roomName: string, admin?: string) => void;
 };
 
 const RoomBehaviourPopup = ({
   roomName,
   users,
   isEdit,
+  admin,
   close,
   click,
 }: Props) => {
@@ -30,6 +32,7 @@ const RoomBehaviourPopup = ({
   const [roomNameError, setRoomNameError] = useState<string>('');
   const [searchError, setSearchError] = useState<string>('');
   const [responseError, setResponseError] = useState<string>('');
+  const [adminName, setAdminName] = useState<string | undefined>(admin);
 
   const onSubmitSearch = async () => {
     if (searchRef.current?.value) {
@@ -65,12 +68,15 @@ const RoomBehaviourPopup = ({
     setUserResult([...result]);
   };
 
+  const changeAdmin = (user: string) =>{
+    setAdminName(user);
+  }
+
   const handleClick = () => {
     if (userResult.length === 0) {
       setResponseError('No user in room');
       return;
     }
-    // let userNameData = userResult.map(element => element.username);
     if (roomNameRef.current?.value) {
       const roomName = roomNameRef.current.value.trim();
       if (
@@ -81,7 +87,7 @@ const RoomBehaviourPopup = ({
         return;
       }
       if (_CONF.REGEX_FULLNAME.test(roomName)) {
-        click(userResult, roomNameRef.current.value);
+        click(userResult, roomNameRef.current.value, adminName);
       } else {
         setRoomNameError(`Room name must not have special characters`);
       }
@@ -128,7 +134,7 @@ const RoomBehaviourPopup = ({
               <User
                 key={`find ${index}`}
                 user={user.username}
-                click={onAddUser}
+                clickButton={onAddUser}
                 showButton={showButton}
               />
             );
@@ -139,9 +145,12 @@ const RoomBehaviourPopup = ({
             <User
               key={`result ${index}`}
               user={user}
-              click={onDeleteUser}
+              clickButton={onDeleteUser}
               isDelete
               showButton={true}
+              isAdmin={user === adminName}
+              clickAdmin={changeAdmin}
+              isEdit={isEdit}
             />
           ))}
         </div>
