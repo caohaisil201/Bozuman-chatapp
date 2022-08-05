@@ -71,7 +71,7 @@ export const roomsSchema = Joi.object({
   user_list: Joi
     .array()
     .items(Joi.string().min(8)
-    .max(32)
+    .max(16)
     .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
     .required())
     .required(),
@@ -89,7 +89,7 @@ export const editRoomsSchema = Joi.object({
   user_list: Joi
     .array()
     .items(Joi.string().min(8)
-    .max(32)
+    .max(16)
     .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
     .required())
     .required(),
