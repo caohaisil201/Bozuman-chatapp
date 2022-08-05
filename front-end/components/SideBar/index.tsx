@@ -11,7 +11,6 @@ import {
 import axiosClient from 'helper/axiosClient';
 import Room from 'components/Room';
 import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
-import { socket } from 'helper/socket';
 import Swal from 'sweetalert2';
 import { io } from 'socket.io-client';
 
@@ -75,6 +74,9 @@ function SideBar({ selectRoom }: SideBarProps) {
     }
     );
     socketRef.current.on('messageForSideBar', (message: any) => {
+      setSocketState(prev=>!prev);
+    });
+    socketRef.current.on('roomUpdater', () => {
       setSocketState(prev=>!prev);
     });
   }, [])
@@ -144,6 +146,7 @@ function SideBar({ selectRoom }: SideBarProps) {
       });
       if (res.data.success) {
         handleCloseAddRoomPopup();
+        socketRef.current.emit('roomUpdate', users);
         Swal.fire({
           position: 'center',
           icon: 'success',

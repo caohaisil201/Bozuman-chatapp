@@ -164,7 +164,7 @@ export class UsersService {
 
   static changeOtherUserStatusToUnread = async (username: string, room_id: string) => {
     if (username && room_id) {
-      return await Users.updateOne(
+      return await Users.updateMany(
         { username: {$ne: username}, 'room_list.room_id': room_id },
         { $set: { 'room_list.$.unread': true } }
       ).exec();
