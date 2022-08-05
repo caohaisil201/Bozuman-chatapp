@@ -35,7 +35,7 @@ app.use(
   })
 );
 
-app.use('/api/auth', auth); 
+app.use('/api/auth', auth);
 app.use('/api/token', expiredAccessTokenHandler);
 app.use('/api/chat', checkAccessToken, chat);
 app.use('/api/user', checkAccessToken, user);
@@ -86,7 +86,16 @@ io.use(function (socket, next) {
 
 io.on('connection', (socket) => {
   socket.on('joinRoom', (message) => {
+    const roomArray = Array.from(socket.rooms);
+    roomArray.map((room) => {
+      if (!room.toString().includes('SideBar')) {
+        socket.leave(room);
+      }
+    });
     socket.join(message.room);
+  });
+  socket.on('joinRoomForSideBar', (message) => {
+    socket.join('SideBar' + message.room);
   });
   socket.on('chatMessage', (message) => {
     if (socket.data.username) {
@@ -98,8 +107,21 @@ io.on('connection', (socket) => {
       };
 
       RoomsService.insertChatMessageIntoRoom(receivedMessage);
-      UsersService.changeOtherUserStatusToUnread(socket.data.username, message.room)
+      UsersService.changeOtherUserStatusToUnread(
+        socket.data.username,
+        message.room
+      );
+      UsersService.updateLastMessAndLastTime(
+        socket.data.username,
+        message.room,
+        message.content,
+        message.time
+      );
       io.to(message.room).emit('message', receivedMessage);
+      io.to('SideBar' + message.room).emit(
+        'messageForSideBar',
+        receivedMessage
+      );
     }
   });
 });
