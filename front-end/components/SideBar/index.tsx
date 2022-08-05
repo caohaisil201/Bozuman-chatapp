@@ -11,7 +11,6 @@ import {
 import axiosClient from 'helper/axiosClient';
 import Room from 'components/Room';
 import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
-import { socket } from 'helper/socket';
 import Swal from 'sweetalert2';
 import { io } from 'socket.io-client';
 
