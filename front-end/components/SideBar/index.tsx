@@ -45,6 +45,10 @@ type SideBarProps = {
   ) => void;
 };
 
+function sort(room1:RoomInterface, room2:RoomInterface){
+  return new Date(room2.last_time).valueOf() - new Date(room1.last_time).valueOf();
+}
+
 function SideBar({ selectRoom }: SideBarProps) {
   const router = useRouter();
   const [fullname, setFullname] = useState('');
@@ -82,10 +86,11 @@ function SideBar({ selectRoom }: SideBarProps) {
         const { data } = await axiosClient.get(`/api/user/user-info`);
         setFullname(data.data.full_name);
         setUsername(data.data.username);
-        const room_list = data.data.room_list;
-        room_list.map((room: any) => {
+        const room_list:Array<RoomInterface> = data.data.room_list.sort();
+        room_list.map((room: RoomInterface) => {
+          room.last_time = new Date(room.last_time);
           socketRef.current.emit('joinRoomForSideBar', {
-            sender: 'anonymous',
+            sender: 'anonymous',  
             room: room.room_id,
           });
         })
@@ -103,8 +108,8 @@ function SideBar({ selectRoom }: SideBarProps) {
               break;
           }
         });
-        setPersonalRooms([...personalRoomsArr]);
-        setGroupRooms([...groupRoomsArr]);
+        setPersonalRooms([...personalRoomsArr].sort(sort));
+        setGroupRooms([...groupRoomsArr].sort(sort));
       } catch (err) {}
     }
     getUserInfo();
