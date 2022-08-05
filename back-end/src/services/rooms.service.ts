@@ -102,12 +102,13 @@ export class RoomsService {
       .limit(1).select(['name', 'user_list', 'admin', 'type', '_id']);
   };
 
-  static editRoom = async (name: string, user_list: Array<string>, room_id: number) => {
+  static editRoom = async (name: string, user_list: Array<string>, room_id: number, admin: string) => {
     const roomId = new RegExp(`^${room_id}_`);
     const type = user_list.length > _CONF.NUMBER_OF_USER_DIRECT_MESSAGE ? _CONF.CHANEL_MESSAGE : _CONF.DIRECT_MESSAGE;
     return await Rooms.updateMany({room_id: roomId}, {$set: {
       name: name,
       user_list: user_list,
+      admin: admin,
       type: type
     }})
   }

@@ -13,7 +13,6 @@ import Room from 'components/Room';
 import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
 import { socket } from 'helper/socket';
 import Swal from 'sweetalert2';
-import axios from 'axios';
 import { io } from 'socket.io-client';
 
 const SIZE_OF_AVATAR_PROFILE: number = 50;
@@ -44,6 +43,10 @@ type SideBarProps = {
     username: string | undefined
   ) => void;
 };
+
+function sort(firstRoom:RoomInterface, secondRoom:RoomInterface){
+  return new Date(secondRoom.last_time).valueOf() - new Date(firstRoom.last_time).valueOf();
+}
 
 function SideBar({ selectRoom }: SideBarProps) {
   const router = useRouter();
@@ -85,10 +88,11 @@ function SideBar({ selectRoom }: SideBarProps) {
         const { data } = await axiosClient.get(`/api/user/user-info`);
         setFullname(data.data.full_name);
         setUsername(data.data.username);
-        const room_list = data.data.room_list;
-        room_list.map((room: any) => {
+        const room_list:Array<RoomInterface> = data.data.room_list.sort();
+        room_list.map((room: RoomInterface) => {
+          room.last_time = new Date(room.last_time);
           socketRef.current.emit('joinRoomForSideBar', {
-            sender: 'anonymous',
+            sender: 'anonymous',  
             room: room.room_id,
           });
         })
@@ -106,8 +110,8 @@ function SideBar({ selectRoom }: SideBarProps) {
               break;
           }
         });
-        setPersonalRooms([...personalRoomsArr]);
-        setGroupRooms([...groupRoomsArr]);
+        setPersonalRooms([...personalRoomsArr].sort(sort));
+        setGroupRooms([...groupRoomsArr].sort(sort));
       } catch (err) {}
     }
     getUserInfo();

@@ -181,4 +181,13 @@ export class UsersService {
     }
     throw _Error.SERVER_ERROR;
   }
+
+  static checkUserIsInRoom = async (username: string, room_id: number) => {
+    const user = await Users.findOne({
+      'username': username,
+      'room_list.room_id': room_id,
+    })
+    if (user) return true;
+    throw 'You do not have permission to do this behavior';
+  }
 }
