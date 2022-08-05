@@ -2,6 +2,8 @@ import { Response } from 'express';
 import { RoomsService } from '../services/rooms.service';
 import { TypedRequestBody } from '../utils/TypeRequestBody.utils';
 import _Error from '../utils/Error.utils';
+import _CONF from '../configs/chat.config'
+
 
 export class Chat {
   public addNewRoom = async (
@@ -15,10 +17,7 @@ export class Chat {
     let userList: any = req.body.user_list;
     userList = userList.filter((user: string) => user != username);
     userList = [...userList, username];
-    let type = 'Direct message';
-    if (userList.length > 2) {
-      type = 'Channel message';
-    }
+    const type = userList.length > _CONF.NUMBER_OF_USER_DIRECT_MESSAGE ? _CONF.CHANEL_MESSAGE : _CONF.DIRECT_MESSAGE
     const room = {
       name: req.body.name,
       user_list: userList,

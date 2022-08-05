@@ -1,9 +1,8 @@
-const BUCKET_SIZE = 20;
-const PAGESIZE_DEFAULT = 1;
+
 import { Rooms } from '../models/rooms.model';
 import { Increment } from 'mongoose-auto-increment-ts';
 import { Users } from '../models/users.model';
-
+import _CONF from '../configs/chat.config'
 export class RoomsService {
 
   static addNewRoom = async (data: any) => {
@@ -47,7 +46,7 @@ export class RoomsService {
       const resultRoomStatus = await Rooms.findOneAndUpdate(
         {
           room_id: newRoomId,
-          count: { $lt: BUCKET_SIZE },
+          count: { $lt: _CONF.BUCKET_SIZE },
         },
         {
           $push: {
@@ -74,7 +73,7 @@ export class RoomsService {
   };
 
   static getMessageInRoomByPage = async (data: any) => {
-    const { room_id, page, page_size = PAGESIZE_DEFAULT } = data;
+    const { room_id, page, page_size = _CONF.PAGESIZE_DEFAULT } = data;
     const roomId = new RegExp(`^${room_id}_`);
     return await Rooms.find({
       room_id: roomId,
@@ -105,7 +104,7 @@ export class RoomsService {
 
   static editRoom = async (name: string, user_list: Array<string>, room_id: number) => {
     const roomId = new RegExp(`^${room_id}_`);
-    const type = user_list.length <= 2 ? 'Direct message' : 'Channel message'
+    const type = user_list.length > _CONF.NUMBER_OF_USER_DIRECT_MESSAGE ? _CONF.CHANEL_MESSAGE : _CONF.DIRECT_MESSAGE;
     return await Rooms.updateMany({room_id: roomId}, {$set: {
       name: name,
       user_list: user_list,
