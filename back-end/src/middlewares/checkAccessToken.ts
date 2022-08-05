@@ -26,7 +26,7 @@ const checkAccessToken = (
   } else {
     return res.status(403).send({
       error: true,
-      message: 'No token provided',
+      message: 'No access token provided',
     });
   }
 };

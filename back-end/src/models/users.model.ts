@@ -84,7 +84,7 @@ const UsersSchema = new mongoose.Schema({
 export const registerSchema = Joi.object({
   username: Joi.string()
     .min(8)
-    .max(32)
+    .max(16)
     .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
     .required(),
   password: Joi.string()
@@ -104,7 +104,7 @@ export const registerSchema = Joi.object({
 export const signInSchema = Joi.object({
   username: Joi.string()
     .min(8)
-    .max(32)
+    .max(16)
     .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
     .required(),
   password: Joi.string()
