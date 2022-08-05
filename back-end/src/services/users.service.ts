@@ -143,7 +143,7 @@ export class UsersService {
   static getSearchUserResult = async (searchValue: string | undefined) => {
     if(searchValue){
       
-      return await Users.find({username: { $regex: searchValue, $options: 'i'}}).select(['username', '-_id']).exec();
+      return await Users.find({username: { $regex: searchValue, $options: 'i'}}).select(['username', '-_id']).sort({ username: 1 }).exec();
     }
     throw _Error.SERVER_ERROR;
   }
