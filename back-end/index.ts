@@ -84,7 +84,13 @@ io.use(function (socket, next) {
   }
 });
 
+let socketClientList: any = [];
+
 io.on('connection', (socket) => {
+  socketClientList.push({
+    socketId: socket.id,
+    username: socket.data.username,
+  });
   socket.on('joinRoom', (message) => {
     const roomArray = Array.from(socket.rooms);
     roomArray.map((room) => {
@@ -123,6 +129,13 @@ io.on('connection', (socket) => {
         receivedMessage
       );
     }
+  });
+  socket.on('roomUpdate', (message: any) => {
+    socketClientList.map((client: any) => {
+      if (message.includes(client.username)) {
+        io.to(client.socketId).emit('roomUpdater');
+      }
+    });
   });
 });
 
