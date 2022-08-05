@@ -129,6 +129,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
         content: inputValue,
         time: Date(),
         room: room_id,
+        token: getAccessToken()
       });
     }
   };
