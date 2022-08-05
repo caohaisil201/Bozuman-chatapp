@@ -21,6 +21,7 @@ import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
 const TWO_NEWSET_BUCKET = 2;
 const FIRST_NEWEST_BUCKET = 1;
 const AVATAR_SIZE = 42;
+const TIME_SHOW_SWAL = 1500;
 
 export type ChatBoxProps = {
   room_id: number;
@@ -75,15 +76,11 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
   const getInitMessage = async () => {
     try {
       // Count message bucket to get the newest bucket index
-      console.log('4', isLoading);
       setIsLoading(true);
-      console.log('1', isLoading);
       const { data } = await axiosClient.get(
         `/api/chat/get-newest-message-bucket?room_id=${room_id}`
       );
-      console.log('2', isLoading);
       setIsLoading(false);
-      console.log('3', isLoading);
 
       if (data.newestIndex >= 2) {
         await getMessageBucket(data.newestIndex);
@@ -185,7 +182,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
           icon: 'success',
           title: 'Update room successfully',
           showConfirmButton: false,
-          timer: 1500,
+          timer: TIME_SHOW_SWAL,
         });
       }
     } catch (error) {
