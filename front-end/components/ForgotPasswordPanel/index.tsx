@@ -8,7 +8,7 @@ import { FaSignInAlt } from 'react-icons/fa';
 import AuthPanel from 'components/AuthPanel';
 import Swal from 'sweetalert2';
 
-interface ForgotPasswordForm {
+interface ForgotPasswordFormProperty {
   email: string;
 }
 
@@ -31,7 +31,7 @@ function ForgotPasswordPanel() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<ForgotPasswordForm>({
+  } = useForm<ForgotPasswordFormProperty>({
     reValidateMode: 'onSubmit',
     resolver: yupResolver(schema),
   });
@@ -41,7 +41,7 @@ function ForgotPasswordPanel() {
     router.push('/sign-in');
   };
 
-  const onSubmit: SubmitHandler<ForgotPasswordForm> = async (data) => {
+  const onSubmit: SubmitHandler<ForgotPasswordFormProperty> = async (data) => {
     try {
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/forgot-password`,

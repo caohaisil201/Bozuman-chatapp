@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { deleteCookie } from 'cookies-next';
+import { deleteCookie, getCookie } from 'cookies-next';
 import {
   FaUserPlus,
   FaChevronDown,
@@ -10,40 +10,85 @@ import {
 } from 'react-icons/fa';
 import axiosClient from 'helper/axiosClient';
 import Room from 'components/Room';
+import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
 import { socket } from 'helper/socket';
+import Swal from 'sweetalert2';
+import axios from 'axios';
+import { io } from 'socket.io-client';
 
 const SIZE_OF_AVATAR_PROFILE: number = 50;
 
 export interface RoomInterface {
   room_id: number;
   last_message: string;
-  last_time:Date;
+  last_time: Date;
   unread: boolean;
   name: string;
   type: string;
 }
 
+export interface UserType {
+  username: string;
+}
+
+const getAccessToken = () => {
+  const access_token = getCookie('access_token');
+  return access_token;
+}
+
 type SideBarProps = {
-  selectRoom: (room_id: number, isChanel: boolean, roomName:string, username: string | undefined)=> void;
+  selectRoom: (
+    room_id: number,
+    isChanel: boolean,
+    roomName: string,
+    username: string | undefined
+  ) => void;
 };
 
-function SideBar({selectRoom} : SideBarProps) {
+function SideBar({ selectRoom }: SideBarProps) {
   const router = useRouter();
   const [fullname, setFullname] = useState('');
   const [showPersonalMessage, setShowPersonalMessage] = useState(true);
   const [showGroupMessage, setShowGroupMessage] = useState(true);
   const [personalRooms, setPersonalRooms] = useState<Array<RoomInterface>>([]);
   const [groupRooms, setGroupRooms] = useState<Array<RoomInterface>>([]);
+  const [showAddRoom, setShowAddRoom] = useState<boolean>(false);
+
   const [username, setUsername] = useState<string>()
+  const [socketState, setSocketState] = useState(false);
+  const [unread,setUnread]=useState(true);
+
+  const socketRef = useRef<any>(null);
+
+  useEffect(() => {
+    socketRef.current = io(`${process.env.NEXT_PUBLIC_DOMAIN}`,{
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            'Authorization': getAccessToken(),
+          },
+        },
+      },
+    }
+    );
+    socketRef.current.on('message', (message: any) => {
+      setSocketState(prev=>!prev);
+    });
+  }, [])
+
   useEffect(() => {
     async function getUserInfo() {
       try {
-        const {data} = await axiosClient.get(
-          `${process.env.NEXT_PUBLIC_DOMAIN}/api/user/user-info`
-        );
+        const { data } = await axiosClient.get(`/api/user/user-info`);
         setFullname(data.data.full_name);
-        setUsername(data.data.username)
+        setUsername(data.data.username);
         const room_list = data.data.room_list;
+        room_list.map((room: any) => {
+          socketRef.current.emit('joinRoom', {
+            sender: 'anonymous',
+            room: room.room_id,
+          });
+        })
         const personalRoomsArr: Array<RoomInterface> = [];
         const groupRoomsArr: Array<RoomInterface> = [];
         room_list.forEach((room: RoomInterface) => {
@@ -63,7 +108,7 @@ function SideBar({selectRoom} : SideBarProps) {
       } catch (err) {}
     }
     getUserInfo();
-  }, []);
+  }, [showAddRoom, socketState, unread]);
 
   function handleShowPersonalMessage() {
     setShowPersonalMessage((prevState) => !prevState);
@@ -76,78 +121,137 @@ function SideBar({selectRoom} : SideBarProps) {
   function handleSignOut() {
     deleteCookie('access_token');
     deleteCookie('refresh_token');
-    deleteCookie('username');
     router.push('/sign-in');
   }
 
-const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) => {
-  selectRoom(room_id, isChanel, roomName, username)
-}
+  const handleShowAddRoomPopup = (): void => {
+    setShowAddRoom(true);
+  };
+
+  const handleCloseAddRoomPopup = (): void => {
+    setShowAddRoom(false);
+  };
+
+  const handleCreateRoom = async (users: Array<string>, roomName: string) => {
+    try {
+      const res = await axiosClient.post('/api/chat/add-new-room', {
+        name: roomName,
+        user_list: users,
+      });
+      if (res.data.success) {
+        handleCloseAddRoomPopup();
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Create room successfully',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }
+    } catch (err) {
+      //TODO: handle error
+    }
+  };
+
+  const setRoomStatus= async(room_id:number,status:boolean) => {
+    try{
+      await axiosClient
+      .post(`/api/user/change-room-status`,{
+        room_id,
+        status
+      })
+    }
+    catch(err){}
+    setUnread(prev=>!prev);
+  }
+  
+  const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) => {
+    setRoomStatus(room_id,false);
+    selectRoom(room_id, isChanel, roomName, username);
+  }
 
   return (
-    <div className="sidebar">
-      <div className="header">
-        <div className="personalInfo">
-          <Image
-            src="/avatar.png"
-            alt="avatar"
-            width={SIZE_OF_AVATAR_PROFILE}
-            height={SIZE_OF_AVATAR_PROFILE}
-          />
-          <div className="info">
-            <p className="name">{fullname}</p>
-            My account
+    <>
+      <div className="sidebar">
+        <div className="header">
+          <div className="personalInfo">
+            <Image
+              src="/avatar.png"
+              alt="avatar"
+              width={SIZE_OF_AVATAR_PROFILE}
+              height={SIZE_OF_AVATAR_PROFILE}
+            />
+            <div className="info">
+              <p className="name">{fullname}</p>
+              My account
+            </div>
           </div>
+          <FaSignOutAlt className="iconSignOut" onClick={handleSignOut} />
         </div>
-        <FaSignOutAlt className="iconSignOut" onClick={handleSignOut} />
-      </div>
-      <div className="typeMessage mt-2">
-        <div className="roomList">
-          Personal message
-          {showPersonalMessage ? (
-            <>
-              <FaChevronUp
+        <div className="typeMessage mt-2">
+          <FaUserPlus className="iconAdd" onClick={handleShowAddRoomPopup} />
+          <div className="roomList">
+            Personal message
+            {showPersonalMessage ? (
+              <>
+                <FaChevronUp
+                  className="iconScrollTypeMessage"
+                  onClick={handleShowPersonalMessage}
+                />
+                <div className="showRoomPanel">
+                  {personalRooms.map((room, index) => (
+                    <Room
+                      room={room}
+                      key={`personalRooms ${index}`}
+                      clickRoomHandle={clickRoomHandle}
+                    />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <FaChevronDown
                 className="iconScrollTypeMessage"
                 onClick={handleShowPersonalMessage}
               />
-              <div className="showRoomPanel">
-                {personalRooms.map((room, index) => (
-                  <Room room={room} key={`personalRooms ${index}`} clickRoomHandle={clickRoomHandle}/>
-                ))}
-              </div>
-            </>
-          ) : (
-            <FaChevronDown
-              className="iconScrollTypeMessage"
-              onClick={handleShowPersonalMessage}
-            />
-          )}
-        </div>
+            )}
+          </div>
 
-        <div className="roomList">
-          Group message
-          {showGroupMessage ? (
-            <>
-              <FaChevronUp
+          <div className="roomList">
+            Group message
+            {showGroupMessage ? (
+              <>
+                <FaChevronUp
+                  className="iconScrollTypeMessage"
+                  onClick={handleShowGroupMessage}
+                />
+                <div className="showRoomPanel">
+                  {groupRooms.map((room, index) => (
+                    <Room
+                      room={room}
+                      key={`groupRooms ${index}`}
+                      clickRoomHandle={clickRoomHandle}
+                    />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <FaChevronDown
                 className="iconScrollTypeMessage"
                 onClick={handleShowGroupMessage}
               />
-              <div className="showRoomPanel">
-                {groupRooms.map((room, index) => (
-                  <Room room={room} key={`groupRooms ${index}`} clickRoomHandle={clickRoomHandle}/>
-                ))}
-              </div>
-            </>
-          ) : (
-            <FaChevronDown
-              className="iconScrollTypeMessage"
-              onClick={handleShowGroupMessage}
-            />
-          )}
+            )}
+          </div>
         </div>
+        <p className="copyRight">Copyright 2022 All Rights Reserved Bozuman </p>
       </div>
-      <p className="copyRight">Copyright 2022 All Rights Reserved Bozuman </p>
-    </div>
+      {showAddRoom && (
+        <RoomBehaviourPopup
+          close={handleCloseAddRoomPopup}
+          users={[]}
+          click={handleCreateRoom}
+        />
+      )}
+    </>
   );
 }
 
