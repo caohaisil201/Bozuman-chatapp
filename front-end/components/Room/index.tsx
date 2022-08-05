@@ -13,7 +13,14 @@ function Room({ room, clickRoomHandle }: RoomProps) {
     const isChanel = room.type === DIRECT_MESSAGE ? false : true;
     clickRoomHandle(room.room_id, isChanel, room.name);
   };
-  
+  const renderTime = () => {
+    const isToDay = room.last_time.getDate() === new Date().getDate()
+    const timeString = room.last_time.toLocaleString().split(", ")
+    if(isToDay) {
+      return timeString[0]
+    }
+    return timeString[1]
+  }
   return (
     <div
       className={'room ' + (room.unread ? 'room_unread' : '')}
@@ -28,10 +35,7 @@ function Room({ room, clickRoomHandle }: RoomProps) {
       <div className="room_info">
         <p className="roomName">{room.name}</p>
         <p className="lastTime">
-          {room.last_time.getDate()===new Date().getDate()?
-            (room.last_time.getHours()+":"+room.last_time.getMinutes()):
-            (room.last_time.getDate()+"/"+room.last_time.getMonth())
-          }
+          {renderTime()}
         </p>
         <p className="lastMessage">{room.last_message}</p>
       </div>
