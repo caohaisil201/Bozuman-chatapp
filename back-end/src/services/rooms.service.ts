@@ -128,23 +128,27 @@ export class RoomsService {
     const oldRoom = await this.getRoomInfo(room_id);
     if (oldRoom) {
       oldRoom.user_list.forEach(async (item) => {
-        console.log('first + ', item);
         await Users.updateOne(
           { username: item },
-          { $pull: { room_list: {room_id : room_id | 0} } }
-        );
+          { $pull: { room_list: {room_id : room_id} } as any }
+        ).exec();
       });
-      const info = await Users.findOne({
-        username: oldRoom.user_list[0],
+      user_list.forEach(async (item) => {
+        await Users.updateOne(
+          { username: item },
+          {
+            $push: {
+              room_list: roomInUserCollection as any,
+            },
+          }
+        ).exec();
       });
-      console.log(info);
-      // if (info) {
     }
-    // return await Rooms.updateMany({room_id: roomId}, {$set: {
-    //   name: name,
-    //   user_list: user_list,
-    //   admin: admin,
-    //   type: type
-    // }})
+    return await Rooms.updateMany({room_id: roomId}, {$set: {
+      name: name,
+      user_list: user_list,
+      admin: admin,
+      type: type
+    }})
   };
 }

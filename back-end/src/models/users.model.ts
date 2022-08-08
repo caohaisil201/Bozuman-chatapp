@@ -76,7 +76,7 @@ const UsersSchema = new mongoose.Schema({
         default: false,
       }
     }>,
-    required: true,
+    required: false,
     default: [],
   },
 });
