@@ -118,7 +118,7 @@ export class RoomsService {
         ? _CONF.CHANNEL_MESSAGE
         : _CONF.DIRECT_MESSAGE;
     const roomInUserCollection = {
-      room_id: roomId,
+      room_id: room_id,
       name: name,
       type: type,
       unread: true,
@@ -134,6 +134,7 @@ export class RoomsService {
         ).exec();
       });
       user_list.forEach(async (item) => {
+        
         await Users.updateOne(
           { username: item },
           {
