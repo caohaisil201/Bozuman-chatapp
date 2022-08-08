@@ -28,7 +28,7 @@ export class RoomsService {
                 name: data.name,
                 type: data.type,
                 unread: true,
-                last_message: 'The room have just been created',
+                last_message: _CONF.CREATE_ROOM_NOTIFICATION,
                 last_time: new Date().getTime(),
               } as any,
             },
@@ -115,14 +115,14 @@ export class RoomsService {
     const roomId = new RegExp(`^${room_id}_`);
     const type =
       user_list.length > _CONF.NUMBER_OF_USER_DIRECT_MESSAGE
-        ? _CONF.CHANEL_MESSAGE
+        ? _CONF.CHANNEL_MESSAGE
         : _CONF.DIRECT_MESSAGE;
     const roomInUserCollection = {
       room_id: roomId,
       name: name,
       type: type,
       unread: true,
-      last_message: 'The room has just been edited',
+      last_message: _CONF.EDIT_ROOM_NOTIFICATION,
       last_time: new Date().getTime(),
     };
     const oldRoom = await this.getRoomInfo(room_id);
