@@ -18,7 +18,7 @@ export class Chat {
     let userList: any = req.body.user_list;
     userList = userList.filter((user: string) => user != username);
     userList = [...userList, username];
-    const type = userList.length > _CONF.NUMBER_OF_USER_DIRECT_MESSAGE ? _CONF.CHANEL_MESSAGE : _CONF.DIRECT_MESSAGE
+    const type = userList.length > _CONF.NUMBER_OF_USER_DIRECT_MESSAGE ? _CONF.CHANNEL_MESSAGE : _CONF.DIRECT_MESSAGE
     const room = {
       name: req.body.name,
       user_list: userList,
