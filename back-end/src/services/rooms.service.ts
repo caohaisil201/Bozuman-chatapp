@@ -134,7 +134,6 @@ export class RoomsService {
         ).exec();
       });
       user_list.forEach(async (item) => {
-        
         await Users.updateOne(
           { username: item },
           {
