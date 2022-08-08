@@ -118,7 +118,7 @@ export class RoomsService {
         ? _CONF.CHANNEL_MESSAGE
         : _CONF.DIRECT_MESSAGE;
     const roomInUserCollection = {
-      room_id: roomId,
+      room_id: room_id,
       name: name,
       type: type,
       unread: true,
