@@ -5,43 +5,33 @@ import Swal from 'sweetalert2';
 import { getCookie } from 'cookies-next';
 import { io } from 'socket.io-client';
 import { FaEdit } from 'react-icons/fa';
+import { _VAR, IRoomInfo } from 'constant/variables';
 import {
   pushOldMessage,
   pushNewMessage,
   MessageGroupProps,
   MessageInput,
 } from 'helper/messageHandle';
-import MessageGroup from 'components/MessageGroup';
 import axiosClient from 'helper/axiosClient';
+import MessageGroup from 'components/MessageGroup';
 import usePrevious from 'hooks/usePrevious';
 import InputMessage from './inputMessage';
 import Loading from 'components/Loading';
 import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
 
-const TWO_NEWSET_BUCKET = 2;
-const FIRST_NEWEST_BUCKET = 1;
-const AVATAR_SIZE = 42;
-const TIME_SHOW_SWAL = 1500;
-
 export type ChatBoxProps = {
   room_id: number;
-  isChanel: boolean;
+  isChannel: boolean;
   roomName: string;
   username?: string;
 };
-
-interface IRoomInfo {
-  name: string;
-  user_list: Array<string>;
-  admin: string;
-}
 
 const getAccessToken = () => {
   const access_token = getCookie('access_token');
   return access_token;
 };
 
-function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
+function ChatBox({ room_id, isChannel, roomName, username }: ChatBoxProps) {
   const socketRef = useRef<any>(null);
   const savedMessagesRef = useRef<Array<MessageGroupProps>>([]);
 
@@ -56,6 +46,18 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
     user_list: [],
     admin: '',
   });
+  
+  const clickSendMessageHandle = (inputValue: string) => {
+    sendMessage(inputValue);
+  };
+
+  const handleShowEditRoomPopup = () => {
+    setShowEditRoom(true);
+  };
+
+  const handleCloseEditRoomPopup = () => {
+    setShowEditRoom(false);
+  };
 
   const getMessageBucket = async (page: number) => {
     try {
@@ -82,15 +84,17 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       );
       setIsLoading(false);
 
-      if (data.newestIndex >= 2) {
+      if (data.newestIndex >= _VAR.TWO_NEWSET_BUCKET) {
         await getMessageBucket(data.newestIndex);
-        await getMessageBucket(data.newestIndex - FIRST_NEWEST_BUCKET);
-        return setBucketIndex(data.newestIndex - TWO_NEWSET_BUCKET);
+        await getMessageBucket(data.newestIndex - _VAR.FIRST_NEWEST_BUCKET);
+        return setBucketIndex(data.newestIndex - _VAR.TWO_NEWSET_BUCKET);
       }
-      if (data.newestIndex === 1) {
+
+      if (data.newestIndex === _VAR.FIRST_NEWEST_BUCKET) {
         await getMessageBucket(data.newestIndex);
-        return setBucketIndex(data.newestIndex - FIRST_NEWEST_BUCKET);
+        return setBucketIndex(data.newestIndex - _VAR.FIRST_NEWEST_BUCKET);
       }
+
       setOutOfMessages(true);
       return setBucketIndex(data.newestIndex);
     } catch (error) {
@@ -103,9 +107,11 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       const { data } = await axiosClient.get(
         `/api/chat/room-info?room_id=${room_id}`
       );
-      if (data.roomInfo.type === 'Direct message') {
+
+      if (data.roomInfo.type === _VAR.DIRECT_ROOM_TYPE) {
         setIsAdmin(true);
       }
+
       if (data.roomInfo.admin === username) {
         setRoomInfo({
           ...roomInfo,
@@ -137,29 +143,16 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       const res = await axiosClient.get(
         `/api/chat/get-message-in-room?room_id=${room_id}&page=${bucketIndex}`
       );
-      setBucketIndex(bucketIndex - 1);
+      setBucketIndex(bucketIndex - _VAR.ONE_NEWEST_BUCKET);
       if (res.data[0]) {
         res.data[0].message_list.reverse().forEach((element: MessageInput) => {
           pushOldMessage(element, savedMessagesRef.current, username);
         });
         setMessages([...savedMessagesRef.current]);
       }
-
     } else {
       setOutOfMessages(true);
     }
-  };
-
-  const clickHandle = (inputValue: string) => {
-    sendMessage(inputValue);
-  };
-
-  const handleShowEditRoomPopup = () => {
-    setShowEditRoom(true);
-  };
-
-  const handleCloseEditRoomPopup = () => {
-    setShowEditRoom(false);
   };
 
   const handleEditRoom = async (
@@ -180,9 +173,9 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
         Swal.fire({
           position: 'center',
           icon: 'success',
-          title: 'Update room successfully',
+          title: _VAR.UPDATE_ROOM_SUCCESS,
           showConfirmButton: false,
-          timer: TIME_SHOW_SWAL,
+          timer: _VAR.TIME_SHOW_SWAL,
         });
       }
     } catch (error) {
@@ -231,13 +224,13 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       <div className="chatBox">
         <div className="chatBox__infoBar">
           <div className="chatBox__infoBar--content">
-            <div className={isChanel ? 'userInfo' : 'userInfo'}>
+            <div className={isChannel ? 'userInfo' : 'userInfo'}>
               <>
                 <Image
                   src={'/avatarPlaceHolder.png'}
                   alt="user avatar"
-                  width={AVATAR_SIZE}
-                  height={AVATAR_SIZE}
+                  width={_VAR.AVATAR_SIZE}
+                  height={_VAR.AVATAR_SIZE}
                 />
               </>
               <p>{roomName}</p>
@@ -278,7 +271,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
         </div>
         <div className="chatBox__holdPlace">
           <div className="chatBox__input">
-            <InputMessage clickHandle={clickHandle} />
+            <InputMessage clickHandle={clickSendMessageHandle} />
           </div>
         </div>
       </div>
