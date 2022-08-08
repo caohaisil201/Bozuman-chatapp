@@ -21,7 +21,6 @@
 
   &__infoBar{
     padding: 0px 10px;
-
     &--bar {
       height: 2px;
       margin: 10px auto;
@@ -88,6 +87,14 @@
     
     position: absolute;
     bottom: 0;
+  }
+}
+
+@media all and (max-width: 1400px) {
+  .chatBox {
+    &__messagePanel {
+      height: 75vh;
+    }
   }
 }
 

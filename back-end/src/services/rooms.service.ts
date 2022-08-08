@@ -118,7 +118,7 @@ export class RoomsService {
         ? _CONF.CHANNEL_MESSAGE
         : _CONF.DIRECT_MESSAGE;
     const roomInUserCollection = {
-      room_id: roomId,
+      room_id: room_id,
       name: name,
       type: type,
       unread: true,
@@ -127,22 +127,31 @@ export class RoomsService {
     };
     const oldRoom = await this.getRoomInfo(room_id);
     if (oldRoom) {
-      oldRoom.user_list.forEach(async (item) => {
-        await Users.updateOne(
-          { username: item },
-          { $pull: { room_list: {room_id : room_id} } as any }
-        ).exec();
-      });
-      user_list.forEach(async (item) => {
-        await Users.updateOne(
-          { username: item },
-          {
-            $push: {
-              room_list: roomInUserCollection as any,
-            },
-          }
-        ).exec();
-      });
+      const deleteRoomFromUserDoc = async () => {
+        return oldRoom.user_list.forEach(async (item) => {
+          await Users.updateOne(
+            { username: item },
+            { $pull: { room_list: {room_id : room_id} } as any }
+          ).exec();
+        });
+      }
+      const insertRoomIntoUserDoc = async () => {
+        return user_list.forEach(async (item) => {
+          await Users.updateOne(
+            { username: item },
+            {
+              $push: {
+                room_list: roomInUserCollection as any,
+              },
+            }
+          ).exec();
+        });
+      }
+      const excute = async() => {
+        await deleteRoomFromUserDoc()
+        await insertRoomIntoUserDoc()
+      }
+      excute()      
     }
     return await Rooms.updateMany({room_id: roomId}, {$set: {
       name: name,
