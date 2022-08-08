@@ -15,11 +15,12 @@ function Room({ room, clickRoomHandle }: RoomProps) {
   };
   const renderTime = () => {
     const isToDay = room.last_time.getDate() === new Date().getDate()
-    const timeString = room.last_time.toLocaleString().split(", ")
     if(isToDay) {
-      return timeString[0]
+      
+      return room.last_time.toTimeString().split(" ")[0]
     }
-    return timeString[1]
+    return room.last_time.toDateString()
+
   }
   return (
     <div
