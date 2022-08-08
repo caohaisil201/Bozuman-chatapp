@@ -2,6 +2,7 @@ import axios from 'axios';
 import _CONF from 'config/config';
 import { getCookie, setCookie, deleteCookie } from 'cookies-next';
 
+
 const axiosClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_DOMAIN,
   withCredentials: true,
@@ -9,6 +10,7 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   async (config: any) => {
+    
     const token = getCookie('access_token');
     if (token) {
       config.headers = {
@@ -18,6 +20,7 @@ axiosClient.interceptors.request.use(
     return config;
   },
   (error: any) => {
+    console.log(error)
     return error;
   }
 );
@@ -43,11 +46,15 @@ axiosClient.interceptors.response.use(
         }
         return config;
       }
-    } catch (error) {
+    } catch (err) {
       deleteCookie('refresh_token');
       deleteCookie('access_token');
     }
-
+    deleteCookie('refresh_token');
+    deleteCookie('access_token');
+    if (window.location.pathname !== '/sign-in') {
+      window.location = '/sign-in';
+    }
     return error;
   }
 );

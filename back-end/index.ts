@@ -35,7 +35,7 @@ app.use(
   })
 );
 
-app.use('/api/auth', auth); 
+app.use('/api/auth', auth);
 app.use('/api/token', expiredAccessTokenHandler);
 app.use('/api/chat', checkAccessToken, chat);
 app.use('/api/user', checkAccessToken, user);
@@ -84,16 +84,24 @@ io.use(function (socket, next) {
   }
 });
 
+let socketClientList: any = [];
+
 io.on('connection', (socket) => {
+  socketClientList.push({
+    socketId: socket.id,
+    username: socket.data.username,
+  });
   socket.on('joinRoom', (message) => {
     const roomArray = Array.from(socket.rooms);
     roomArray.map((room) => {
-      socket.leave(room);
+      if (!room.toString().includes('SideBar')) {
+        socket.leave(room);
+      }
     });
     socket.join(message.room);
   });
   socket.on('joinRoomForSideBar', (message) => {
-    socket.join(message.room);
+    socket.join('SideBar' + message.room);
   });
   socket.on('chatMessage', (message) => {
     if (socket.data.username) {
@@ -103,15 +111,42 @@ io.on('connection', (socket) => {
         sender: socket.data.username,
         room_id: message.room,
       };
+      let invalidMessage = false;
+      try {
+        const decodeUserToken: any = jwt_decode(message.token);
+        if (decodeUserToken.username != socket.data.username) {
+          invalidMessage = true;
+        }
+      } catch (error) {
+        invalidMessage = true;
+      }
+      if (!invalidMessage) {
+        RoomsService.insertChatMessageIntoRoom(receivedMessage);
+        UsersService.changeOtherUserStatusToUnread(
+          socket.data.username,
+          message.room
+        );
+        UsersService.updateLastMessAndLastTime(
+          socket.data.username,
+          message.room,
+          message.content,
+          message.time
+        );
+        io.to(message.room).emit('message', receivedMessage);
+      }
 
-      RoomsService.insertChatMessageIntoRoom(receivedMessage);
-      UsersService.changeOtherUserStatusToUnread(
-        socket.data.username,
-        message.room
+      io.to('SideBar' + message.room).emit(
+        'messageForSideBar',
+        receivedMessage
       );
-      io.to(message.room).emit('message', receivedMessage);
-      io.to(message.room).emit('messageForSideBar', receivedMessage);
     }
+  });
+  socket.on('roomUpdate', (message: any) => {
+    socketClientList.map((client: any) => {
+      if (message.includes(client.username)) {
+        io.to(client.socketId).emit('roomUpdater');
+      }
+    });
   });
 });
 
