@@ -20,7 +20,6 @@ axiosClient.interceptors.request.use(
     return config;
   },
   (error: any) => {
-    console.log(error)
     return error;
   }
 );
@@ -53,7 +52,7 @@ axiosClient.interceptors.response.use(
     deleteCookie('refresh_token');
     deleteCookie('access_token');
     if (window.location.pathname !== '/sign-in') {
-      window.location = '/sign-in';
+      window.location.href = '/sign-in';
     }
     return error;
   }
