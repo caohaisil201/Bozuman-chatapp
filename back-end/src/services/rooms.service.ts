@@ -1,10 +1,9 @@
-
 import { Rooms } from '../models/rooms.model';
 import { Increment } from 'mongoose-auto-increment-ts';
 import { Users } from '../models/users.model';
-import _CONF from '../configs/chat.config'
-export class RoomsService {
+import _CONF from '../configs/chat.config';
 
+export class RoomsService {
   static addNewRoom = async (data: any) => {
     const id = await Increment('room');
     try {
@@ -20,18 +19,21 @@ export class RoomsService {
 
       // Also have to add room info into room_list of each user
       data.user_list.map((user: string) => {
-        Users.findOneAndUpdate({username: user}, {
-          $push: {
-            room_list: {
-              room_id: id,
-              name: data.name,
-              type: data.type,
-              unread: true,
-              last_message: 'The room have just been created',
-              last_time: new Date().getTime(),
-            } as any,
-          },
-        }).exec();
+        Users.findOneAndUpdate(
+          { username: user },
+          {
+            $push: {
+              room_list: {
+                room_id: id,
+                name: data.name,
+                type: data.type,
+                unread: true,
+                last_message: 'The room have just been created',
+                last_time: new Date().getTime(),
+              } as any,
+            },
+          }
+        ).exec();
       });
 
       return response;
@@ -80,17 +82,18 @@ export class RoomsService {
     })
       .sort({ _id: 1 })
       .skip((page - 1) * page_size)
-      .limit(page_size).select(['message_list', 'count', '-_id']);
+      .limit(page_size)
+      .select(['message_list', 'count', '-_id']);
   };
 
   static getNewestMessageBucket = async (room_id: string) => {
     const roomId = new RegExp(`^${room_id}_`);
     try {
-      return await Rooms.countDocuments({room_id: roomId});
+      return await Rooms.countDocuments({ room_id: roomId });
     } catch (err) {
       throw err;
     }
-  }
+  };
 
   static getRoomInfo = async (room_id: string | number) => {
     const roomId = new RegExp(`^${room_id}_`);
@@ -99,17 +102,49 @@ export class RoomsService {
     })
       .sort({ _id: 1 })
       .skip(0)
-      .limit(1).select(['name', 'user_list', 'admin', 'type', '_id']);
+      .limit(1)
+      .select(['name', 'user_list', 'admin', 'type', '_id']);
   };
 
-  static editRoom = async (name: string, user_list: Array<string>, room_id: number, admin: string) => {
+  static editRoom = async (
+    name: string,
+    user_list: Array<string>,
+    room_id: number,
+    admin: string
+  ) => {
     const roomId = new RegExp(`^${room_id}_`);
-    const type = user_list.length > _CONF.NUMBER_OF_USER_DIRECT_MESSAGE ? _CONF.CHANEL_MESSAGE : _CONF.DIRECT_MESSAGE;
-    return await Rooms.updateMany({room_id: roomId}, {$set: {
+    const type =
+      user_list.length > _CONF.NUMBER_OF_USER_DIRECT_MESSAGE
+        ? _CONF.CHANEL_MESSAGE
+        : _CONF.DIRECT_MESSAGE;
+    const roomInUserCollection = {
+      room_id: roomId,
       name: name,
-      user_list: user_list,
-      admin: admin,
-      type: type
-    }})
-  }
+      type: type,
+      unread: true,
+      last_message: 'The room has just been edited',
+      last_time: new Date().getTime(),
+    };
+    const oldRoom = await this.getRoomInfo(room_id);
+    if (oldRoom) {
+      oldRoom.user_list.forEach(async (item) => {
+        console.log('first + ', item);
+        await Users.updateOne(
+          { username: item },
+          { $pull: { room_list: {room_id : room_id | 0} } }
+        );
+      });
+      const info = await Users.findOne({
+        username: oldRoom.user_list[0],
+      });
+      console.log(info);
+      // if (info) {
+    }
+    // return await Rooms.updateMany({room_id: roomId}, {$set: {
+    //   name: name,
+    //   user_list: user_list,
+    //   admin: admin,
+    //   type: type
+    // }})
+  };
 }
