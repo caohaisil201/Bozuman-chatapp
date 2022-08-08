@@ -224,7 +224,7 @@ function SideBar({ selectRoom }: SideBarProps) {
           </div>
 
           <div className="roomList">
-            Group message
+            Channel message
             {showGroupMessage ? (
               <>
                 <FaChevronUp
@@ -249,7 +249,6 @@ function SideBar({ selectRoom }: SideBarProps) {
             )}
           </div>
         </div>
-        <p className="copyRight">Copyright 2022 All Rights Reserved Bozuman </p>
       </div>
       {showAddRoom && (
         <RoomBehaviourPopup

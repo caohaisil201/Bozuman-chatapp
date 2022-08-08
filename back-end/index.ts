@@ -135,10 +135,12 @@ io.on('connection', (socket) => {
         io.to(message.room).emit('message', receivedMessage);
       }
 
-      io.to('SideBar' + message.room).emit(
-        'messageForSideBar',
-        receivedMessage
-      );
+      setTimeout(() => {
+        io.to('SideBar' + message.room).emit(
+          'messageForSideBar',
+          receivedMessage
+        );
+      }, 500);
     }
   });
   socket.on('roomUpdate', (message: any) => {

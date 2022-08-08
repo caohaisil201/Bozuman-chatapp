@@ -176,6 +176,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       });
       if (res.data.success) {
         admin !== username ? setIsAdmin(false) : {};
+        socketRef.current.emit('roomUpdate', users.concat(roomInfo.user_list));
         handleCloseEditRoomPopup();
         Swal.fire({
           position: 'center',
@@ -240,7 +241,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
                   height={AVATAR_SIZE}
                 />
               </>
-              <p>{roomName}</p>
+              <p>{roomInfo.name || roomName}</p>
             </div>
 
             <div className="infoButton">
