@@ -135,10 +135,12 @@ io.on('connection', (socket) => {
         io.to(message.room).emit('message', receivedMessage);
       }
 
-      io.to('SideBar' + message.room).emit(
-        'messageForSideBar',
-        receivedMessage
-      );
+      setTimeout(() => {
+        io.to('SideBar' + message.room).emit(
+          'messageForSideBar',
+          receivedMessage
+        );
+      }, 500);
     }
   });
   socket.on('roomUpdate', (message: any) => {
@@ -147,6 +149,9 @@ io.on('connection', (socket) => {
         io.to(client.socketId).emit('roomUpdater');
       }
     });
+  });
+  socket.on('roomEdit', (message: any) => {
+    io.to(message.room_id).emit('roomEditReceiver', message.newUserList);
   });
 });
 

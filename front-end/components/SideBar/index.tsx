@@ -37,7 +37,6 @@ const getAccessToken = () => {
 type SideBarProps = {
   selectRoom: (
     room_id: number,
-    isChanel: boolean,
     roomName: string,
     username: string | undefined
   ) => void;
@@ -73,7 +72,7 @@ function SideBar({ selectRoom }: SideBarProps) {
       },
     }
     );
-    socketRef.current.on('messageForSideBar', (message: any) => {
+    socketRef.current.on('messageForSideBar', () => {
       setSocketState(prev=>!prev);
     });
     socketRef.current.on('roomUpdater', () => {
@@ -172,9 +171,9 @@ function SideBar({ selectRoom }: SideBarProps) {
     setUnread(prev=>!prev);
   }
   
-  const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) => {
+  const clickRoomHandle = (room_id: number, roomName:string) => {
     setRoomStatus(room_id,false);
-    selectRoom(room_id, isChanel, roomName, username);
+    selectRoom(room_id, roomName, username);
   }
 
   return (
@@ -224,7 +223,7 @@ function SideBar({ selectRoom }: SideBarProps) {
           </div>
 
           <div className="roomList">
-            Group message
+            Channel message
             {showGroupMessage ? (
               <>
                 <FaChevronUp
@@ -249,7 +248,6 @@ function SideBar({ selectRoom }: SideBarProps) {
             )}
           </div>
         </div>
-        <p className="copyRight">Copyright 2022 All Rights Reserved Bozuman </p>
       </div>
       {showAddRoom && (
         <RoomBehaviourPopup

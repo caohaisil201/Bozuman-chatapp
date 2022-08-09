@@ -4,14 +4,13 @@ import Image from 'next/image';
 
 type RoomProps = {
   room: RoomInterface;
-  clickRoomHandle: (room_id: number, isChanel: boolean, name: string) => void;
+  clickRoomHandle: (room_id: number, name: string) => void;
 };
 const DIRECT_MESSAGE = 'Direct message';
 const SIZE_OF_AVATAR_PROFILE: number = 42;
 function Room({ room, clickRoomHandle }: RoomProps) {
   const chooseRoom = () => {
-    const isChanel = room.type === DIRECT_MESSAGE ? false : true;
-    clickRoomHandle(room.room_id, isChanel, room.name);
+    clickRoomHandle(room.room_id, room.name);
   };
   const renderTime = () => {
     const isToDay = room.last_time.getDate() === new Date().getDate()
