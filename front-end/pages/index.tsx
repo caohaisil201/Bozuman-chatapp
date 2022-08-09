@@ -8,13 +8,12 @@ import ChatBox from 'components/ChatBox';
 import Loading from 'components/Loading';
 import router from 'next/router';
 
-
-
 const Home: NextPage = () => {
   const [chatBoxProps, setChatBoxProps] = useState<ChatBoxProps | null>(null);
   const [isLogIn, setIsLogIn] = useState(false);
-  const selectRoom = (room_id: number, roomName:string, username:string | undefined) => {
-    setChatBoxProps({...chatBoxProps, room_id, roomName, username, renderHomePage})
+  const selectRoom = (room_id: number, username:string | undefined) => {
+    console.log(username)
+    setChatBoxProps({...chatBoxProps, room_id, username, renderHomePage})
   };
   const renderHomePage = () => {
     setChatBoxProps(null)
@@ -43,7 +42,6 @@ const Home: NextPage = () => {
             {chatBoxProps ? (
               <ChatBox
                 room_id={chatBoxProps?.room_id}
-                roomName={chatBoxProps?.roomName}
                 username={chatBoxProps?.username}
                 renderHomePage = {renderHomePage}
               />

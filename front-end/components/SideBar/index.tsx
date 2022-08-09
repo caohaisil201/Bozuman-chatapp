@@ -37,7 +37,6 @@ const getAccessToken = () => {
 type SideBarProps = {
   selectRoom: (
     room_id: number,
-    roomName: string,
     username: string | undefined
   ) => void;
 };
@@ -145,7 +144,6 @@ function SideBar({ selectRoom }: SideBarProps) {
       });
       if (res.data.success) {
         handleCloseAddRoomPopup();
-        socketRef.current.emit('roomUpdate', users);
         Swal.fire({
           position: 'center',
           icon: 'success',
@@ -153,6 +151,9 @@ function SideBar({ selectRoom }: SideBarProps) {
           showConfirmButton: false,
           timer: 1500
         })
+        setTimeout(() => {
+          socketRef.current.emit('roomUpdate', users);
+        }, 500)
       }
     } catch (err) {
       //TODO: handle error
@@ -171,9 +172,9 @@ function SideBar({ selectRoom }: SideBarProps) {
     setUnread(prev=>!prev);
   }
   
-  const clickRoomHandle = (room_id: number, roomName:string) => {
+  const clickRoomHandle = (room_id: number) => {
     setRoomStatus(room_id,false);
-    selectRoom(room_id, roomName, username);
+    selectRoom(room_id, username);
   }
 
   return (

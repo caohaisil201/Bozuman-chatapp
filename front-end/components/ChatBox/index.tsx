@@ -25,7 +25,6 @@ const TIME_SHOW_SWAL = 1500;
 
 export type ChatBoxProps = {
   room_id: number;
-  roomName: string;
   username?: string;
   renderHomePage: () => void;
 };
@@ -41,7 +40,7 @@ const getAccessToken = () => {
   return access_token;
 };
 
-function ChatBox({ room_id, roomName, username, renderHomePage }: ChatBoxProps) {
+function ChatBox({ room_id, username, renderHomePage }: ChatBoxProps) {
   const socketRef = useRef<any>(null);
   const savedMessagesRef = useRef<Array<MessageGroupProps>>([]);
 
@@ -107,13 +106,14 @@ function ChatBox({ room_id, roomName, username, renderHomePage }: ChatBoxProps) 
       if (data.roomInfo.type === 'Direct message') {
         setIsAdmin(true);
       }
+      setRoomInfo({
+        ...roomInfo,
+        name: data.roomInfo.name,
+        user_list: [...data.roomInfo.user_list],
+        admin: data.roomInfo.admin,
+      });
+      console.log(data.roomInfo.admin, username);
       if (data.roomInfo.admin === username) {
-        setRoomInfo({
-          ...roomInfo,
-          name: data.roomInfo.name,
-          user_list: [...data.roomInfo.user_list],
-          admin: data.roomInfo.admin,
-        });
         return setIsAdmin(true);
       }
       setIsAdmin(false);
@@ -177,8 +177,6 @@ function ChatBox({ room_id, roomName, username, renderHomePage }: ChatBoxProps) 
       });
       if (res.data.success) {
         admin !== username ? setIsAdmin(false) : {};
-        socketRef.current.emit('roomEdit', {newUserList: users, room_id: room_id});
-        socketRef.current.emit('roomUpdate', users.concat(roomInfo.user_list));
         handleCloseEditRoomPopup();
         Swal.fire({
           position: 'center',
@@ -187,6 +185,10 @@ function ChatBox({ room_id, roomName, username, renderHomePage }: ChatBoxProps) 
           showConfirmButton: false,
           timer: TIME_SHOW_SWAL,
         });
+        setTimeout(() => {
+          socketRef.current.emit('roomEdit', { newUserList: users, room_id: room_id });
+          socketRef.current.emit('roomUpdate', users.concat(roomInfo.user_list));
+        }, 500)
       }
     } catch (error) {
       //TODO: catch error;
@@ -208,12 +210,18 @@ function ChatBox({ room_id, roomName, username, renderHomePage }: ChatBoxProps) 
       setMessages([...savedMessagesRef.current]);
     });
     socketRef.current.on('roomEditReceiver', (message: any) => {
-      if(!message.includes(username)) {
+      // console.log('socket',message,username);
+      if (!message.includes(username)) {
         renderHomePage();
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'You have been deleted out of this room :(',
+        })
       }
-      setRender(prev=>!prev);
+      setRender(prev => !prev);
     });
-    
+
   }, []);
 
   useEffect(() => {
@@ -226,7 +234,7 @@ function ChatBox({ room_id, roomName, username, renderHomePage }: ChatBoxProps) 
         room: room_id,
       });
     }
-    
+
     setOutOfMessages(false);
   }, [room_id, render]);
 
@@ -251,7 +259,7 @@ function ChatBox({ room_id, roomName, username, renderHomePage }: ChatBoxProps) 
                   height={AVATAR_SIZE}
                 />
               </>
-              <p>{roomInfo.name || roomName}</p>
+              <p>{roomInfo.name}</p>
             </div>
 
             <div className="infoButton">
