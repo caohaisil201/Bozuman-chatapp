@@ -151,7 +151,7 @@ io.on('connection', (socket) => {
     });
   });
   socket.on('roomEdit', (message: any) => {
-    io.to(message.room_id).emit('roomEditReceiver', message.newUserList);
+    io.to(message.room_id).emit('roomEditReceiver', message);
   });
 });
 
