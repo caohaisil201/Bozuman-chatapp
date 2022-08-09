@@ -25,7 +25,6 @@ const TIME_SHOW_SWAL = 1500;
 
 export type ChatBoxProps = {
   room_id: number;
-  isChanel: boolean;
   roomName: string;
   username?: string;
   renderHomePage: () => void;
@@ -42,7 +41,7 @@ const getAccessToken = () => {
   return access_token;
 };
 
-function ChatBox({ room_id, isChanel, roomName, username, renderHomePage }: ChatBoxProps) {
+function ChatBox({ room_id, roomName, username, renderHomePage }: ChatBoxProps) {
   const socketRef = useRef<any>(null);
   const savedMessagesRef = useRef<Array<MessageGroupProps>>([]);
 
@@ -243,7 +242,7 @@ function ChatBox({ room_id, isChanel, roomName, username, renderHomePage }: Chat
       <div className="chatBox">
         <div className="chatBox__infoBar">
           <div className="chatBox__infoBar--content">
-            <div className={isChanel ? 'userInfo' : 'userInfo'}>
+            <div className="userInfo">
               <>
                 <Image
                   src={'/avatarPlaceHolder.png'}
