@@ -124,7 +124,6 @@ function ChatBox({ room_id, username, renderHomePage }: ChatBoxProps) {
         user_list: [...data.roomInfo.user_list],
         admin: data.roomInfo.admin,
       });
-      console.log(data.roomInfo.admin, username);
       if (data.roomInfo.admin === username) {
         return setIsAdmin(true);
       }
@@ -234,7 +233,6 @@ function ChatBox({ room_id, username, renderHomePage }: ChatBoxProps) {
       setMessages([...savedMessagesRef.current]);
     });
     socketRef.current.on('roomEditReceiver', (message: any) => {
-      // console.log('socket',message,username);
       if (!message.includes(username)) {
         renderHomePage();
         Swal.fire({

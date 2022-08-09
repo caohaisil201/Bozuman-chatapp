@@ -12,7 +12,6 @@ const Home: NextPage = () => {
   const [chatBoxProps, setChatBoxProps] = useState<ChatBoxProps | null>(null);
   const [isLogIn, setIsLogIn] = useState(false);
   const selectRoom = (room_id: number, username:string | undefined) => {
-    console.log(username)
     setChatBoxProps({...chatBoxProps, room_id, username, renderHomePage})
   };
   const renderHomePage = () => {
