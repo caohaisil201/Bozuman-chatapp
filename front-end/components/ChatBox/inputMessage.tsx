@@ -3,7 +3,7 @@ import { FaTelegramPlane } from 'react-icons/fa';
 
 function InputMessage({ clickHandle }: any) {
   const [inputValue, setinputValue] = useState<string>('');
-  const handleChange = (event: any) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setinputValue(event.target.value);
   };
 
@@ -14,7 +14,7 @@ function InputMessage({ clickHandle }: any) {
     }
   };
 
-  const press = (event: any) => {
+  const press = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && inputValue !== '') {
       clickHandle(inputValue.trim());
       setinputValue('');

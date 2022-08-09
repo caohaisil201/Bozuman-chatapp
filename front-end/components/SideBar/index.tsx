@@ -13,6 +13,7 @@ import Room from 'components/Room';
 import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
 import Swal from 'sweetalert2';
 import { io } from 'socket.io-client';
+import _CONF from 'config/config'
 
 const SIZE_OF_AVATAR_PROFILE: number = 50;
 
@@ -151,11 +152,17 @@ function SideBar({ selectRoom }: SideBarProps) {
           icon: 'success',
           title: 'Create room successfully',
           showConfirmButton: false,
-          timer: 1500
+          timer: _CONF.TIME_SHOW_SWAL
         })
       }
     } catch (err) {
-      //TODO: handle error
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Something went wrong...',
+        showConfirmButton: false,
+        timer: _CONF.TIME_SHOW_SWAL,
+      });
     }
   };
 
