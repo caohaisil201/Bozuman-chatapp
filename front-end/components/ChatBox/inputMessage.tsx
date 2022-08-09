@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { FaTelegramPlane } from 'react-icons/fa';
 
-// type Props = {
-//   clickHandle: (inputValue: string) => void;
-// };
-
 function InputMessage({ clickHandle }: any) {
   const [inputValue, setinputValue] = useState<string>('');
+
   const handleChange = (event: any) => {
     setinputValue(event.target.value);
   };

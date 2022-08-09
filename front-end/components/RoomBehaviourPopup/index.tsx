@@ -3,10 +3,8 @@ import React, { useState, useRef, KeyboardEvent } from 'react';
 import { FaTimes, FaSearch } from 'react-icons/fa';
 import User from './user';
 import { UserType } from 'components/SideBar';
+import { _VAR } from 'constant/variables';
 import _CONF from 'config/config';
-
-const MAX_ROOM_NAME_LENGTH = 32;
-const MIN_ROOM_NAME_LENGTH = 4;
 
 type Props = {
   roomName?: string;
@@ -68,9 +66,9 @@ const RoomBehaviourPopup = ({
     setUserResult([...result]);
   };
 
-  const changeAdmin = (user: string) =>{
+  const changeAdmin = (user: string) => {
     setAdminName(user);
-  }
+  };
 
   const handleClick = () => {
     if (userResult.length === 0) {
@@ -80,8 +78,8 @@ const RoomBehaviourPopup = ({
     if (roomNameRef.current?.value) {
       const roomName = roomNameRef.current.value.trim();
       if (
-        roomName.length < MIN_ROOM_NAME_LENGTH ||
-        roomName.length > MAX_ROOM_NAME_LENGTH
+        roomName.length < _VAR.MIN_ROOM_NAME_LENGTH ||
+        roomName.length > _VAR.MAX_ROOM_NAME_LENGTH
       ) {
         setRoomNameError(`Room name must between 4-32 characters`);
         return;
