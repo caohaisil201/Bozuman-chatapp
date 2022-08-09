@@ -17,7 +17,6 @@ import usePrevious from 'hooks/usePrevious';
 import InputMessage from './inputMessage';
 import Loading from 'components/Loading';
 import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
-import { useRouter } from 'next/router';
 
 const TWO_NEWSET_BUCKET = 2;
 const FIRST_NEWEST_BUCKET = 1;
@@ -59,7 +58,6 @@ function ChatBox({ room_id, isChanel, roomName, username, renderHomePage }: Chat
     user_list: [],
     admin: '',
   });
-  const router = useRouter();
 
   const getMessageBucket = async (page: number) => {
     try {
