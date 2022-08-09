@@ -16,7 +16,7 @@ interface ResetPasswordForm {
 
 function ResetPasswordPanel() {
   const router = useRouter();
-  
+
   const { user } = router.query;
 
   const [errorMessage, setErrorMessage] = useState({
@@ -74,12 +74,12 @@ function ResetPasswordPanel() {
 
         Swal.fire({
           title: 'Reset success, click button to go sign in page',
-          confirmButtonText: 'Let\'s go'
-        }).then(result => {
-          if(result.isConfirmed) {
+          confirmButtonText: "Let's go",
+        }).then((result) => {
+          if (result.isConfirmed) {
             router.push('/sign-in');
           }
-        })
+        });
       }
     } catch (error: any) {
       setErrorMessage({
@@ -105,7 +105,7 @@ function ResetPasswordPanel() {
           type="password"
           required
         />
-          {errors.password && <p className="error">{errors.password.message}</p>}
+        {errors.password && <p className="error">{errors.password.message}</p>}
 
         <input
           {...register('confirmPassword')}
@@ -113,10 +113,12 @@ function ResetPasswordPanel() {
           type="password"
           required
         />
-          {(errors.confirmPassword && (
-            <p className="error">{errors.confirmPassword.message}</p>
-          )) ||
-            (errorMessage.trigger && <p className="error">{errorMessage.message}</p>)}
+        {(errors.confirmPassword && (
+          <p className="error">{errors.confirmPassword.message}</p>
+        )) ||
+          (errorMessage.trigger && (
+            <p className="error">{errorMessage.message}</p>
+          ))}
         <button type="submit" className="button__search">
           Submit
         </button>

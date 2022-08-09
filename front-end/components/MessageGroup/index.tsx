@@ -1,12 +1,14 @@
 import React from 'react';
 import Message from './Message';
 import Image from 'next/image';
+import { _VAR } from 'constant/variables';
+
 type MessageGroupProps = {
   isMe: boolean;
   messages: Array<string>;
   sender: string | undefined | null;
 };
-const AVATAR_SIZE = 42;
+
 function MessageGroup({ isMe, messages, sender }: MessageGroupProps) {
   return (
     <div
@@ -16,8 +18,8 @@ function MessageGroup({ isMe, messages, sender }: MessageGroupProps) {
         <Image
           src={'/avatarPlaceHolder.png'}
           alt="user avatar"
-          width={AVATAR_SIZE}
-          height={AVATAR_SIZE}
+          width={_VAR.AVATAR_SIZE}
+          height={_VAR.AVATAR_SIZE}
         />
       </div>
       <div className="messageGroup__messageContainer">
