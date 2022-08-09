@@ -44,7 +44,7 @@
         
         font-weight: 600;
 
-        width: 70%;
+        width: 65%;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
@@ -53,6 +53,11 @@
       .lastTime {
         float: right;
         position: relative;
+
+        width: 30%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
 
       .lastMessage {
