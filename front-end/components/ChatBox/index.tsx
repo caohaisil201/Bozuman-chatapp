@@ -21,9 +21,8 @@ import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
 
 export type ChatBoxProps = {
   room_id: number;
-  isChannel: boolean;
-  roomName: string;
   username?: string;
+  renderHomePage: () => void;
 };
 
 const getAccessToken = () => {
@@ -31,7 +30,8 @@ const getAccessToken = () => {
   return access_token;
 };
 
-function ChatBox({ room_id, isChannel, roomName, username }: ChatBoxProps) {
+
+function ChatBox({ room_id, username, renderHomePage }: ChatBoxProps) {
   const socketRef = useRef<any>(null);
   const savedMessagesRef = useRef<Array<MessageGroupProps>>([]);
 
@@ -41,6 +41,7 @@ function ChatBox({ room_id, isChannel, roomName, username }: ChatBoxProps) {
   const [bucketIndex, setBucketIndex] = useState<number>(0);
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
   const [showEditRoom, setShowEditRoom] = useState<boolean>(false);
+  const [render, setRender] = useState<boolean>(false);
   const [roomInfo, setRoomInfo] = useState<IRoomInfo>({
     name: '',
     user_list: [],
@@ -71,7 +72,13 @@ function ChatBox({ room_id, isChannel, roomName, username }: ChatBoxProps) {
         setMessages([...savedMessagesRef.current]);
       }
     } catch (error) {
-      // TODO: Do something when error
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Something went wrong...',
+        showConfirmButton: false,
+        timer: _VAR.TIME_SHOW_SWAL,
+      });
     }
   };
 
@@ -98,7 +105,13 @@ function ChatBox({ room_id, isChannel, roomName, username }: ChatBoxProps) {
       setOutOfMessages(true);
       return setBucketIndex(data.newestIndex);
     } catch (error) {
-      // TODO: Do something when error
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Something went wrong...',
+        showConfirmButton: false,
+        timer: _VAR.TIME_SHOW_SWAL,
+      });
     }
   };
 
@@ -111,19 +124,24 @@ function ChatBox({ room_id, isChannel, roomName, username }: ChatBoxProps) {
       if (data.roomInfo.type === _VAR.DIRECT_ROOM_TYPE) {
         setIsAdmin(true);
       }
-
+      setRoomInfo({
+        ...roomInfo,
+        name: data.roomInfo.name,
+        user_list: [...data.roomInfo.user_list],
+        admin: data.roomInfo.admin,
+      });
       if (data.roomInfo.admin === username) {
-        setRoomInfo({
-          ...roomInfo,
-          name: data.roomInfo.name,
-          user_list: [...data.roomInfo.user_list],
-          admin: data.roomInfo.admin,
-        });
         return setIsAdmin(true);
       }
       setIsAdmin(false);
     } catch (error) {
-      // TODO: Do something when error
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Something went wrong...',
+        showConfirmButton: false,
+        timer: _VAR.TIME_SHOW_SWAL,
+      });
     }
   };
 
@@ -177,9 +195,19 @@ function ChatBox({ room_id, isChannel, roomName, username }: ChatBoxProps) {
           showConfirmButton: false,
           timer: _VAR.TIME_SHOW_SWAL,
         });
+        setTimeout(() => {
+          socketRef.current.emit('roomEdit', { newUserList: users, room_id: room_id });
+          socketRef.current.emit('roomUpdate', users.concat(roomInfo.user_list));
+        }, 500)
       }
     } catch (error) {
-      //TODO: catch error;
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Something went wrong...',
+        showConfirmButton: false,
+        timer: _VAR.TIME_SHOW_SWAL,
+      });
     }
   };
 
@@ -197,6 +225,17 @@ function ChatBox({ room_id, isChannel, roomName, username }: ChatBoxProps) {
       pushNewMessage(message, savedMessagesRef.current, username);
       setMessages([...savedMessagesRef.current]);
     });
+    socketRef.current.on('roomEditReceiver', (message: any) => {
+      if (!message.includes(username)) {
+        renderHomePage();
+        Swal.fire({
+          icon: 'error',
+          title: 'You have been deleted out of this room :(',
+        })
+      }
+      setRender(prev => !prev);
+    });
+
   }, []);
 
   useEffect(() => {
@@ -209,8 +248,9 @@ function ChatBox({ room_id, isChannel, roomName, username }: ChatBoxProps) {
         room: room_id,
       });
     }
+
     setOutOfMessages(false);
-  }, [room_id]);
+  }, [room_id, render]);
 
   const prevChatId = usePrevious(room_id);
   if (prevChatId !== room_id) {
@@ -224,7 +264,7 @@ function ChatBox({ room_id, isChannel, roomName, username }: ChatBoxProps) {
       <div className="chatBox">
         <div className="chatBox__infoBar">
           <div className="chatBox__infoBar--content">
-            <div className={isChannel ? 'userInfo' : 'userInfo'}>
+            <div className="userInfo">
               <>
                 <Image
                   src={'/avatarPlaceHolder.png'}
@@ -233,7 +273,7 @@ function ChatBox({ room_id, isChannel, roomName, username }: ChatBoxProps) {
                   height={_VAR.AVATAR_SIZE}
                 />
               </>
-              <p>{roomName}</p>
+              <p>{roomInfo.name}</p>
             </div>
 
             <div className="infoButton">

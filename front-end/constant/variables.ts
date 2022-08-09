@@ -7,7 +7,9 @@ export const _VAR = {
   SUCCESS: 'success',
   UPDATE_ROOM_SUCCESS: 'Update room successfully',
   DIRECT_ROOM_TYPE: 'Direct message',
-  CHANNEL_ROOM_TYPE: 'Channel message'
+  CHANNEL_ROOM_TYPE: 'Channel message',
+  REGEX_USENAME_PASSWORD: /^[a-zA-Z0-9_]*$/,
+  REGEX_FULLNAME: /^[a-zA-Z0-9_ ]*$/,
 }
 
 export interface IRoomInfo {

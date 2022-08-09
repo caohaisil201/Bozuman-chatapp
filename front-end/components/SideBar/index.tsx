@@ -13,6 +13,7 @@ import Room from 'components/Room';
 import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
 import Swal from 'sweetalert2';
 import { io } from 'socket.io-client';
+import { _VAR } from 'constant/variables';
 
 const SIZE_OF_AVATAR_PROFILE: number = 50;
 
@@ -37,8 +38,6 @@ const getAccessToken = () => {
 type SideBarProps = {
   selectRoom: (
     room_id: number,
-    isChanel: boolean,
-    roomName: string,
     username: string | undefined
   ) => void;
 };
@@ -73,7 +72,7 @@ function SideBar({ selectRoom }: SideBarProps) {
       },
     }
     );
-    socketRef.current.on('messageForSideBar', (message: any) => {
+    socketRef.current.on('messageForSideBar', () => {
       setSocketState(prev=>!prev);
     });
     socketRef.current.on('roomUpdater', () => {
@@ -146,17 +145,25 @@ function SideBar({ selectRoom }: SideBarProps) {
       });
       if (res.data.success) {
         handleCloseAddRoomPopup();
-        socketRef.current.emit('roomUpdate', users);
         Swal.fire({
           position: 'center',
           icon: 'success',
           title: 'Create room successfully',
           showConfirmButton: false,
-          timer: 1500
+          timer: _VAR.TIME_SHOW_SWAL
         })
+        setTimeout(() => {
+          socketRef.current.emit('roomUpdate', users);
+        }, 500)
       }
     } catch (err) {
-      //TODO: handle error
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Something went wrong...',
+        showConfirmButton: false,
+        timer: _VAR.TIME_SHOW_SWAL,
+      });
     }
   };
 
@@ -172,9 +179,9 @@ function SideBar({ selectRoom }: SideBarProps) {
     setUnread(prev=>!prev);
   }
   
-  const clickRoomHandle = (room_id: number, isChanel: boolean, roomName:string) => {
+  const clickRoomHandle = (room_id: number) => {
     setRoomStatus(room_id,false);
-    selectRoom(room_id, isChanel, roomName, username);
+    selectRoom(room_id, username);
   }
 
   return (
@@ -224,7 +231,7 @@ function SideBar({ selectRoom }: SideBarProps) {
           </div>
 
           <div className="roomList">
-            Group message
+            Channel message
             {showGroupMessage ? (
               <>
                 <FaChevronUp
@@ -249,7 +256,6 @@ function SideBar({ selectRoom }: SideBarProps) {
             )}
           </div>
         </div>
-        <p className="copyRight">Copyright 2022 All Rights Reserved Bozuman </p>
       </div>
       {showAddRoom && (
         <RoomBehaviourPopup

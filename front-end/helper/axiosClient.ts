@@ -1,5 +1,4 @@
 import axios from 'axios';
-import _CONF from 'config/config';
 import { getCookie, setCookie, deleteCookie } from 'cookies-next';
 
 

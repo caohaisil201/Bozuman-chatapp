@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
-import _CONF from 'config/config';
+import { _VAR } from 'constant/variables';
 import { useRouter } from 'next/router';
 import AuthPanel from 'components/AuthPanel';
 import Swal from 'sweetalert2';
@@ -31,7 +31,7 @@ function ResetPasswordPanel() {
       .min(8, 'Password must have 8-16 character')
       .max(16, 'Password must have 8-16 character')
       .matches(
-        _CONF.REGEX_USENAME_PASSWORD,
+        _VAR.REGEX_USENAME_PASSWORD,
         'Password must not contain special character like @#$^...'
       ),
     confirmPassword: yup

@@ -127,19 +127,44 @@ export class RoomsService {
     };
     const oldRoom = await this.getRoomInfo(room_id);
     if (oldRoom) {
-      oldRoom.user_list.forEach(async (item) => {
+      const deletedUser = oldRoom.user_list.filter(
+        (user) => !user_list.includes(user)
+      );
+      const insertUser = user_list.filter(
+        (user) => !oldRoom.user_list.includes(user)
+      );
+      const remainingtUser = user_list.filter(
+        (user) => !deletedUser.includes(user) && !insertUser.includes(user)
+      );
+
+      deletedUser.forEach(async (item) => {
         await Users.findOneAndUpdate(
           { username: item },
           { $pull: { room_list: { room_id: room_id } } as any }
         ).exec();
       });
 
-      user_list.forEach(async (item) => {
+      insertUser.forEach(async (item) => {
         await Users.findOneAndUpdate(
           { username: item },
           {
             $push: {
               room_list: roomInUserCollection as any,
+            },
+          }
+        ).exec();
+      });
+
+      remainingtUser.forEach(async (item) => {
+        await Users.updateOne(
+          { username: item, 'room_list.room_id': room_id },
+          {
+            $set: {
+              'room_list.$.last_message': _CONF.EDIT_ROOM_NOTIFICATION,
+              'room_list.$.last_time': new Date().getTime(),
+              'room_list.$.unread': true,
+              'room_list.$.type': type,
+              'room_list.$.name': name,
             },
           }
         ).exec();
