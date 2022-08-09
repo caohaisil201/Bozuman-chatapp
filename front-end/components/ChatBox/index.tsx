@@ -229,7 +229,7 @@ function ChatBox({ room_id, username, renderHomePage }: ChatBoxProps) {
       if (!message.newUserList.includes(username) && room_id === message.room_id) {
         Swal.fire({
           icon: 'error',
-          title: `You have been deleted out of room :(`,
+          title: `You have been deleted out of this room :(`,
         })
         renderHomePage();
       }
