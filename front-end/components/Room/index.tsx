@@ -1,4 +1,5 @@
 import React from 'react';
+import { _VAR } from 'constant/variables';
 import { RoomInterface } from 'components/SideBar';
 import Image from 'next/image';
 
@@ -6,21 +7,18 @@ type RoomProps = {
   room: RoomInterface;
   clickRoomHandle: (room_id: number, name: string) => void;
 };
-const DIRECT_MESSAGE = 'Direct message';
-const SIZE_OF_AVATAR_PROFILE: number = 42;
+
 function Room({ room, clickRoomHandle }: RoomProps) {
   const chooseRoom = () => {
     clickRoomHandle(room.room_id, room.name);
   };
-  const renderTime = () => {
-    const isToDay = room.last_time.getDate() === new Date().getDate()
-    if(isToDay) {
-      
-      return room.last_time.toTimeString().split(" ")[0]
-    }
-    return room.last_time.toDateString()
 
+  const renderTime = () => {
+    return room.last_time.getDate() === new Date().getDate()
+      ? room.last_time.toTimeString().split(' ')[0]
+      : room.last_time.toDateString().slice(4);
   }
+  
   return (
     <div
       className={'room ' + (room.unread ? 'room_unread' : '')}
@@ -29,8 +27,8 @@ function Room({ room, clickRoomHandle }: RoomProps) {
       <Image
         src="/avatar.png"
         alt="avatar"
-        width={SIZE_OF_AVATAR_PROFILE}
-        height={SIZE_OF_AVATAR_PROFILE}
+        width={_VAR.AVATAR_SIZE}
+        height={_VAR.AVATAR_SIZE}
       />
       <div className="room_info">
         <p className="roomName">{room.name}</p>

@@ -14,7 +14,7 @@ function EnterCode() {
         setIsLogIn(true);
       }
     }
-  
+
     checkLogIn()
   }, [isLogIn]);
 

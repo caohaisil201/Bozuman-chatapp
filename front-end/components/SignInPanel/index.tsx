@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import Link from 'next/link';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
-import _CONF from 'config/config';
+import { _VAR } from 'constant/variables';
 import { useRouter } from 'next/router';
 import { setCookie } from 'cookies-next';
 import AuthPanel from 'components/AuthPanel';
@@ -28,7 +28,7 @@ function SignInPanel() {
       .min(8, 'Username must have 8-16 character')
       .max(16, 'Username must have 8-16 character')
       .matches(
-        _CONF.REGEX_USENAME_PASSWORD,
+        _VAR.REGEX_USENAME_PASSWORD,
         'Username must not contain special character like @#$^...'
       ),
     password: yup
@@ -37,7 +37,7 @@ function SignInPanel() {
       .min(8, 'Password must have 8-16 character')
       .max(16, 'Password must have 8-16 character')
       .matches(
-        _CONF.REGEX_USENAME_PASSWORD,
+        _VAR.REGEX_USENAME_PASSWORD,
         'Password must not contain special character like @#$^...'
       ),
   });

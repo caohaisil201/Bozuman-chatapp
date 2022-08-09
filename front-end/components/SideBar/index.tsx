@@ -13,9 +13,7 @@ import Room from 'components/Room';
 import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
 import Swal from 'sweetalert2';
 import { io } from 'socket.io-client';
-import _CONF from 'config/config'
-
-const SIZE_OF_AVATAR_PROFILE: number = 50;
+import { _VAR } from 'constant/variables';
 
 export interface RoomInterface {
   room_id: number;
@@ -150,7 +148,7 @@ function SideBar({ selectRoom }: SideBarProps) {
           icon: 'success',
           title: 'Create room successfully',
           showConfirmButton: false,
-          timer: _CONF.TIME_SHOW_SWAL
+          timer: _VAR.TIME_SHOW_SWAL
         })
         setTimeout(() => {
           socketRef.current.emit('roomUpdate', users);
@@ -162,7 +160,7 @@ function SideBar({ selectRoom }: SideBarProps) {
         icon: 'error',
         title: 'Something went wrong...',
         showConfirmButton: false,
-        timer: _CONF.TIME_SHOW_SWAL,
+        timer: _VAR.TIME_SHOW_SWAL,
       });
     }
   };
@@ -192,8 +190,8 @@ function SideBar({ selectRoom }: SideBarProps) {
             <Image
               src="/avatar.png"
               alt="avatar"
-              width={SIZE_OF_AVATAR_PROFILE}
-              height={SIZE_OF_AVATAR_PROFILE}
+              width={_VAR.PROFILE_AVATAR_SIZE}
+              height={_VAR.PROFILE_AVATAR_SIZE}
             />
             <div className="info">
               <p className="name">{fullname}</p>

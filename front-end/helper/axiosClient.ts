@@ -1,6 +1,15 @@
 import axios from 'axios';
-import _CONF from 'config/config';
 import { getCookie, setCookie, deleteCookie } from 'cookies-next';
+import { appRoutes } from 'constant/appRoutes';
+
+const unProtectedRoutes = [
+  appRoutes.SIGN_IN_PAGE,
+  appRoutes.SIGN_UP_PAGE,
+  appRoutes.FORGOT_PASSWORD_PAGE,
+  appRoutes.RESET_PASSWORD_PAGE,
+  appRoutes.SIGN_UP_SUCCESS_PAGE,
+  appRoutes.ACTIVATE_ACCOUNT_PAGE,
+]
 
 
 const axiosClient = axios.create({
@@ -51,7 +60,7 @@ axiosClient.interceptors.response.use(
     }
     deleteCookie('refresh_token');
     deleteCookie('access_token');
-    if (window.location.pathname !== '/sign-in') {
+    if (!unProtectedRoutes.includes(window.location.pathname)) {
       window.location.href = '/sign-in';
     }
     return error;

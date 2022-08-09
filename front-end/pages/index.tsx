@@ -23,6 +23,7 @@ const Home: NextPage = () => {
         setIsLogIn(true);
       }
     }
+    
     checkLogIn()
   }, [isLogIn]);
 
