@@ -17,11 +17,11 @@ import usePrevious from 'hooks/usePrevious';
 import InputMessage from './inputMessage';
 import Loading from 'components/Loading';
 import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
+import _CONF from 'config/config'
 
 const TWO_NEWSET_BUCKET = 2;
 const FIRST_NEWEST_BUCKET = 1;
 const AVATAR_SIZE = 42;
-const TIME_SHOW_SWAL = 1500;
 
 export type ChatBoxProps = {
   room_id: number;
@@ -69,7 +69,13 @@ function ChatBox({ room_id, username, renderHomePage }: ChatBoxProps) {
         setMessages([...savedMessagesRef.current]);
       }
     } catch (error) {
-      // TODO: Do something when error
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Something went wrong...',
+        showConfirmButton: false,
+        timer: _CONF.TIME_SHOW_SWAL,
+      });
     }
   };
 
@@ -94,7 +100,13 @@ function ChatBox({ room_id, username, renderHomePage }: ChatBoxProps) {
       setOutOfMessages(true);
       return setBucketIndex(data.newestIndex);
     } catch (error) {
-      // TODO: Do something when error
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Something went wrong...',
+        showConfirmButton: false,
+        timer: _CONF.TIME_SHOW_SWAL,
+      });
     }
   };
 
@@ -118,7 +130,13 @@ function ChatBox({ room_id, username, renderHomePage }: ChatBoxProps) {
       }
       setIsAdmin(false);
     } catch (error) {
-      // TODO: Do something when error
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Something went wrong...',
+        showConfirmButton: false,
+        timer: _CONF.TIME_SHOW_SWAL,
+      });
     }
   };
 
@@ -183,7 +201,7 @@ function ChatBox({ room_id, username, renderHomePage }: ChatBoxProps) {
           icon: 'success',
           title: 'Update room successfully',
           showConfirmButton: false,
-          timer: TIME_SHOW_SWAL,
+          timer: _CONF.TIME_SHOW_SWAL,
         });
         setTimeout(() => {
           socketRef.current.emit('roomEdit', { newUserList: users, room_id: room_id });
@@ -191,7 +209,13 @@ function ChatBox({ room_id, username, renderHomePage }: ChatBoxProps) {
         }, 500)
       }
     } catch (error) {
-      //TODO: catch error;
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Something went wrong...',
+        showConfirmButton: false,
+        timer: _CONF.TIME_SHOW_SWAL,
+      });
     }
   };
 
