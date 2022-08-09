@@ -42,7 +42,7 @@ const Home: NextPage = () => {
               <ChatBox
                 room_id={chatBoxProps?.room_id}
                 username={chatBoxProps?.username}
-                renderHomePage = {renderHomePage}
+                renderHomePage = {chatBoxProps?.renderHomePage}
               />
             ) : (
               <div className='homePage'><p>Bozuman chat app</p></div>
