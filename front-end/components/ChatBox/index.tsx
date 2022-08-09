@@ -237,8 +237,7 @@ function ChatBox({ room_id, username, renderHomePage }: ChatBoxProps) {
         renderHomePage();
         Swal.fire({
           icon: 'error',
-          title: 'Oops...',
-          text: 'You have been deleted out of this room :(',
+          title: 'You have been deleted out of this room :(',
         })
       }
       setRender(prev => !prev);
