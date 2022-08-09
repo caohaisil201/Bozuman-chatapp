@@ -226,12 +226,12 @@ function ChatBox({ room_id, username, renderHomePage }: ChatBoxProps) {
       setMessages([...savedMessagesRef.current]);
     });
     socketRef.current.on('roomEditReceiver', (message: any) => {
-      if (!message.includes(username)) {
-        renderHomePage();
+      if (!message.newUserList.includes(username) && room_id === message.room_id) {
         Swal.fire({
           icon: 'error',
-          title: 'You have been deleted out of this room :(',
+          title: `You have been deleted out of room :(`,
         })
+        renderHomePage();
       }
       setRender(prev => !prev);
     });
