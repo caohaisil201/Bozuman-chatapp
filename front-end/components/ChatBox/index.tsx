@@ -17,6 +17,7 @@ import usePrevious from 'hooks/usePrevious';
 import InputMessage from './inputMessage';
 import Loading from 'components/Loading';
 import RoomBehaviourPopup from 'components/RoomBehaviourPopup';
+import { useRouter } from 'next/router';
 
 const TWO_NEWSET_BUCKET = 2;
 const FIRST_NEWEST_BUCKET = 1;
@@ -28,6 +29,7 @@ export type ChatBoxProps = {
   isChanel: boolean;
   roomName: string;
   username?: string;
+  renderHomePage: () => void;
 };
 
 interface IRoomInfo {
@@ -41,7 +43,7 @@ const getAccessToken = () => {
   return access_token;
 };
 
-function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
+function ChatBox({ room_id, isChanel, roomName, username, renderHomePage }: ChatBoxProps) {
   const socketRef = useRef<any>(null);
   const savedMessagesRef = useRef<Array<MessageGroupProps>>([]);
 
@@ -51,11 +53,13 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
   const [bucketIndex, setBucketIndex] = useState<number>(0);
   const [outOfMessages, setOutOfMessages] = useState<boolean>(false);
   const [showEditRoom, setShowEditRoom] = useState<boolean>(false);
+  const [render, setRender] = useState<boolean>(false);
   const [roomInfo, setRoomInfo] = useState<IRoomInfo>({
     name: '',
     user_list: [],
     admin: '',
   });
+  const router = useRouter();
 
   const getMessageBucket = async (page: number) => {
     try {
@@ -176,6 +180,7 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       });
       if (res.data.success) {
         admin !== username ? setIsAdmin(false) : {};
+        socketRef.current.emit('roomEdit', {newUserList: users, room_id: room_id});
         socketRef.current.emit('roomUpdate', users.concat(roomInfo.user_list));
         handleCloseEditRoomPopup();
         Swal.fire({
@@ -205,6 +210,13 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
       pushNewMessage(message, savedMessagesRef.current, username);
       setMessages([...savedMessagesRef.current]);
     });
+    socketRef.current.on('roomEditReceiver', (message: any) => {
+      if(!message.includes(username)) {
+        renderHomePage();
+      }
+      setRender(prev=>!prev);
+    });
+    
   }, []);
 
   useEffect(() => {
@@ -217,8 +229,9 @@ function ChatBox({ room_id, isChanel, roomName, username }: ChatBoxProps) {
         room: room_id,
       });
     }
+    
     setOutOfMessages(false);
-  }, [room_id]);
+  }, [room_id, render]);
 
   const prevChatId = usePrevious(room_id);
   if (prevChatId !== room_id) {

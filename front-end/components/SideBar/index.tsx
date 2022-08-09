@@ -73,7 +73,7 @@ function SideBar({ selectRoom }: SideBarProps) {
       },
     }
     );
-    socketRef.current.on('messageForSideBar', (message: any) => {
+    socketRef.current.on('messageForSideBar', () => {
       setSocketState(prev=>!prev);
     });
     socketRef.current.on('roomUpdater', () => {

@@ -14,9 +14,11 @@ const Home: NextPage = () => {
   const [chatBoxProps, setChatBoxProps] = useState<ChatBoxProps | null>(null);
   const [isLogIn, setIsLogIn] = useState(false);
   const selectRoom = (room_id: number, isChanel: boolean, roomName:string, username:string | undefined) => {
-    setChatBoxProps({...chatBoxProps, room_id, isChanel, roomName, username})
+    setChatBoxProps({...chatBoxProps, room_id, isChanel, roomName, username, renderHomePage})
   };
-
+  const renderHomePage = () => {
+    setChatBoxProps(null)
+  }
   useEffect(() => {
     async function checkLogIn() {
       if(await checkAuth(router)){
@@ -44,6 +46,7 @@ const Home: NextPage = () => {
                 isChanel={chatBoxProps?.isChanel}
                 roomName={chatBoxProps?.roomName}
                 username={chatBoxProps?.username}
+                renderHomePage = {renderHomePage}
               />
             ) : (
               <div className='homePage'><p>Bozuman chat app</p></div>
