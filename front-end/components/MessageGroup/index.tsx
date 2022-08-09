@@ -14,7 +14,6 @@ function MessageGroup({ isMe, messages, sender }: MessageGroupProps) {
       className={'messageGroup ' + (isMe ? 'senderIsUser' : 'senderIsNotUser')}
     >
       <div className="messageGroup__avatar">
-        {/* TODO: use loader to load img from backend */}
         <Image
           src={'/avatarPlaceHolder.png'}
           alt="user avatar"
@@ -23,7 +22,6 @@ function MessageGroup({ isMe, messages, sender }: MessageGroupProps) {
         />
       </div>
       <div className="messageGroup__messageContainer">
-        {/* If this is a 1-1 chat room, then senderName is null. following mockup design */}
         <p className="messageGroup__senderName">{sender}</p>
         {messages.map((item, index) => (
           <Message key={`MESSAGE_KEY ${index}`} content={item} />
