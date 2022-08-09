@@ -89,19 +89,21 @@ function ChatBox({ room_id, username, renderHomePage }: ChatBoxProps) {
       const { data } = await axiosClient.get(
         `/api/chat/get-newest-message-bucket?room_id=${room_id}`
       );
-      setIsLoading(false);
+      
 
       if (data.newestIndex >= _VAR.TWO_NEWSET_BUCKET) {
         await getMessageBucket(data.newestIndex);
         await getMessageBucket(data.newestIndex - _VAR.FIRST_NEWEST_BUCKET);
+        setIsLoading(false);
         return setBucketIndex(data.newestIndex - _VAR.TWO_NEWSET_BUCKET);
       }
 
       if (data.newestIndex === _VAR.FIRST_NEWEST_BUCKET) {
         await getMessageBucket(data.newestIndex);
+        setIsLoading(false);
         return setBucketIndex(data.newestIndex - _VAR.FIRST_NEWEST_BUCKET);
       }
-
+      setIsLoading(false);
       setOutOfMessages(true);
       return setBucketIndex(data.newestIndex);
     } catch (error) {
