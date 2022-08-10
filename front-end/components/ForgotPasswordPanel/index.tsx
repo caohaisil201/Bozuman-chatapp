@@ -1,10 +1,10 @@
 import React, { useState, MouseEvent } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { useRouter } from 'next/router';
+import { FaSignInAlt } from 'react-icons/fa';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
-import { useRouter } from 'next/router';
-import { FaSignInAlt } from 'react-icons/fa';
 import AuthPanel from 'components/AuthPanel';
 import Swal from 'sweetalert2';
 
@@ -47,7 +47,7 @@ function ForgotPasswordPanel() {
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/forgot-password`,
         data
       );
-      
+
       if (res.data.success) {
         setErrorMessage({
           trigger: false,
@@ -57,7 +57,7 @@ function ForgotPasswordPanel() {
           icon: 'success',
           title: 'Please check your email to reset password',
           showConfirmButton: false,
-        })
+        });
       }
     } catch (error: any) {
       setErrorMessage({
@@ -85,7 +85,9 @@ function ForgotPasswordPanel() {
         />
         <div className="errorMessage">
           {(errors.email && <p className="error">{errors.email.message}</p>) ||
-            (errorMessage.trigger && <p className="error">{errorMessage.message}</p>)}
+            (errorMessage.trigger && (
+              <p className="error">{errorMessage.message}</p>
+            ))}
         </div>
 
         <button type="submit" className="button__search">

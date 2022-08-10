@@ -1,5 +1,5 @@
 .showRoomPanel {
-  max-height: 40vh;
+  max-height: 34vh;
   margin: 10px 0;
 
   background-color: $white;
@@ -8,21 +8,13 @@
   border-radius: 10px;
   overflow-y: auto;
 
-  .personal {
-    height: 41vh;
-    margin-bottom: 10px;
-    padding-top: 1.5vh;
-  }
-
   .group {
     height: 29vh;
     padding-top: 10px;
   }
 
   .room {
-    height: 6.5vh;
-    padding: 0px 10px;
-    padding-top: 0.2vh;
+    padding: 10px;
 
     display: flex;
     justify-content: space-around;
@@ -51,7 +43,11 @@
         display: inline-block;
         
         font-weight: 600;
-        font-size: 1rem;
+
+        width: 65%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
 
       .lastTime {
@@ -68,7 +64,6 @@
         text-overflow: ellipsis;
         overflow: hidden;
       }
-      
     }
 
     &_unread {

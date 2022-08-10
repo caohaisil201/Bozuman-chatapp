@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
-import _CONF from 'config/config';
+import { _VAR } from 'constant/variables';
 import AuthPanel from 'components/AuthPanel';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -28,26 +28,26 @@ function SignUpPanel() {
       .min(8, 'Full name must have 8-50 character')
       .max(50, 'Full name must have 8-50 character')
       .matches(
-        _CONF.REGEX_FULLNAME,
+        _VAR.REGEX_FULLNAME,
         'Full name must not contain special character like @#$^...'
       ),
     email: yup.string().email('Email must be in correct format'),
     username: yup
       .string()
       .required('Username must not be empty')
-      .min(8, 'Username must have 8-32 character')
-      .max(32, 'Username must have 8-32 character')
+      .min(8, 'Username must have 8-16 character')
+      .max(16, 'Username must have 8-16 character')
       .matches(
-        _CONF.REGEX_USENAME_PASSWORD,
+        _VAR.REGEX_USENAME_PASSWORD,
         'Username must not contain special character like @#$^...'
       ),
     password: yup
       .string()
       .required('Password must not be empty')
       .min(8, 'Password must have 8-16 character')
-      .max(316, 'Password must have 8-16 character')
+      .max(16, 'Password must have 8-16 character')
       .matches(
-        _CONF.REGEX_USENAME_PASSWORD,
+        _VAR.REGEX_USENAME_PASSWORD,
         'Password must not contain special character like @#$^...'
       ),
     passwordConfirmation: yup

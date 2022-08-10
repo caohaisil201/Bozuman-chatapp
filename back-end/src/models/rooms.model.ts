@@ -18,7 +18,7 @@ const RoomsSchema = new mongoose.Schema({
     required: true,
     default: 'Direct message'
   },
-  	
+
   admin: {
     type: String,
     required: true,
@@ -71,12 +71,35 @@ export const roomsSchema = Joi.object({
   user_list: Joi
     .array()
     .items(Joi.string().min(8)
-    .max(32)
+    .max(16)
     .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
     .required())
     .required(),
-    room_id: Joi
+  room_id: Joi
     .number()
+});
+
+export const editRoomsSchema = Joi.object({
+  name: Joi.string()
+  .trim()
+    .min(4)
+    .max(32)
+    .pattern(new RegExp('^[a-zA-Z0-9_ ]*$'))
+    .required(),
+  user_list: Joi
+    .array()
+    .items(Joi.string().min(8)
+    .max(16)
+    .pattern(new RegExp('^[a-zA-Z0-9_-]+$'))
+    .required())
+    .required(),
+  room_id: Joi
+    .number(),
+  admin: Joi
+    .string()
+    .min(4)
+    .max(16)
+    .required(),
 });
 
 export const Rooms = mongoose.model('room', RoomsSchema);

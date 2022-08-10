@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
-import _CONF from 'config/config';
+import { _VAR } from 'constant/variables';
 import { useRouter } from 'next/router';
 import AuthPanel from 'components/AuthPanel';
 import Swal from 'sweetalert2';
@@ -16,7 +16,7 @@ interface ResetPasswordForm {
 
 function ResetPasswordPanel() {
   const router = useRouter();
-  
+
   const { user } = router.query;
 
   const [errorMessage, setErrorMessage] = useState({
@@ -31,7 +31,7 @@ function ResetPasswordPanel() {
       .min(8, 'Password must have 8-16 character')
       .max(16, 'Password must have 8-16 character')
       .matches(
-        _CONF.REGEX_USENAME_PASSWORD,
+        _VAR.REGEX_USENAME_PASSWORD,
         'Password must not contain special character like @#$^...'
       ),
     confirmPassword: yup
@@ -74,12 +74,12 @@ function ResetPasswordPanel() {
 
         Swal.fire({
           title: 'Reset success, click button to go sign in page',
-          confirmButtonText: 'Let\'s go'
-        }).then(result => {
-          if(result.isConfirmed) {
+          confirmButtonText: "Let's go",
+        }).then((result) => {
+          if (result.isConfirmed) {
             router.push('/sign-in');
           }
-        })
+        });
       }
     } catch (error: any) {
       setErrorMessage({
@@ -105,7 +105,7 @@ function ResetPasswordPanel() {
           type="password"
           required
         />
-          {errors.password && <p className="error">{errors.password.message}</p>}
+        {errors.password && <p className="error">{errors.password.message}</p>}
 
         <input
           {...register('confirmPassword')}
@@ -113,10 +113,12 @@ function ResetPasswordPanel() {
           type="password"
           required
         />
-          {(errors.confirmPassword && (
-            <p className="error">{errors.confirmPassword.message}</p>
-          )) ||
-            (errorMessage.trigger && <p className="error">{errorMessage.message}</p>)}
+        {(errors.confirmPassword && (
+          <p className="error">{errors.confirmPassword.message}</p>
+        )) ||
+          (errorMessage.trigger && (
+            <p className="error">{errorMessage.message}</p>
+          ))}
         <button type="submit" className="button__search">
           Submit
         </button>

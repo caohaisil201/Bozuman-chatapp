@@ -164,11 +164,30 @@ export class UsersService {
 
   static changeOtherUserStatusToUnread = async (username: string, room_id: string) => {
     if (username && room_id) {
-      return await Users.updateOne(
+      return await Users.updateMany(
         { username: {$ne: username}, 'room_list.room_id': room_id },
         { $set: { 'room_list.$.unread': true } }
       ).exec();
     }
     throw _Error.SERVER_ERROR;
+  }
+
+  static updateLastMessAndLastTime = async (username: string, room_id: string, content: string, time: Date) => {
+    if (username && room_id) {
+      return await Users.updateMany(
+        { 'room_list.room_id': room_id },
+        { $set: { 'room_list.$.last_message': content, 'room_list.$.last_time': time } }
+      ).exec();
+    }
+    throw _Error.SERVER_ERROR;
+  }
+
+  static checkUserIsInRoom = async (username: string, room_id: number) => {
+    const user = await Users.findOne({
+      'username': username,
+      'room_list.room_id': room_id,
+    })
+    if (user) return true;
+    throw 'You do not have permission to do this behavior';
   }
 }

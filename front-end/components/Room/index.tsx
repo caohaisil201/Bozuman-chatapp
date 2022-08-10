@@ -1,17 +1,24 @@
 import React from 'react';
+import { _VAR } from 'constant/variables';
 import { RoomInterface } from 'components/SideBar';
 import Image from 'next/image';
 
 type RoomProps = {
   room: RoomInterface;
-  clickRoomHandle: (room_id: number, isChanel: boolean, name: string) => void;
+  clickRoomHandle: (room_id: number, name: string) => void;
 };
-const SIZE_OF_AVATAR_PROFILE: number = 42;
+
 function Room({ room, clickRoomHandle }: RoomProps) {
   const chooseRoom = () => {
-    const isChanel = room.type === 'Direct message' ? false : true;
-    clickRoomHandle(room.room_id, isChanel, room.name);
+    clickRoomHandle(room.room_id, room.name);
   };
+
+  const renderTime = () => {
+    return room.last_time.getDate() === new Date().getDate()
+      ? room.last_time.toTimeString().split(' ')[0]
+      : room.last_time.toDateString().slice(4);
+  }
+  
   return (
     <div
       className={'room ' + (room.unread ? 'room_unread' : '')}
@@ -20,14 +27,13 @@ function Room({ room, clickRoomHandle }: RoomProps) {
       <Image
         src="/avatar.png"
         alt="avatar"
-        width={SIZE_OF_AVATAR_PROFILE}
-        height={SIZE_OF_AVATAR_PROFILE}
+        width={_VAR.AVATAR_SIZE}
+        height={_VAR.AVATAR_SIZE}
       />
       <div className="room_info">
         <p className="roomName">{room.name}</p>
         <p className="lastTime">
-          {new Date(room.last_time).getHours()}:
-          {new Date(room.last_time).getMinutes()}
+          {renderTime()}
         </p>
         <p className="lastMessage">{room.last_message}</p>
       </div>
