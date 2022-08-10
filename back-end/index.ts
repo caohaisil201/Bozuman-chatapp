@@ -132,6 +132,7 @@ io.on('connection', (socket) => {
           message.content,
           message.time
         );
+        UsersService.changeRoomStatus(socket.data.username, message.room, false)
         io.to(message.room).emit('message', receivedMessage);
       }
 
